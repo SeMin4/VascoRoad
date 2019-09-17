@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 public class MainActivity extends Activity {
-
+	// Hello I'm minjeong.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
