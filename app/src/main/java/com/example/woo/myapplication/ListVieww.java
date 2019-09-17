@@ -63,7 +63,7 @@ public class ListVieww extends Activity {
         listView = (ListView) findViewById(R.id.listView);
 
         adapter = new SingerAdapter();
-        listView.setAdapter(adapter);
+        
 
         //버튼을 누르면 등록이 된다.
         Button EnrollButton = (Button) findViewById(R.id.Button_Add);
@@ -71,6 +71,7 @@ public class ListVieww extends Activity {
             @Override
             public void onClick(View v) {
                 adapter.addItem(new SingerItem("김철수","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy));
+                listView.setAdapter(adapter);
             }
         });
 
