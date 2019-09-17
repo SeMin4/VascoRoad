@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="district_prompt">선택 지역</string>
+</resources>
