@@ -64,9 +64,6 @@ public class SingerItemView extends LinearLayout {
         imageView.setImageResource(resId);
     }
 
-
-
-
 }
 
 
