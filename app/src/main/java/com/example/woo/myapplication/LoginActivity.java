@@ -14,6 +14,14 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class LoginActivity extends AppCompatActivity {
     public static Activity _LoginActivity;
     protected LinearLayout login_activity;
@@ -24,6 +32,8 @@ public class LoginActivity extends AppCompatActivity {
     protected String Email;
     protected String Password;
     protected CheckBox auto_login_check_box;
+    private Retrofit retrofit;
+    private MyGlobals.RetrofitExService retrofitExService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,16 @@ public class LoginActivity extends AppCompatActivity {
         //First, SharedPreferences don't have any information, and then make key to store value
         //First parameter is key, Second parameter is value(getString)
         //I don't have any value, so you make any key and null value
+
+        if( (MyGlobals.getInstance().getRetrofit() == null) || (MyGlobals.getInstance().getRetrofitExService() ==null) ){
+            retrofit = new Retrofit.Builder().baseUrl(MyGlobals.RetrofitExService.URL).addConverterFactory(GsonConverterFactory.create()).build();
+            retrofitExService = retrofit.create(MyGlobals.RetrofitExService.class);
+            MyGlobals.getInstance().setRetrofit(retrofit);
+            MyGlobals.getInstance().setRetrofitExService(retrofitExService);
+        }else{
+            retrofit = MyGlobals.getInstance().getRetrofit();
+            retrofitExService = MyGlobals.getInstance().getRetrofitExService();
+        }
 
         Email = auto.getString("AutoEmail", null);
         Password  = auto.getString("AutoPassword", null);
@@ -61,29 +81,62 @@ public class LoginActivity extends AppCompatActivity {
                 inputMethodManager.hideSoftInputFromWindow(login_password.getWindowToken(), 0);
             }
         });
+
         login_sign_in_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //Check Email and password from DB
                 // if(check Email and Password from DB)
-                if (login_email.getText().toString().equals("test")) {
-                    if (login_password.getText().toString().equals("test")) {
-                            if(auto_login_check_box.isChecked()){
-                            SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
-                            SharedPreferences.Editor auto_editor = auto.edit();
-                            auto_editor.putString("AutoEmail", login_email.getText().toString());
-                            auto_editor.putString("AutoPassword", login_password.getText().toString());
-                            auto_editor.commit();
-                        }
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                    }
-                }
-                else{
+                String email = login_email.getText().toString();
+                String password = login_password.getText().toString();
+                if(  (email.equals("")) || (password.equals("")) )
+                {
                     Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);
                     startActivity(intent);
-                }
 
+                }
+                else {
+                    HashMap<String, String> input = new HashMap<>();
+                    input.put("email", email);
+                    input.put("password", password);
+
+                    retrofitExService.postLogin(input).enqueue(new Callback<OverlapExamineData>() {
+                        @Override
+                        public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                            System.out.println("onResponse 호출@@@!!!!!!!!!!!!!");
+                            OverlapExamineData overlapExamineData = response.body();
+                            String data = overlapExamineData.getOverlap_examine();
+                            System.out.println("data : " + data + "@@@@@@@@@@@@@@@@@@@@@@@");
+
+                            if (data.equals("yes")) {
+                                 if(auto_login_check_box.isChecked()){
+                                    SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
+                                    SharedPreferences.Editor auto_editor = auto.edit();
+                                    auto_editor.putString("AutoEmail", login_email.getText().toString());
+                                    auto_editor.putString("AutoPassword", login_password.getText().toString());
+                                    auto_editor.commit();
+                                }
+                                System.out.println("로그인 성공");
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(intent);
+                            } else if (data.equals("no")) {
+                                System.out.println("아이디 없음");
+                                Toast.makeText(getApplicationContext(), "아이디 없음", Toast.LENGTH_SHORT).show();
+                            } else if (data.equals("wrong")) {
+                                System.out.println("비밀번호 없음");
+                                Toast.makeText(getApplicationContext(), "비밀번호 없음", Toast.LENGTH_SHORT).show();
+                            } else if (data.equals("error")) {
+                                System.out.println("에러 발생");
+                                Toast.makeText(getApplicationContext(), "에러 발생", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                            System.out.println("onFailure 호출@@@!!!!!!!!!!!!!");
+                        }
+                    });
+                }
             }
         });
         login_sign_up_btn.setOnClickListener(new View.OnClickListener() {

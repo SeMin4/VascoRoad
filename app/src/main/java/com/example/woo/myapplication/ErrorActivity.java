@@ -41,6 +41,10 @@ public class ErrorActivity extends AppCompatActivity {
                 error_title.setText("회원가입 에러");
                 error_body.setText("이메일 중복체크를 진행해 주시기 바랍니다.");
                 break;
+            case 4:
+                error_title.setText("회원가입 에러");
+                error_body.setText("이미 존재하는 이메일 입니다.");
+                break;
             default:
                 break;
         }
