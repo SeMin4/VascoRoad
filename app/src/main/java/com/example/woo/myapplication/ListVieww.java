@@ -58,7 +58,7 @@ public class ListVieww extends Activity {
     ListView listView;
     SingerAdapter adapter;
     Retrofit retrofit;
-    RetrofitExService retroService;
+    MyGlobals.RetrofitExService retroService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,9 +70,15 @@ public class ListVieww extends Activity {
         listView.setAdapter(adapter);
 
 
-
-        retrofit = new Retrofit.Builder().baseUrl(RetrofitExService.URL).addConverterFactory(GsonConverterFactory.create()).build();
-        retroService = retrofit.create(RetrofitExService.class);
+        if( (MyGlobals.getInstance().getRetrofit() == null) || (MyGlobals.getInstance().getRetrofitExService() ==null) ) {
+            retrofit = new Retrofit.Builder().baseUrl(MyGlobals.RetrofitExService.URL).addConverterFactory(GsonConverterFactory.create()).build();
+            retroService = retrofit.create(MyGlobals.RetrofitExService.class);
+            MyGlobals.getInstance().setRetrofit(retrofit);
+            MyGlobals.getInstance().setRetrofitExService(retroService);
+        }else{
+            retrofit = MyGlobals.getInstance().getRetrofit();
+            retroService = MyGlobals.getInstance().getRetrofitExService();
+        }
 
         retroService.getData().enqueue(new Callback<ArrayList<Mperson>>() {
             @Override
@@ -98,12 +104,6 @@ public class ListVieww extends Activity {
             }
 
         });
-    }
-
-    public interface RetrofitExService{ //interface 선언
-        public static final String URL = "http://13.125.95.139:9000/";
-        @GET("mperson")
-        Call<ArrayList<Mperson>> getData();
     }
 
 }

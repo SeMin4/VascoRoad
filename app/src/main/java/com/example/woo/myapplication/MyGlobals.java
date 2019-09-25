@@ -1,0 +1,68 @@
+package com.example.woo.myapplication;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import retrofit2.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+
+public class MyGlobals {
+    private Retrofit retrofit=null;
+    private RetrofitExService retrofitExService=null;
+    private static MyGlobals instance = null;
+
+    public Retrofit getRetrofit() {
+        return retrofit;
+    }
+
+    public void setRetrofit(Retrofit retrofit) {
+        this.retrofit = retrofit;
+    }
+
+    public RetrofitExService getRetrofitExService() {
+        return retrofitExService;
+    }
+
+    public void setRetrofitExService(RetrofitExService retrofitExService) {
+        this.retrofitExService = retrofitExService;
+    }
+
+    public static synchronized MyGlobals getInstance() {
+        if(instance == null)
+            instance = new MyGlobals();
+
+        return instance;
+    }
+
+    public static void setInstance(MyGlobals instance) {
+        MyGlobals.instance = instance;
+    }
+
+    public interface RetrofitExService{ //interface 선언
+        public static final String URL = "http://13.125.95.139:9000/"; //서버 주소와 포트번호
+
+        @GET("/mperson")
+        Call<ArrayList<Mperson>> getData();
+
+        @FormUrlEncoded
+        @POST("/examine")
+        Call<OverlapExamineData> postData(@FieldMap HashMap<String,String> param);
+
+        @FormUrlEncoded
+        @POST("/login/process")
+        Call<OverlapExamineData> postLogin(@FieldMap HashMap<String,String> param);
+
+        @FormUrlEncoded
+        @POST("/admin/process")
+        Call<OverlapExamineData> postAdmin(@FieldMap HashMap<String,String> param);
+    }
+
+}
