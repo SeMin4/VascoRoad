@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -63,15 +64,46 @@ public class LoginActivity extends AppCompatActivity {
 
         Email = auto.getString("AutoEmail", null);
         Password  = auto.getString("AutoPassword", null);
+
+
         if(Email != null && Password != null){
             // Check Email and password from DB
             //if(check Email and password from DB){
+            HashMap<String, String> input = new HashMap<>();
+            input.put("email", Email);
+            input.put("password", Password);
+            retrofitExService.postLogin(input).enqueue(new Callback<OverlapExamineData>() {
+                @Override
+                public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                    System.out.println("onResponse 호출@@@!!!!!!!!!!!!!");
+                    OverlapExamineData overlapExamineData = response.body();
+                    String data = overlapExamineData.getOverlap_examine();
+                    System.out.println("data : " + data + "@@@@@@@@@@@@@@@@@@@@@@@");
+                    Log.d("server key", data);
+                    if (data.equals("yes")) {
+                        Toast.makeText(getApplicationContext(), Email + "로그인 되었습니다.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                    } else if (data.equals("no")) {
+                        Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);
+                        startActivity(intent);
+                    } else if (data.equals("wrong")) {
+                        Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);
+                        startActivity(intent);
+                    } else if (data.equals("error")) {
+                        Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);
+                        startActivity(intent);
+                    }
+                }
 
-            if(Email.equals("test") && Password.equals("test")){
-                Toast.makeText(getApplicationContext(), Email + "로그인 되었습니다.", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
+                @Override
+                public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                    System.out.println("onFailure 호출@@@!!!!!!!!!!!!!");
+                }
+            });
+
+
+
         }
         login_activity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                             OverlapExamineData overlapExamineData = response.body();
                             String data = overlapExamineData.getOverlap_examine();
                             System.out.println("data : " + data + "@@@@@@@@@@@@@@@@@@@@@@@");
-
+                            Log.d("server key", data);
                             if (data.equals("yes")) {
                                  if(auto_login_check_box.isChecked()){
                                     SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
@@ -120,14 +152,15 @@ public class LoginActivity extends AppCompatActivity {
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                             } else if (data.equals("no")) {
-                                System.out.println("아이디 없음");
-                                Toast.makeText(getApplicationContext(), "아이디 없음", Toast.LENGTH_SHORT).show();
+
+                                Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);
+                                startActivity(intent);
                             } else if (data.equals("wrong")) {
-                                System.out.println("비밀번호 없음");
-                                Toast.makeText(getApplicationContext(), "비밀번호 없음", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);
+                                startActivity(intent);
                             } else if (data.equals("error")) {
-                                System.out.println("에러 발생");
-                                Toast.makeText(getApplicationContext(), "에러 발생", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);
+                                startActivity(intent);
                             }
                         }
 
