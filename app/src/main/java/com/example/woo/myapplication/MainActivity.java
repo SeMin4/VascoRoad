@@ -13,6 +13,7 @@ import android.widget.Spinner;
 public class MainActivity extends Activity {
     LoginActivity _LoginActivity = (LoginActivity)LoginActivity._LoginActivity;
     protected Button logout_btn;
+    protected Button myPage_btn;
 	// Hello I'm minjeong.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         _LoginActivity.finish();
         logout_btn = (Button) findViewById(R.id.logout_btn);
+        myPage_btn = (Button) findViewById(R.id.my_page_btn);
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -56,6 +58,13 @@ public class MainActivity extends Activity {
                 Intent intent1 = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intent1);
                 finish();
+            }
+        });
+        myPage_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(getApplicationContext(),MyPageActivity.class);
+                startActivity(intent1);
             }
         });
 

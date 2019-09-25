@@ -14,4 +14,11 @@
     <string name="login_err_message">아이디와 비밀번호가 일치하지 않습니다.</string>
     <string name="confirm">확인</string>
     <string name="logout">로그아웃</string>
+    <string name="email">이메일</string>
+    <string name="password">비밀번호</string>
+    <string name="password_check">비밀번호 확인</string>
+    <string name="change">변경</string>
+    <string name="change_confirm">수정 완료</string>
+    <string name="list_room">방 목록</string>
+    <string name="myPage">마이 페이지</string>
 </resources>

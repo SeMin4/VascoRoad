@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                 // if(check Email and Password from DB)
                 if (login_email.getText().toString().equals("test")) {
                     if (login_password.getText().toString().equals("test")) {
-                        if(auto_login_check_box.isChecked()){
+                            if(auto_login_check_box.isChecked()){
                             SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
                             SharedPreferences.Editor auto_editor = auto.edit();
                             auto_editor.putString("AutoEmail", login_email.getText().toString());
@@ -96,6 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
 
 
 }

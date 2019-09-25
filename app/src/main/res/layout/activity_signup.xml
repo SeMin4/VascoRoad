@@ -22,6 +22,7 @@
         android:orientation="horizontal">
 
         <EditText
+            android:id="@+id/sign_up_email"
             tools:ignore="LabelFor"
             android:layout_weight="1"
             android:layout_width="0dp"
@@ -30,16 +31,20 @@
             android:importantForAutofill="no"
             android:cursorVisible="true"
             android:hint="@string/login_id"
-            android:background="@drawable/form"></EditText>
+            android:background="@drawable/form">
+        </EditText>
         <Button
+            android:id="@+id/sign_up_email_check_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/double_check"
-            ></Button>
+            >
+        </Button>
 
     </LinearLayout>
 
     <EditText
+        android:id="@+id/sign_up_password"
         tools:ignore="LabelFor"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -47,9 +52,23 @@
         android:importantForAutofill="no"
         android:cursorVisible="true"
         android:hint="@string/login_password"
-        android:background="@drawable/form"></EditText>
+        android:background="@drawable/form">
+    </EditText>
 
     <EditText
+        android:id="@+id/sign_up_check_password"
+        tools:ignore="LabelFor"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="textMultiLine|textNoSuggestions|textPassword"
+        android:importantForAutofill="no"
+        android:cursorVisible="true"
+        android:hint="@string/login_password"
+        android:background="@drawable/form">
+    </EditText>
+
+    <EditText
+        android:id="@+id/sign_up_name"
         tools:ignore="LabelFor"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -57,9 +76,11 @@
         android:importantForAutofill="no"
         android:cursorVisible="true"
         android:hint="@string/user_name"
-        android:background="@drawable/form"></EditText>
+        android:background="@drawable/form">
+    </EditText>
 
     <EditText
+        android:id="@+id/sign_up_department"
         tools:ignore="LabelFor"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -67,9 +88,11 @@
         android:importantForAutofill="no"
         android:cursorVisible="true"
         android:hint="@string/user_department"
-        android:background="@drawable/form"></EditText>
+        android:background="@drawable/form">
+    </EditText>
 
     <Button
+        android:id="@+id/sign_up_btn"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:text="@string/sign_up"

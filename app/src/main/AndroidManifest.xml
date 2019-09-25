@@ -5,13 +5,21 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"    
+        android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".LoginErrorActivity"
-            android:theme="@style/LoginErrorTheme" android:screenOrientation="portrait"></activity>
+        <activity android:name=".ErrorActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/ErrorTheme"></activity>
+        <activity
+            android:name=".MyPageActivity"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".LoginErrorActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/LoginErrorTheme" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>
