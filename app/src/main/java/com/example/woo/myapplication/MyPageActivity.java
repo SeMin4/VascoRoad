@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class MyPageActivity extends AppCompatActivity {
     protected LinearLayout MyPageLayout;
@@ -18,6 +19,8 @@ public class MyPageActivity extends AppCompatActivity {
     protected EditText change_check_password;
     protected EditText change_department;
     protected Button change_confirm_btn;
+    protected TextView user_id;
+    protected TextView user_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,14 @@ public class MyPageActivity extends AppCompatActivity {
         change_check_password = (EditText) findViewById(R.id.change_check_password);
         change_department = (EditText) findViewById(R.id.change_department);
         change_confirm_btn = (Button) findViewById(R.id.change_confirm_btn);
+        user_id = (TextView)findViewById(R.id.user_id);
+        user_name = (TextView)findViewById(R.id.user_name);
+
+        user_id.setText(MyGlobals.getInstance().getUser().getU_email());
+        user_name.setText(MyGlobals.getInstance().getUser().getU_name());
+        change_department.setHint(MyGlobals.getInstance().getUser().getU_department());
+
+
         MyPageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

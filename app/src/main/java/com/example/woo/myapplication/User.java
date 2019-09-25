@@ -1,3 +1,5 @@
+package com.example.woo.myapplication;
+
 public class User {
 
     private String check;
@@ -47,3 +49,4 @@ public class User {
     }
 
 }
+

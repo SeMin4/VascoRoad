@@ -74,12 +74,12 @@ public class LoginActivity extends AppCompatActivity {
             HashMap<String, String> input = new HashMap<>();
             input.put("email", Email);
             input.put("password", Password);
-            retrofitExService.postLogin(input).enqueue(new Callback<OverlapExamineData>() {
+            retrofitExService.postLogin(input).enqueue(new Callback<User>() {
                 @Override
-                public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                public void onResponse(Call<User> call, Response<User> response) {
                     System.out.println("onResponse 호출@@@!!!!!!!!!!!!!");
-                    OverlapExamineData overlapExamineData = response.body();
-                    String data = overlapExamineData.getOverlap_examine();
+                    User user = response.body();
+                    String data = user.getCheck();
                     System.out.println("data : " + data + "@@@@@@@@@@@@@@@@@@@@@@@");
                     Log.d("server key", data);
                     if (data.equals("yes")) {
@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                public void onFailure(Call<User> call, Throwable t) {
                     System.out.println("onFailure 호출@@@!!!!!!!!!!!!!");
                 }
             });
@@ -134,12 +134,12 @@ public class LoginActivity extends AppCompatActivity {
                     input.put("email", email);
                     input.put("password", password);
 
-                    retrofitExService.postLogin(input).enqueue(new Callback<OverlapExamineData>() {
+                    retrofitExService.postLogin(input).enqueue(new Callback<User>() {
                         @Override
-                        public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                        public void onResponse(Call<User> call, Response<User> response) {
                             System.out.println("onResponse 호출@@@!!!!!!!!!!!!!");
-                            OverlapExamineData overlapExamineData = response.body();
-                            String data = overlapExamineData.getOverlap_examine();
+                            User user = response.body();
+                            String data = user.getCheck();
                             System.out.println("data : " + data + "@@@@@@@@@@@@@@@@@@@@@@@");
                             Log.d("server key", data);
                             if (data.equals("yes")) {
@@ -151,6 +151,10 @@ public class LoginActivity extends AppCompatActivity {
                                     auto_editor.commit();
                                 }
                                 System.out.println("로그인 성공");
+                                System.out.println("user check : " + user.getCheck());
+                                System.out.println("user email : " + user.getU_email());
+                                System.out.println("user name : " + user.getU_name());
+                                MyGlobals.getInstance().setUser(user);
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                             } else if (data.equals("no")) {
@@ -167,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                        public void onFailure(Call<User> call, Throwable t) {
                             System.out.println("onFailure 호출@@@!!!!!!!!!!!!!");
                         }
                     });
