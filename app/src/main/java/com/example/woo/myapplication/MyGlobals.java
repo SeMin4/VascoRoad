@@ -15,9 +15,18 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public class MyGlobals {
+    private User user;
     private Retrofit retrofit=null;
     private RetrofitExService retrofitExService=null;
     private static MyGlobals instance = null;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Retrofit getRetrofit() {
         return retrofit;
@@ -58,7 +67,7 @@ public class MyGlobals {
 
         @FormUrlEncoded
         @POST("/login/process")
-        Call<OverlapExamineData> postLogin(@FieldMap HashMap<String,String> param);
+        Call<User> postLogin(@FieldMap HashMap<String,String> param);
 
         @FormUrlEncoded
         @POST("/admin/process")
