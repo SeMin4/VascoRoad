@@ -31,13 +31,13 @@ public class SignUpActivity extends AppCompatActivity {
     protected Button sign_up_btn;
     private Retrofit retrofit;
     private MyGlobals.RetrofitExService retrofitExService;
+    protected String sign_up_email_same = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        // 내꺼
         sign_up_email = (EditText) findViewById(R.id.sign_up_email);
         sign_up_email_check_btn = (Button) findViewById(R.id.sign_up_email_check_btn);
         sign_up_password = (EditText) findViewById(R.id.sign_up_password);
@@ -45,7 +45,6 @@ public class SignUpActivity extends AppCompatActivity {
         sign_up_name = (EditText) findViewById(R.id.sign_up_name);
         sign_up_department = (EditText) findViewById(R.id.sign_up_department);
         sign_up_btn = (Button) findViewById(R.id.sign_up_btn);
-
 
         if( (MyGlobals.getInstance().getRetrofit() == null) || (MyGlobals.getInstance().getRetrofitExService() ==null) ){
             retrofit = new Retrofit.Builder().baseUrl(MyGlobals.RetrofitExService.URL).addConverterFactory(GsonConverterFactory.create()).build();
@@ -72,6 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
                             Log.d("overlap", overlapData.getOverlap_examine());
                             if(overlapData.getOverlap_examine().equals("access")) {
                                 email_check_integer = 1;
+                                sign_up_email_same = sign_up_email.getText().toString();
                                 Toast.makeText(getApplicationContext(), "사용할 수 있는 이메일 입니다.", Toast.LENGTH_SHORT).show();
                             }else{
                                 Intent intent = new Intent(getApplicationContext(),ErrorActivity.class);
@@ -109,34 +109,42 @@ public class SignUpActivity extends AppCompatActivity {
                     intent.putExtra("error_code", 3);
                     startActivity(intent);
                 } else if (sign_up_password_str.equals(sign_up_check_password_str)) {
-                    HashMap<String, String> input = new HashMap<>();
-                    input.put("email", sign_up_email.getText().toString());
-                    input.put("password", sign_up_password.getText().toString());
-                    input.put("department", sign_up_department.getText().toString());
-                    input.put("name", sign_up_name.getText().toString());
-                    retrofitExService.postAdmin(input).enqueue(new Callback<OverlapExamineData>() {
-                        @Override
-                        public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
-                            System.out.println("onResponse@@@@@@@@@@@@@@");
-                            OverlapExamineData overlapExamineData = response.body();
-                            if (overlapExamineData.getOverlap_examine().equals("success")) {
-                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                } else {
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                }
-                                Toast.makeText(getApplicationContext(), "회원 가입 완료", Toast.LENGTH_LONG).show();
-                                startActivity(intent);
-                            } else if (overlapExamineData.getOverlap_examine().equals("deny"))
-                                Toast.makeText(getApplicationContext(), "회원가입 실패", Toast.LENGTH_SHORT).show();
-                        }
+                    if(sign_up_email_same == sign_up_email.getText().toString()){
+                        HashMap<String, String> input = new HashMap<>();
+                        input.put("email", sign_up_email.getText().toString());
+                        input.put("password", sign_up_password.getText().toString());
+                        input.put("department", sign_up_department.getText().toString());
+                        input.put("name", sign_up_name.getText().toString());
+                        retrofitExService.postAdmin(input).enqueue(new Callback<OverlapExamineData>() {
+                            @Override
+                            public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                                System.out.println("onResponse@@@@@@@@@@@@@@");
+                                OverlapExamineData overlapExamineData = response.body();
+                                if (overlapExamineData.getOverlap_examine().equals("success")) {
+                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    } else {
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    }
+                                    Toast.makeText(getApplicationContext(), "회원 가입 완료", Toast.LENGTH_LONG).show();
+                                    startActivity(intent);
+                                } else if (overlapExamineData.getOverlap_examine().equals("deny"))
+                                    Toast.makeText(getApplicationContext(), "회원가입 실패", Toast.LENGTH_SHORT).show();
+                            }
 
-                        @Override
-                        public void onFailure(Call<OverlapExamineData> call, Throwable t) {
-                            System.out.println("onFailure@@@@@@@@@@@@@@");
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                                System.out.println("onFailure@@@@@@@@@@@@@@");
+                            }
+                        });
+                    }
+                    else{
+                        email_check_integer = 0;
+                        Intent intent = new Intent(getApplicationContext(), ErrorActivity.class);
+                        intent.putExtra("error_code", 3);
+                        startActivity(intent);
+                    }
 
 
                 } else {

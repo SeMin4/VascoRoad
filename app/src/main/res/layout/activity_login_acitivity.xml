@@ -16,10 +16,11 @@
         tools:ignore="LabelFor"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:inputType="textMultiLine|textNoSuggestions"
+        android:inputType="textNoSuggestions"
         android:importantForAutofill="no"
         android:cursorVisible="true"
         android:hint="@string/login_id"
+        android:singleLine="true"
         android:background="@drawable/form"></EditText>
 
     <EditText
@@ -27,10 +28,11 @@
         tools:ignore="LabelFor"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:inputType="textMultiLine|textNoSuggestions|textPassword"
+        android:inputType="textNoSuggestions|textPassword"
         android:importantForAutofill="no"
         android:cursorVisible="true"
         android:hint="@string/login_password"
+        android:singleLine="true"
         android:background="@drawable/form"></EditText>
     <Button
         android:id="@+id/login_page_sign_in"
