@@ -1,6 +1,5 @@
 package com.example.woo.myapplication;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -8,12 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class MyPageActivity extends AppCompatActivity {
+public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapter.ListBtnClickListener{
     protected LinearLayout MyPageLayout;
     protected EditText change_password;
     protected EditText change_check_password;
@@ -21,6 +23,8 @@ public class MyPageActivity extends AppCompatActivity {
     protected Button change_confirm_btn;
     protected TextView user_id;
     protected TextView user_name;
+    protected ListView my_room_list_view;
+    static MyRoomListAdapter roomListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,21 @@ public class MyPageActivity extends AppCompatActivity {
         change_confirm_btn = (Button) findViewById(R.id.change_confirm_btn);
         user_id = (TextView)findViewById(R.id.user_id);
         user_name = (TextView)findViewById(R.id.user_name);
+        my_room_list_view = (ListView)findViewById(R.id.my_room_list);
+
+        roomListAdapter = new MyRoomListAdapter(this);
+        my_room_list_view.setAdapter(roomListAdapter);
+
+        roomListAdapter.addItem("천지완","대구광역시 북구");
+        roomListAdapter.addItem("홍성기","대구광역시 동구");
+        roomListAdapter.addItem("황보승우","대구광역시 서구");
+        roomListAdapter.addItem("강민정","대구광역시 서구");
+        roomListAdapter.addItem("오세민","대구광역시 서구");
+        roomListAdapter.addItem("신준희","대구광역시 서구");
+        roomListAdapter.addItem("황보승우","대구광역시 서구");
+        roomListAdapter.addItem("황보승우","대구광역시 서구");
+        roomListAdapter.addItem("황보승우","대구광역시 서구");
+        roomListAdapter.addItem("황보승우","대구광역시 서구");
 
         user_id.setText(MyGlobals.getInstance().getUser().getU_email());
         user_name.setText(MyGlobals.getInstance().getUser().getU_name());
@@ -63,5 +82,24 @@ public class MyPageActivity extends AppCompatActivity {
             }
         });
 
+        //roomList 클릭 이벤트 핸들러 || 혹시 몰라서 적어놓음
+        my_room_list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView parent, View v, int position, long id) {
+                // get item
+                MyRoomItem item = (MyRoomItem) parent.getItemAtPosition(position) ;
+
+                String titlePerson = item.getTitle_person() ;
+                String locationMap = item.getLocation_map() ;
+
+            }
+        }) ;
+    }
+
+    @Override
+    public  void onListBtnClick(int position){
+        Intent intent = new Intent (getApplicationContext(),RoomDeleteActivity.class);
+        intent.putExtra("position", position);
+        startActivity(intent);
     }
 }

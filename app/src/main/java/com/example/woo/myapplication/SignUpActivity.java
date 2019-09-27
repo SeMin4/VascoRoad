@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.HashMap;
@@ -32,7 +33,6 @@ public class SignUpActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private MyGlobals.RetrofitExService retrofitExService;
     protected String sign_up_email_same = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +45,6 @@ public class SignUpActivity extends AppCompatActivity {
         sign_up_name = (EditText) findViewById(R.id.sign_up_name);
         sign_up_department = (EditText) findViewById(R.id.sign_up_department);
         sign_up_btn = (Button) findViewById(R.id.sign_up_btn);
-
         if( (MyGlobals.getInstance().getRetrofit() == null) || (MyGlobals.getInstance().getRetrofitExService() ==null) ){
             retrofit = new Retrofit.Builder().baseUrl(MyGlobals.RetrofitExService.URL).addConverterFactory(GsonConverterFactory.create()).build();
             retrofitExService = retrofit.create(MyGlobals.RetrofitExService.class);
@@ -109,7 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
                     intent.putExtra("error_code", 3);
                     startActivity(intent);
                 } else if (sign_up_password_str.equals(sign_up_check_password_str)) {
-                    if(sign_up_email_same == sign_up_email.getText().toString()){
+                    if(sign_up_email_same.equals(sign_up_email.getText().toString())){
                         HashMap<String, String> input = new HashMap<>();
                         input.put("email", sign_up_email.getText().toString());
                         input.put("password", sign_up_password.getText().toString());

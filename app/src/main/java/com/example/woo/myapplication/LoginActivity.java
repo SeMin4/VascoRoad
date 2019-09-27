@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -85,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (data.equals("yes")) {
                         Toast.makeText(getApplicationContext(), Email + "로그인 되었습니다.", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        MyGlobals.getInstance().setUser(user);
                         startActivity(intent);
                     } else if (data.equals("no")) {
                         Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);

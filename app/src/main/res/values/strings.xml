@@ -21,4 +21,7 @@
     <string name="change_confirm">수정 완료</string>
     <string name="list_room">방 목록</string>
     <string name="myPage">마이 페이지</string>
+    <string name="roomDelete">삭제</string>
+    <string name="roomDeleteCheckTitle">방을 삭제 하시겠습니까?</string>
+    <string name="roomPassword">방 비밀번호</string>
 </resources>
