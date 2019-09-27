@@ -3,10 +3,19 @@ package com.example.woo.myapplication;
 public class User {
 
     private String check;
+    private String u_id;
     private String u_email;
     private String u_password;
     private String u_name;
     private String u_department;
+
+    public String getU_id() {
+        return u_id;
+    }
+
+    public void setU_id(String u_id) {
+        this.u_id = u_id;
+    }
 
     public String getCheck() {
         return check;

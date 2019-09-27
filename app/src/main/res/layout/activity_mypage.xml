@@ -90,6 +90,7 @@
                 android:background="@drawable/form">
             </EditText>
             <Button
+                android:id="@+id/change_pasaword_btn"
                 android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -146,6 +147,7 @@
                 android:background="@drawable/form">
             </EditText>
             <Button
+                android:id="@+id/change_department_btn"
                 android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
