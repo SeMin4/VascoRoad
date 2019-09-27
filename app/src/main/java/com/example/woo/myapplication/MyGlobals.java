@@ -13,6 +13,7 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public class MyGlobals {
     private User user;
@@ -72,6 +73,15 @@ public class MyGlobals {
         @FormUrlEncoded
         @POST("/admin/process")
         Call<OverlapExamineData> postAdmin(@FieldMap HashMap<String,String> param);
+
+        @FormUrlEncoded
+        @POST("/change/password")
+        Call<User> postChangePassword(@FieldMap HashMap<String,String> param);
+
+        @GET("/change/department?") //URL
+        Call<User> getChangeDepartment(@Query("u_id") String u_id, @Query("u_department") String u_department);
+
+
     }
 
 }
