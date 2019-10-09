@@ -3,6 +3,7 @@ package com.example.woo.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -92,6 +93,10 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
                 MyGlobals.getInstance().setUser(null);
+                SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
+                SharedPreferences.Editor auto_editor = auto.edit();
+                auto_editor.clear();
+                auto_editor.commit();
                 startActivity(intent);
                 finish();
             }
