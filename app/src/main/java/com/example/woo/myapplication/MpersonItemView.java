@@ -7,7 +7,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SingerItemView extends LinearLayout {
+public class MpersonItemView extends LinearLayout {
 //여기서 할 것: 사진, 이름, 정보가 들어있는 하나의 큰 LinearLayout을 하나의 클래스로 취급할 수 있도록 해준다.
 
     TextView textView1; //이름
@@ -16,13 +16,13 @@ public class SingerItemView extends LinearLayout {
     ImageView imageView; // 실종자 사진
 
 
-    public SingerItemView(Context context) {
+    public MpersonItemView(Context context) {
         //생성자 1: context 객체를 파라미터로 받는다.
         super(context);
         init(context);
     }
 
-    public SingerItemView(Context context, AttributeSet attrs) {
+    public MpersonItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }

@@ -97,7 +97,7 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
         });
         change_password_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) { //비밀번호 번경
                 if(change_password.getText().toString().equals(change_check_password.getText().toString())){
                     HashMap<String,String> input = new HashMap<>();
                     input.put("u_id",MyGlobals.getInstance().getUser().getU_id());
@@ -127,7 +127,7 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
 
         change_department_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view) {  //department 변경
                 if( !(change_department.getText().toString().equals(""))){
                     retrofitExService.getChangeDepartment(MyGlobals.getInstance().getUser().getU_id(), change_department.getText().toString()).enqueue(new Callback<User>() {
                         @Override

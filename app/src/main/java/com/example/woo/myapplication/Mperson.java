@@ -10,7 +10,15 @@ public class Mperson {
     float p_place_latitude;
     float p_place_longitude;
     String p_place_description;
-    String p_photo;
+    int p_photo;
+
+    public Mperson(String p_name,  String p_place_string,String p_time, int p_photo, String p_place_description) {
+        this.p_name = p_name;
+        this.p_time = p_time;
+        this.p_place_string = p_place_string;
+        this.p_place_description = p_place_description;
+        this.p_photo = p_photo;
+    }
 
     public int getP_id() {
         return p_id;
@@ -76,11 +84,19 @@ public class Mperson {
         this.p_place_description = p_place_description;
     }
 
-    public String getP_photo() {
+   /* public String getP_photo() {
         return p_photo;
     }
 
     public void setP_photo(String p_photo) {
+        this.p_photo = p_photo;
+    }*/
+
+    public int getP_photo() {
+        return p_photo;
+    }
+
+    public void setP_photo(int p_photo) {
         this.p_photo = p_photo;
     }
 }
