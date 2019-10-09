@@ -1,4 +1,4 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.ui.activity;
 
 import android.content.Intent;
 import android.os.Build;
@@ -8,8 +8,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.woo.myapplication.MyGlobals;
+import com.example.woo.myapplication.OverlapExamineData;
+import com.example.woo.myapplication.R;
 
 import java.util.HashMap;
 
@@ -73,7 +76,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 sign_up_email_same = sign_up_email.getText().toString();
                                 Toast.makeText(getApplicationContext(), "사용할 수 있는 이메일 입니다.", Toast.LENGTH_SHORT).show();
                             }else{
-                                Intent intent = new Intent(getApplicationContext(),ErrorActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), ErrorActivity.class);
                                 intent.putExtra("error_code", 4);
                                 startActivity(intent);
                             }

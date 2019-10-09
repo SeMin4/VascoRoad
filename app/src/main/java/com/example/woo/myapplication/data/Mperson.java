@@ -1,6 +1,9 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.data;
 
-public class Mperson {
+
+import java.io.Serializable;
+
+public class Mperson implements Serializable {
 
     int p_id;
     String p_name;

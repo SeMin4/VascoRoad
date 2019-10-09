@@ -1,4 +1,4 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.ui.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.woo.myapplication.R;
 
 public class MpersonItemView extends LinearLayout {
 //여기서 할 것: 사진, 이름, 정보가 들어있는 하나의 큰 LinearLayout을 하나의 클래스로 취급할 수 있도록 해준다.

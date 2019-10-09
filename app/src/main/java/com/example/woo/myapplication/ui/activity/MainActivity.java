@@ -1,4 +1,4 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.ui.activity;
 
 
 import android.app.Activity;
@@ -15,10 +15,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.example.woo.myapplication.ui.view.MpersonItemView;
+import com.example.woo.myapplication.MyGlobals;
+import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.Mperson;
+import com.example.woo.myapplication.listVieww_popup;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import retrofit2.Retrofit;
@@ -39,7 +45,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        _LoginActivity.finish();
+        //_LoginActivity.finish();
         logout_btn = (Button) findViewById(R.id.logout_btn);
         myPage_btn = (Button) findViewById(R.id.my_page_btn);
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
@@ -65,6 +71,18 @@ public class MainActivity extends Activity {
         listView.setAdapter(adapter);
 
 
+        //리스트뷰를 누르면 다른 액티비티로 넘어간다(실종자 상세 정보)
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Intent intent = new Intent(getApplicationContext(), listVieww_popup.class);
+
+                Object putitem = adapter.getItem(position);
+                intent.putExtra("selecteditem", (Serializable) putitem);
+                startActivity(intent);
+            }
+        });
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -83,7 +101,7 @@ public class MainActivity extends Activity {
         myPage_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent1 = new Intent(getApplicationContext(),MyPageActivity.class);
+                Intent intent1 = new Intent(getApplicationContext(), MyPageActivity.class);
                 startActivity(intent1);
             }
         });

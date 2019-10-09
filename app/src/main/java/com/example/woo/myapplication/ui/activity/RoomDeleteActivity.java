@@ -1,4 +1,4 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.ui.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +8,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.woo.myapplication.MyGlobals;
+import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.User;
 
 import java.util.HashMap;
 

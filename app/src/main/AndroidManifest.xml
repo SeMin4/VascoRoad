@@ -2,6 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.woo.myapplication">
 
+    <!-- 위치 권한 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- 카메라 및 갤러리 권한 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera"
+        android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,30 +21,44 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".RoomDeleteActivity"
+        <activity android:name=".ui.activity.RoomDeleteActivity"
             android:screenOrientation="portrait"
             android:theme="@style/RoomDeleteTheme"></activity>
         <activity
-            android:name=".ErrorActivity"
+            android:name=".ui.activity.ErrorActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ErrorTheme" />
         <activity
-            android:name=".MyPageActivity"
+            android:name=".ui.activity.MyPageActivity"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name=".LoginErrorActivity"
+            android:name=".ui.activity.LoginErrorActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LoginErrorTheme" />
-        <activity android:name=".SignUpActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".ui.activity.SignUpActivity" />
+        <activity android:name=".ui.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+
+        <activity android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing"/>
+
+        <activity android:name=".ui.activity.RegisterNewMapActivity" android:theme="@style/AppTheme"/>
+        <activity android:name=".ui.activity.RegisterMapDetailsActivity" android:theme="@style/AppTheme"/>
+        <activity android:name=".ui.activity.MapActivity" android:theme="@style/AppTheme"/>
+        <activity android:name=".ui.activity.PopUpActivity" android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".ui.activity.UnusualRecordActivity" android:theme="@android:style/Theme.Dialog" />
+        <activity android:name=".listVieww_popup"></activity>
+        <activity android:name=".ui.activity.EmptyRoomActivity"></activity>
+
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="qir3dsnn0a"/>
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

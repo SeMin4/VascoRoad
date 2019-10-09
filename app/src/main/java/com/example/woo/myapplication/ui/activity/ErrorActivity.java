@@ -1,12 +1,15 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.ui.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.example.woo.myapplication.R;
+
 
 public class ErrorActivity extends AppCompatActivity {
     protected Button confirm_btn;

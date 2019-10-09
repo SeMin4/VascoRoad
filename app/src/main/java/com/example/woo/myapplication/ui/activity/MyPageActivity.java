@@ -1,4 +1,4 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +15,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.woo.myapplication.MyGlobals;
+import com.example.woo.myapplication.MyRoomItem;
+import com.example.woo.myapplication.MyRoomListAdapter;
+import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.User;
+
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -22,7 +28,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapter.ListBtnClickListener{
+public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapter.ListBtnClickListener {
     protected LinearLayout MyPageLayout;
     protected EditText change_password;
     protected EditText change_check_password;
@@ -170,7 +176,7 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
 
     @Override
     public  void onListBtnClick(int position){
-        Intent intent = new Intent (getApplicationContext(),RoomDeleteActivity.class);
+        Intent intent = new Intent (getApplicationContext(), RoomDeleteActivity.class);
         intent.putExtra("position", position);
         startActivity(intent);
     }

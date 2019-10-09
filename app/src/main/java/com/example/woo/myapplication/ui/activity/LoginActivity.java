@@ -1,4 +1,4 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.ui.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +14,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
+
+import com.example.woo.myapplication.MyGlobals;
+import com.example.woo.myapplication.R;
+
+import com.example.woo.myapplication.data.User;
 
 import java.util.HashMap;
 
@@ -86,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
                         MyGlobals.getInstance().setUser(user);
                         startActivity(intent);
                     } else if (data.equals("no")) {
-                        Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), LoginErrorActivity.class);
                         startActivity(intent);
                     } else if (data.equals("wrong")) {
                         Intent intent = new Intent(getApplicationContext(),LoginErrorActivity.class);
