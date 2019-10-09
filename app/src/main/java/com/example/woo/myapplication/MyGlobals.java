@@ -16,7 +16,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public class MyGlobals {
-    private User user;
+    private User user; //user 정보 저장
     private Retrofit retrofit=null;
     private RetrofitExService retrofitExService=null;
     private static MyGlobals instance = null;
@@ -81,7 +81,9 @@ public class MyGlobals {
         @GET("/change/department?") //URL
         Call<User> getChangeDepartment(@Query("u_id") String u_id, @Query("u_department") String u_department);
 
-
+        @FormUrlEncoded
+        @POST("/delete/room")
+        Call<User> postDeleteRoom(@FieldMap HashMap<String,String> param);
     }
 
 }

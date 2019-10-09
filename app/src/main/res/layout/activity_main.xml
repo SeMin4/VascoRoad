@@ -5,13 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:weightSum="13">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_gravity="end"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_weight="1">
                 <Button
                     android:id="@+id/my_page_btn"
                     android:layout_width="wrap_content"
@@ -30,69 +32,37 @@
                 </Button>
         </LinearLayout>
 
-
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:paddingTop="13dp"
-            android:text="지역 선택"
-            android:textSize="25sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="20dp"/>
-
-        <ImageView
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="10">
+                <Spinner
+                    android:paddingLeft="12dp"
+                    android:paddingRight="12dp"
+                    android:paddingTop="12dp"
+                    android:id="@+id/spinner"
+                    android:entries="@array/district"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="3"
+                    android:prompt="@string/district_prompt"/>
+                <EditText
+                    android:id="@+id/search"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="7">
+                </EditText>
+        </LinearLayout>
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="115dp"
-            android:src="@drawable/police_nukki"
-            android:foregroundGravity="center"
-            android:layout_marginBottom="20dp"
-            />
-
-        <TextView
-            android:id="@+id/tv01"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="지역을 선택하세요"
-            android:textColor="@color/colorPrimary"
-            android:paddingLeft="20dp"
-            android:textSize="22dp"
-            android:textStyle="bold"
-            android:paddingBottom="15dp"
-            />
-        <Spinner
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:paddingTop="12dp"
-            android:id="@+id/spinner"
-            android:entries="@array/district"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:prompt="@string/district_prompt"
-            >
-        </Spinner>
-        <Button
-            android:id="@+id/Button_SelectionComplete"
-            android:layout_marginTop="20dp"
-            android:layout_height="43sp"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:text="선택완료"
-            android:background="@drawable/button_background"
-            android:textColor="#FFFFFF"
-            >
-
-        </Button>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/textView"
-            />
+            android:layout_height="0dp"
+            android:layout_weight="11">
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+        </LinearLayout>
 
 </LinearLayout>
