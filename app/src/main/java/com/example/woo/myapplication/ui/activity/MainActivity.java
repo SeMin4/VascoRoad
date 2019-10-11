@@ -44,7 +44,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //_LoginActivity.finish();
+        _LoginActivity.finish();
         logout_btn = (Button) findViewById(R.id.logout_btn);
         myPage_btn = (Button) findViewById(R.id.my_page_btn);
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
