@@ -16,10 +16,19 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public class MyGlobals {
-    private User user; //user 정보 저장
+    private User user = null; //user 정보 저장
+    private ArrayList<MapInfo> maplist = null;
     private Retrofit retrofit=null;
     private RetrofitExService retrofitExService=null;
     private static MyGlobals instance = null;
+
+    public ArrayList<MapInfo> getMaplist() {
+        return maplist;
+    }
+
+    public void setMaplist(ArrayList<MapInfo> maplist) {
+        this.maplist = maplist;
+    }
 
     public User getUser() {
         return user;
@@ -84,6 +93,9 @@ public class MyGlobals {
         @FormUrlEncoded
         @POST("/delete/room")
         Call<User> postDeleteRoom(@FieldMap HashMap<String,String> param);
+
+        @GET("/maplist")
+        Call<ArrayList<MapInfo>> getMapData();
     }
 
 }

@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -48,6 +49,7 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
         user_id = (TextView)findViewById(R.id.user_id);
         user_name = (TextView)findViewById(R.id.user_name);
         my_room_list_view = (ListView)findViewById(R.id.my_room_list);
+
 
         roomListAdapter = new MyRoomListAdapter(this);
         my_room_list_view.setAdapter(roomListAdapter);

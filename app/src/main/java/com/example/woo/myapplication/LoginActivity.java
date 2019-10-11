@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
                                 System.out.println("user check : " + user.getCheck());
                                 System.out.println("user email : " + user.getU_email());
                                 System.out.println("user name : " + user.getU_name());
-                                MyGlobals.getInstance().setUser(user);
+                                MyGlobals.getInstance().setUser(user); //로그인시 유저정보 저장
                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                 startActivity(intent);
                             } else if (data.equals("no")) {

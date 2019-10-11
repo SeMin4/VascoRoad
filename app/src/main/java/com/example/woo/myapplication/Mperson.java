@@ -12,6 +12,9 @@ public class Mperson {
     String p_place_description;
     int p_photo;
 
+    public Mperson(){
+
+    }
     public Mperson(String p_name,  String p_place_string,String p_time, int p_photo, String p_place_description) {
         this.p_name = p_name;
         this.p_time = p_time;

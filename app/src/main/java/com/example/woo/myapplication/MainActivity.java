@@ -18,9 +18,13 @@ import android.widget.Filterable;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -34,7 +38,6 @@ public class MainActivity extends Activity {
     MyGlobals.RetrofitExService retroService;
     String districtName;
     EditText search;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +61,27 @@ public class MainActivity extends Activity {
             retroService = MyGlobals.getInstance().getRetrofitExService();
         }
 
-        adapter.addItem(new Mperson("Minjeong","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"하비스트 먹다가 사라짐"));
-        adapter.addItem(new Mperson("Joonhee","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"연어초밥 먹다가 사라짐"));
-        adapter.addItem(new Mperson("Semin","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"인도네시아 스쿠터 타고 사라짐"));
-        adapter.addItem(new Mperson("Seongki","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"엘렌에게 등짝맞아서 사라짐"));
+        retroService.getData().enqueue(new Callback<ArrayList<Mperson>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Mperson>> call, Response<ArrayList<Mperson>> response) {
+                System.out.println("onResponse 호출됨@@@@@@@@@");
+                ArrayList<Mperson> persons = response.body();
+                for(int i=0;i<persons.size();i++){
+                    adapter.addItem(persons.get(i));
+                }
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Mperson>> call, Throwable t) {
+                System.out.println("onFailure 호출됨@@@@@@@@@");
+                Toast.makeText(getApplicationContext(),"리스트 오류",Toast.LENGTH_SHORT).show();
+            }
+        });
+       // adapter.addItem(new Mperson("Minjeong","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"하비스트 먹다가 사라짐"));
+        //adapter.addItem(new Mperson("Joonhee","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"연어초밥 먹다가 사라짐"));
+        //adapter.addItem(new Mperson("Semin","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"인도네시아 스쿠터 타고 사라짐"));
+        //adapter.addItem(new Mperson("Seongki","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"엘렌에게 등짝맞아서 사라짐"));
         listView.setAdapter(adapter);
 
 
@@ -83,6 +103,23 @@ public class MainActivity extends Activity {
         myPage_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //지도정보 받아오기
+                if(MyGlobals.getInstance().getMaplist() == null){
+                    retroService.getMapData().enqueue(new Callback<ArrayList<MapInfo>>() {
+                        @Override
+                        public void onResponse(Call<ArrayList<MapInfo>> call, Response<ArrayList<MapInfo>> response) {
+                            System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@@");
+                            ArrayList<MapInfo> maplist = response.body();
+                            MyGlobals.getInstance().setMaplist(maplist);
+                        }
+
+                        @Override
+                        public void onFailure(Call<ArrayList<MapInfo>> call, Throwable t) {
+                            System.out.println("onFailure 호출됨@@@@@@@@@@@@@@@@@");
+                            Toast.makeText(getApplicationContext(),"맵호출 실패",Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
                 Intent intent1 = new Intent(getApplicationContext(),MyPageActivity.class);
                 startActivity(intent1);
             }
@@ -124,11 +161,14 @@ public class MainActivity extends Activity {
                 ((MpersonAdapter)listView.getAdapter()).getFilter().filter(filterText) ;
             }
         });
+
     }
+
 
     class MpersonAdapter extends BaseAdapter implements Filterable {  //adapter 정의
 
-        ArrayList<Mperson> items = new ArrayList<Mperson>();
+       ArrayList<Mperson> items = new ArrayList<Mperson>();
+       // ArrayList<Mperson> items = recv_list;
         ArrayList<Mperson> filteredItemList = items;
         Filter listFilter;
 
