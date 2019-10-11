@@ -22,7 +22,6 @@ import com.example.woo.myapplication.ui.view.MpersonItemView;
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.Mperson;
-import com.example.woo.myapplication.listVieww_popup;
 
 import java.io.Serializable;
 import java.util.ArrayList;

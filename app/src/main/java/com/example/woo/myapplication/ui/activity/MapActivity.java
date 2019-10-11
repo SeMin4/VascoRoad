@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapInfo;
-import com.example.woo.myapplication.ui.activity.PopUpActivity;
 import com.example.woo.myapplication.utils.LocationDistance;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;

@@ -47,13 +47,11 @@
         <activity android:name=".ui.activity.MainActivity"
             android:windowSoftInputMode="adjustNothing"/>
 
-        <activity android:name=".ui.activity.RegisterNewMapActivity" android:theme="@style/AppTheme"/>
         <activity android:name=".ui.activity.RegisterMapDetailsActivity" android:theme="@style/AppTheme"/>
         <activity android:name=".ui.activity.MapActivity" android:theme="@style/AppTheme"/>
         <activity android:name=".ui.activity.PopUpActivity" android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".ui.activity.UnusualRecordActivity" android:theme="@android:style/Theme.Dialog" />
-        <activity android:name=".listVieww_popup"></activity>
-        <activity android:name=".ui.activity.EmptyRoomActivity"></activity>
+        <activity android:name=".ui.activity.listVieww_popup"></activity>
 
 
         <meta-data

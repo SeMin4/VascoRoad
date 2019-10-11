@@ -1,4 +1,4 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.ui.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -14,9 +14,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.Mperson;
-import com.example.woo.myapplication.ui.activity.EmptyRoomActivity;
-import com.example.woo.myapplication.ui.activity.RegisterNewMapActivity;
 import com.naver.maps.geometry.LatLng;
 
 import java.util.ArrayList;
