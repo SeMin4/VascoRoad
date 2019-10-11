@@ -15,12 +15,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+<<<<<<< HEAD:app/src/main/java/com/example/woo/myapplication/ui/activity/MyPageActivity.java
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.MyRoomItem;
 import com.example.woo.myapplication.MyRoomListAdapter;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.User;
 
+=======
+import java.util.ArrayList;
+>>>>>>> login_sub:app/src/main/java/com/example/woo/myapplication/MyPageActivity.java
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -55,10 +59,16 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
         user_name = (TextView)findViewById(R.id.user_name);
         my_room_list_view = (ListView)findViewById(R.id.my_room_list);
 
+
         roomListAdapter = new MyRoomListAdapter(this);
         my_room_list_view.setAdapter(roomListAdapter);
+        ArrayList<MyRoomItem> mlist = MyGlobals.getInstance().getMaplist();
+        for(int i =0;i<mlist.size();i++){
+            MyRoomItem item = mlist.get(i);
+            roomListAdapter.addItem(item.getM_id(),item.getP_name(),item.getM_place_string());
+        }
 
-        roomListAdapter.addItem("천지완","대구광역시 북구");
+        /*roomListAdapter.addItem("천지완","대구광역시 북구");
         roomListAdapter.addItem("홍성기","대구광역시 동구");
         roomListAdapter.addItem("황보승우","대구광역시 서구");
         roomListAdapter.addItem("강민정","대구광역시 서구");
@@ -67,7 +77,7 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
         roomListAdapter.addItem("황보승우","대구광역시 서구");
         roomListAdapter.addItem("황보승우","대구광역시 서구");
         roomListAdapter.addItem("황보승우","대구광역시 서구");
-        roomListAdapter.addItem("황보승우","대구광역시 서구");
+        roomListAdapter.addItem("황보승우","대구광역시 서구");*/
         change_password_btn = (Button)findViewById(R.id.change_pasaword_btn);
         change_department_btn = (Button)findViewById(R.id.change_department_btn);
         retrofit = MyGlobals.getInstance().getRetrofit();
@@ -167,8 +177,8 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
                 // get item
                 MyRoomItem item = (MyRoomItem) parent.getItemAtPosition(position) ;
 
-                String titlePerson = item.getTitle_person() ;
-                String locationMap = item.getLocation_map() ;
+                String titlePerson = item.getP_name() ;
+                String locationMap = item.getM_place_string() ;
 
             }
         }) ;
