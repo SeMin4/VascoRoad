@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.woo.myapplication.MyRoomItem;
 import com.example.woo.myapplication.ui.view.MpersonItemView;
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
@@ -129,8 +130,6 @@ public class MainActivity extends Activity {
                             ArrayList<MyRoomItem> maplist = response.body();
                             System.out.println("size :" +maplist.size());
                             //MyRoomItem maplist = response.body()
-                            for(int i =0;i<maplist.size();i++)
-                                System.out.println(maplist.get(i).m_id);
                             MyGlobals.getInstance().setMaplist(maplist);
                             Intent intent1 = new Intent(getApplicationContext(),MyPageActivity.class);
                             startActivity(intent1);

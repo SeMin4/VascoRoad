@@ -15,16 +15,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-<<<<<<< HEAD:app/src/main/java/com/example/woo/myapplication/ui/activity/MyPageActivity.java
+
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.MyRoomItem;
 import com.example.woo.myapplication.MyRoomListAdapter;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.User;
 
-=======
 import java.util.ArrayList;
->>>>>>> login_sub:app/src/main/java/com/example/woo/myapplication/MyPageActivity.java
 import java.util.HashMap;
 
 import retrofit2.Call;
