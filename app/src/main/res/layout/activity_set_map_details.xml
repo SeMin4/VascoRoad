@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_title_map_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/light_purple"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/layout_scale"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/textView_title_map_details"
+            android:layout_width="wrap_content"
+            android:layout_height="53dp"
+            android:gravity="center"
+            android:text="@string/label_set_map_details"
+            android:textColor="#fff"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_scale"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_title_map_details"
+        app:layout_constraintBottom_toTopOf="@+id/map_fragment_set_details">
+
+        <TextView
+            android:id="@+id/textView_label_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/label_set_unit_scale" />
+
+        <Spinner
+            android:id="@+id/spinner_scale"
+            android:layout_width="@dimen/unit_scale_spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_marginStart="4dp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/map_fragment_set_details"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/layout_set_scale"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_scale">
+
+    </FrameLayout>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_finish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/layout_set_scale"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+        <Button
+            android:id="@+id/button_finish"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@color/light_purple"
+            android:onClick="mOnClick"
+            android:text="등록"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/layout_set_scale"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/map_fragment_set_details"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/layout_finish"
+        >
+
+        <LinearLayout
+            android:id="@+id/layout_left_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/view_from_left_to_height"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/textView_left_width"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="좌측폭"
+                android:layout_gravity="center"
+                />
+
+            <Spinner
+                android:id="@+id/spinner_left_width"
+                android:layout_width="@dimen/unit_scale_spinner_width"
+                android:layout_height="@dimen/spinner_height"
+                />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_from_left_to_height"
+            android:background="#66bdbdbd"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toEndOf="@+id/layout_left_scale"
+            app:layout_constraintEnd_toStartOf="@+id/layout_height_scale"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <LinearLayout
+            android:id="@+id/layout_height_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/view_from_left_to_height"
+            app:layout_constraintEnd_toStartOf="@id/view_from_height_to_right"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/textView_up_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="상단폭" />
+
+            <Spinner
+                android:id="@+id/spinner_up_height"
+                android:layout_width="@dimen/unit_scale_spinner_width"
+                android:layout_height="@dimen/spinner_height" />
+
+            <TextView
+                android:id="@+id/textView_down_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="아래폭" />
+
+            <Spinner
+                android:id="@+id/spinner_down_height"
+                android:layout_width="@dimen/unit_scale_spinner_width"
+                android:layout_height="@dimen/spinner_height" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view_from_height_to_right"
+            android:background="#66bdbdbd"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toEndOf="@+id/layout_height_scale"
+            app:layout_constraintEnd_toStartOf="@+id/layout_right_scale"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <LinearLayout
+            android:id="@+id/layout_right_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/view_from_height_to_right"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/textView_right_width"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="우측폭" />
+
+            <Spinner
+                android:id="@+id/spinner_right_width"
+                android:layout_width="@dimen/unit_scale_spinner_width"
+                android:layout_height="@dimen/spinner_height" />
+
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>
