@@ -105,23 +105,34 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 //지도정보 받아오기
                 if(MyGlobals.getInstance().getMaplist() == null){
-                    retroService.getMapData().enqueue(new Callback<ArrayList<MapInfo>>() {
+                    retroService.getMapData(MyGlobals.getInstance().getUser().getU_id()).enqueue(new Callback<ArrayList<MyRoomItem>>() {
                         @Override
-                        public void onResponse(Call<ArrayList<MapInfo>> call, Response<ArrayList<MapInfo>> response) {
+                        public void onResponse(Call<ArrayList<MyRoomItem>> call, Response<ArrayList<MyRoomItem>> response) {
                             System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@@");
-                            ArrayList<MapInfo> maplist = response.body();
+                            ArrayList<MyRoomItem> maplist = response.body();
+                            System.out.println("size :" +maplist.size());
+                            //MyRoomItem maplist = response.body()
+                            for(int i =0;i<maplist.size();i++)
+                                System.out.println(maplist.get(i).m_id);
                             MyGlobals.getInstance().setMaplist(maplist);
+                            Intent intent1 = new Intent(getApplicationContext(),MyPageActivity.class);
+                            startActivity(intent1);
                         }
 
                         @Override
-                        public void onFailure(Call<ArrayList<MapInfo>> call, Throwable t) {
+                        public void onFailure(Call<ArrayList<MyRoomItem>> call, Throwable t) {
                             System.out.println("onFailure 호출됨@@@@@@@@@@@@@@@@@");
                             Toast.makeText(getApplicationContext(),"맵호출 실패",Toast.LENGTH_SHORT).show();
+                            Intent intent1 = new Intent(getApplicationContext(),MyPageActivity.class);
+                            startActivity(intent1);
                         }
                     });
                 }
-                Intent intent1 = new Intent(getApplicationContext(),MyPageActivity.class);
-                startActivity(intent1);
+                else{
+                    Intent intent1 = new Intent(getApplicationContext(),MyPageActivity.class);
+                    startActivity(intent1);
+                }
+
             }
         });
 

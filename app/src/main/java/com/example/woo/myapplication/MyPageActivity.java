@@ -53,8 +53,13 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
 
         roomListAdapter = new MyRoomListAdapter(this);
         my_room_list_view.setAdapter(roomListAdapter);
+        ArrayList<MyRoomItem> mlist = MyGlobals.getInstance().getMaplist();
+        for(int i =0;i<mlist.size();i++){
+            MyRoomItem item = mlist.get(i);
+            roomListAdapter.addItem(item.getM_id(),item.getP_name(),item.getM_place_string());
+        }
 
-        roomListAdapter.addItem("천지완","대구광역시 북구");
+        /*roomListAdapter.addItem("천지완","대구광역시 북구");
         roomListAdapter.addItem("홍성기","대구광역시 동구");
         roomListAdapter.addItem("황보승우","대구광역시 서구");
         roomListAdapter.addItem("강민정","대구광역시 서구");
@@ -63,7 +68,7 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
         roomListAdapter.addItem("황보승우","대구광역시 서구");
         roomListAdapter.addItem("황보승우","대구광역시 서구");
         roomListAdapter.addItem("황보승우","대구광역시 서구");
-        roomListAdapter.addItem("황보승우","대구광역시 서구");
+        roomListAdapter.addItem("황보승우","대구광역시 서구");*/
         change_password_btn = (Button)findViewById(R.id.change_pasaword_btn);
         change_department_btn = (Button)findViewById(R.id.change_department_btn);
         retrofit = MyGlobals.getInstance().getRetrofit();
@@ -163,8 +168,8 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
                 // get item
                 MyRoomItem item = (MyRoomItem) parent.getItemAtPosition(position) ;
 
-                String titlePerson = item.getTitle_person() ;
-                String locationMap = item.getLocation_map() ;
+                String titlePerson = item.getP_name() ;
+                String locationMap = item.getM_place_string() ;
 
             }
         }) ;
