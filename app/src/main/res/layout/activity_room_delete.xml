@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="#eeeeee"
+    android:orientation="vertical"
+    tools:context=".ui.users.LoginErrorActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="@string/roomDeleteCheckTitle"
+            android:background="@color/colorAccent">
+        </TextView>
+    </LinearLayout>
+    <LinearLayout
+        android:padding="24dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textColor="#000"
+            android:textSize = "15sp"
+            android:text="@string/roomPassword"
+            android:layout_marginBottom="10dp">
+        </TextView>
+
+        <EditText
+            android:id="@+id/room_delete_password"
+            tools:ignore="LabelFor"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:inputType="textNoSuggestions|textPassword"
+            android:importantForAutofill="no"
+            android:cursorVisible="true"
+            android:hint="@string/login_password"
+            android:background="@drawable/form">
+        </EditText>
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/room_delete_confirm_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:text="@string/confirm">
+
+    </Button>
+</LinearLayout>

@@ -1,13 +1,24 @@
-package com.example.woo.myapplication;
+package com.example.woo.myapplication.ui.view;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.media.ExifInterface;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SingerItemView extends LinearLayout {
+import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.ui.activity.MainActivity;
+import com.squareup.picasso.Picasso;
+
+import java.net.URL;
+
+import static android.media.ExifInterface.ORIENTATION_NORMAL;
+import static android.media.ExifInterface.TAG_ORIENTATION;
+
+public class MpersonItemView extends LinearLayout {
 //여기서 할 것: 사진, 이름, 정보가 들어있는 하나의 큰 LinearLayout을 하나의 클래스로 취급할 수 있도록 해준다.
 
     TextView textView1; //이름
@@ -16,13 +27,13 @@ public class SingerItemView extends LinearLayout {
     ImageView imageView; // 실종자 사진
 
 
-    public SingerItemView(Context context) {
+    public MpersonItemView(Context context) {
         //생성자 1: context 객체를 파라미터로 받는다.
         super(context);
         init(context);
     }
 
-    public SingerItemView(Context context, AttributeSet attrs) {
+    public MpersonItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
@@ -59,9 +70,27 @@ public class SingerItemView extends LinearLayout {
     {
         textView3.setText(timee);
     }
-    public void setImage(int resId)
+    public void setImage(String imageBaseDirectory, String imageName)
     {
-        imageView.setImageResource(resId);
+        if(imageName == null){
+            imageView.setImageResource(R.drawable.boy);
+        }
+        else{
+            float rotation = 0;
+          
+            Picasso.with(getContext())
+                    .load(imageBaseDirectory+imageName)
+                    .fit()
+                    .rotate(90f)
+                    .into(imageView);
+
+
+
+        }
+
+
+
+
     }
 
 }

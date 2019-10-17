@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/white"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    tools:context=".ui.PopUpActivity">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/location_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_purple"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/button_finish"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/popup_location"
+            android:layout_width="wrap_content"
+            android:layout_height="53dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#fff"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+
+    <Button
+        android:id="@+id/button_finish"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:background="#00000000"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="수색 완료"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        android:onClick="mOnFindFinish"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/location_layout"
+        app:layout_constraintBottom_toTopOf="@+id/view_from_finish_to_impossible" />
+
+
+    <View
+        android:id="@+id/view_from_finish_to_impossible"
+        android:background="#66bdbdbd"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_finish"
+        app:layout_constraintBottom_toTopOf="@+id/button_impossible"/>
+
+
+
+    <Button
+        android:id="@+id/button_impossible"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:background="#00000000"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="수색 불가"
+        android:textColor="@color/impossible"
+        android:textSize="15sp"
+        android:onClick="mOnFindImpossible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_from_finish_to_impossible"
+        app:layout_constraintBottom_toTopOf="@+id/view_from_impossible_to_cancel"/>
+
+
+    <View
+        android:id="@+id/view_from_impossible_to_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_purple"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_impossible"
+        app:layout_constraintBottom_toTopOf="@+id/button_cancel"/>
+
+
+    <Button
+        android:id="@+id/button_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="53dp"
+        android:background="#00000000"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="취소"
+        android:textColor="@color/light_purple"
+        android:textSize="15sp"
+        android:onClick="mOnCancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_from_impossible_to_cancel"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</android.support.constraint.ConstraintLayout>
+
+

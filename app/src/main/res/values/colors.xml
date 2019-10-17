@@ -4,4 +4,17 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name = "colorGray">#82868c</color>
+    <color name="primary">#C83631</color>
+    <color name="primary_dark">#C83631</color>
+    <color name="accent">#C83631</color>
+    <color name="black">#000000</color>
+    <color name="gray">#BCBCC1</color>
+    <color name="gold">#BC8D49</color>
+    <color name="light_blue">#97BEC5</color>
+    <color name="light_purple">#ABA8C5</color>
+    <color name="light_gold">#BCB89D</color>
+    <color name="white">#FFFFFF</color>
+    <color name="line">#FFFFFF</color>
+    <color name="impossible">#C83631</color>
+    <color name="finish">#F5C102</color>
 </resources>

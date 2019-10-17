@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/label"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="horizontal">
+
+    <!--이름, 수색 장소, -->
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/TextView_Searchingplace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="대구 북구 대현동"
+        android:textSize="18sp"
+        android:textStyle="bold">
+    </TextView>
+
+</LinearLayout>
