@@ -363,14 +363,15 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                 mapInfo.setM_vertical(""+(Double.parseDouble(mapInfo.getM_up()) + Double.parseDouble(mapInfo.getM_down())));
                 mapInfo.setM_horizontal(""+(Double.parseDouble(mapInfo.getM_left()) + Double.parseDouble(mapInfo.getM_right())));
                 mapInfo.setM_place_string("위도: " + mapInfo.getM_center_point_latitude() +  "  경도 : "+ mapInfo.getM_place_longitude());
-                mapInfo.setM_southEast_latitude("1");
-                mapInfo.setM_southEast_longitude("1");
-                mapInfo.setM_southWest_latitude("1");
-                mapInfo.setM_southWest_longitude("1");
-                mapInfo.setM_northEast_latitude("1");
-                mapInfo.setM_northEast_longitude("1");
-                mapInfo.setM_northWest_latitude("1");
-                mapInfo.setM_northWest_longitude("1");
+                List<LatLng> vertex = district.getCoords();
+                mapInfo.setM_southEast_latitude(""+vertex.get(2).latitude);
+                mapInfo.setM_southEast_longitude(""+vertex.get(2).longitude);
+                mapInfo.setM_southWest_latitude(""+vertex.get(3).latitude);
+                mapInfo.setM_southWest_longitude(""+vertex.get(3).longitude);
+                mapInfo.setM_northEast_latitude(""+vertex.get(1).latitude);
+                mapInfo.setM_northEast_longitude(""+vertex.get(1).longitude);
+                mapInfo.setM_northWest_latitude(""+vertex.get(0).latitude);
+                mapInfo.setM_northWest_longitude(""+vertex.get(0).longitude);
 
 //                mapInfo.setM_place_latitude();
 //                mapInfo.setM_place_longitude();
