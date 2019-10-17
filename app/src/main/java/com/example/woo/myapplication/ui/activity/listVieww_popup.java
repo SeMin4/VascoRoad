@@ -168,8 +168,8 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent = new Intent(getApplicationContext(), ExistingMapActivity.class);
-                intent.putExtra("mapInfo", maplist.get(position));
+                Intent intent = new Intent(getApplicationContext(), EnterMapPWActivity.class);
+                intent.putExtra("mapInfoIndex", position);
                 startActivity(intent);
             }
         });
@@ -183,5 +183,21 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
         intent.putExtra("p_id",(CharSequence)selected.getP_id());
         intent.putExtra("m_place_string", (CharSequence)selected.getP_place_string());
         startActivityForResult(intent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if(resultCode == RESULT_OK){
+                int index = data.getIntExtra("mapInfoIndex", -1);
+                Intent intent = new Intent(this, ExistingMapActivity.class);
+                intent.putExtra("mapInfo", maplist.get(index));
+                startActivityForResult(intent, 1);
+            }
+            else if(resultCode == RESULT_CANCELED){
+                //아무것도 안해도 될듯?
+            }
+        }
     }
 }
