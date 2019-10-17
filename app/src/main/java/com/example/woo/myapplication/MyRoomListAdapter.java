@@ -14,7 +14,7 @@ public class MyRoomListAdapter extends BaseAdapter implements View.OnClickListen
     public interface ListBtnClickListener{
         void onListBtnClick(int position);
     }
-    protected ArrayList<MyRoomItem> myRoomList = new ArrayList<MyRoomItem>();
+    public ArrayList<MyRoomItem> myRoomList = new ArrayList<MyRoomItem>();
     private ListBtnClickListener listBtnClickListener;
 
     public MyRoomListAdapter(ListBtnClickListener listBtnClickListener){

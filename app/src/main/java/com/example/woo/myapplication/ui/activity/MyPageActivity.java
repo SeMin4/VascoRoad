@@ -44,6 +44,7 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
     private Retrofit retrofit;
     private MyGlobals.RetrofitExService retrofitExService;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,6 +187,12 @@ public class MyPageActivity extends AppCompatActivity implements MyRoomListAdapt
     public  void onListBtnClick(int position){
         Intent intent = new Intent (getApplicationContext(), RoomDeleteActivity.class);
         intent.putExtra("position", position);
+        intent.putExtra("mapId",roomListAdapter.myRoomList.get(position).getM_id());
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 }
