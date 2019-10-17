@@ -1,5 +1,6 @@
 package com.example.woo.myapplication;
 
+import com.example.woo.myapplication.data.MapDetail;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.data.Mperson;
 import com.example.woo.myapplication.data.User;
@@ -108,9 +109,14 @@ public class MyGlobals {
         @POST("/map/make")
         Call<OverlapExamineData> postMapMake(@FieldMap HashMap<String,String> param);
 
+
         @FormUrlEncoded
         @POST("/map/attendance")
         Call<OverlapExamineData> postMapAttendance(@FieldMap HashMap<String,String> param);
+
+        @GET("/mapdetail?")
+        Call<ArrayList<MapDetail>> getMapDetail(@Query("m_id") String m_id);
+
     }
 
 }

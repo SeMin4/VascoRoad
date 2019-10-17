@@ -62,7 +62,14 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private int COLOR_LINE_BLACK;
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
-    private Socket mSocket;
+    private Socket mSocket = null;
+    public int color_finish;
+    public String received_districtNum;
+    public String received_index;
+    public String received_districtNum2;
+    public String received_index2;
+    public String received_content2;
+    public int color_impossible;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,13 +88,15 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
 
         try{
-            mSocket = IO.socket("http://13.125.95.139:9000");
-            mSocket.connect();
-            //이벤트 등록
-            mSocket.on(Socket.EVENT_CONNECT,onConnect); //방 접속시;
-            mSocket.on("attendRoom",attendRoom);// 방접속시 user 아이디 보내기
-            mSocket.on("complete",complete);
-            mSocket.on("not_complete",not_complete);
+            if(mSocket == null) {
+                mSocket = IO.socket("http://13.125.95.139:9000");
+                mSocket.connect();
+                //이벤트 등록
+                mSocket.on(Socket.EVENT_CONNECT, onConnect); //방 접속시;
+                mSocket.on("attendRoom", attendRoom);// 방접속시 user 아이디 보내기
+                mSocket.on("complete", complete);
+                mSocket.on("not_complete", not_complete);
+            }
         }catch(URISyntaxException e){
             e.printStackTrace();
         }
@@ -160,14 +169,45 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private Emitter.Listener complete = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
+            try {
+                JSONObject receivedData = (JSONObject) args[0];
+                received_districtNum = receivedData.getString("districtNum");
+                received_index = receivedData.getString("index");
+                System.out.println("district : " + receivedData.getString("districtNum") + "@@@@@@@@@@@@@@@");
+                System.out.println("index : " + receivedData.getString("index") + "@@@@@@@@@@@@@");
+                System.out.println("실행됨@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        total_districts.get(Integer.parseInt(received_districtNum)).get(Integer.parseInt(received_index)).setColor(ColorUtils.setAlphaComponent(color_finish, 100));
+                    }
+                });
 
+
+            } catch (JSONException e) {
+                System.out.println("complete JsonException");
+                e.printStackTrace();
+            }
         }
     };
 
     private Emitter.Listener not_complete = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
-
+            try{
+                JSONObject receivedData = (JSONObject)args[0];
+                received_districtNum2 = receivedData.getString("districtNum");
+                received_index2 = receivedData.getString("index");
+                received_content2 = receivedData.getString("content");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        total_districts.get(Integer.parseInt(received_districtNum2)).get(Integer.parseInt(received_index2)).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
+                    }
+                });
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
         }
     };
 
@@ -175,6 +215,21 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     protected void onDestroy() {
         super.onDestroy();
         locationSource = null;
+        System.out.println("onDestroy@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+       /* try{
+            JSONObject data = new JSONObject();
+            data.put("u_id",MyGlobals.getInstance().getUser().getU_id());
+            mSocket.emit("disconnect",data);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }*/
+        mSocket.disconnect();
+        mSocket.off("attendRoom",attendRoom);
+        mSocket.off("complete",complete);
+        mSocket.off("not_complete",not_complete);
+        mSocket.close();
+        mSocket = null;
+
     }
 
     @Override
@@ -625,8 +680,8 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                         index = data.getIntExtra("location", -1);
                         System.out.println("districtNum : "+districtNum+"@@@@@@@@@@@@@@@@@@@" );
                         System.out.println("index : "+index+"@@@@@@@@@@@@@@@@@@@" );
-                        int color_finish = getResources().getColor(R.color.finish);
-                        total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_finish, 100));
+                        color_finish = getResources().getColor(R.color.finish);
+                        //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_finish, 100));
 
                         try {
                             JSONObject complete_data = new JSONObject();
@@ -648,8 +703,20 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                         districtNum = data.getIntExtra("district", -1);
                         index = data.getIntExtra("location", -1);
                         String imagePath = data.getStringExtra("imagePath");
-                        int color_impossible = getResources().getColor(R.color.impossible);
-                        total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
+                         color_impossible = getResources().getColor(R.color.impossible);
+                        //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
+                        try{
+                            JSONObject non_complete_data = new JSONObject();
+                            String area_districtNum = ""+districtNum;
+                            String area_index = ""+index;
+                            non_complete_data.put("mid", mapInfo.getM_id());
+                            non_complete_data.put("districtNum",area_districtNum);
+                            non_complete_data.put("index",area_index);
+                            non_complete_data.put("content",content);
+                            mSocket.emit("not_complete",non_complete_data);
+                        }catch (JSONException e){
+                            e.printStackTrace();
+                        }
                         break;
                     case "Close Popup":
                         break;
