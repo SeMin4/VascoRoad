@@ -107,6 +107,10 @@ public class MyGlobals {
         @FormUrlEncoded
         @POST("/map/make")
         Call<OverlapExamineData> postMapMake(@FieldMap HashMap<String,String> param);
+
+        @FormUrlEncoded
+        @POST("/map/attendance")
+        Call<OverlapExamineData> postMapAttendance(@FieldMap HashMap<String,String> param);
     }
 
 }

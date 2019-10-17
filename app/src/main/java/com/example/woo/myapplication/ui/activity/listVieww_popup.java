@@ -169,7 +169,8 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent intent = new Intent(getApplicationContext(), EnterMapPWActivity.class);
-                intent.putExtra("mapInfoIndex", position);
+                intent.putExtra("mapInfo", position);
+                intent.putExtra("mapId", maplist.get(position).getM_id());
                 startActivity(intent);
             }
         });
