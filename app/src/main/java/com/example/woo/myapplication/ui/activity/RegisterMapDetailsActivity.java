@@ -363,10 +363,15 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                 mapInfo.setM_vertical(""+(Double.parseDouble(mapInfo.getM_up()) + Double.parseDouble(mapInfo.getM_down())));
                 mapInfo.setM_horizontal(""+(Double.parseDouble(mapInfo.getM_left()) + Double.parseDouble(mapInfo.getM_right())));
                 mapInfo.setM_place_string("위도: " + mapInfo.getM_center_point_latitude() +  "  경도 : "+ mapInfo.getM_place_longitude());
-                mapInfo.setM_southEast("1");
-                mapInfo.setM_southWest("1");
-                mapInfo.setM_northWest("1");
-                mapInfo.setM_northEast("1");
+                mapInfo.setM_southEast_latitude("1");
+                mapInfo.setM_southEast_longitude("1");
+                mapInfo.setM_southWest_latitude("1");
+                mapInfo.setM_southWest_longitude("1");
+                mapInfo.setM_northEast_latitude("1");
+                mapInfo.setM_northEast_longitude("1");
+                mapInfo.setM_northWest_latitude("1");
+                mapInfo.setM_northWest_longitude("1");
+
 //                mapInfo.setM_place_latitude();
 //                mapInfo.setM_place_longitude();
 //                mapInfo.setM_center_point_latitude();
@@ -388,6 +393,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                 input.put("mapOwner",mapInfo.getM_owner());
                 input.put("mapStatus",mapInfo.getM_status());
                 input.put("mapHorizontal",mapInfo.getM_horizontal());
+                input.put("mapVertical",mapInfo.getM_vertical());
                 input.put("mapPlacestring",mapInfo.getM_place_string());
                 input.put("mapPlaceLatitude",mapInfo.getM_place_latitude());
                 input.put("mapPlaceLongitude",mapInfo.getM_place_longitude());
@@ -399,10 +405,15 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                 input.put("mapRotation",mapInfo.getM_rotation());
                 input.put("mapCenterLatitude",mapInfo.getM_center_point_latitude());
                 input.put("mapCenterLongitude",mapInfo.getM_center_point_longitude());
-                input.put("mapNorthWest",mapInfo.getM_northWest());
-                input.put("mapNorthEast",mapInfo.getM_northEast());
-                input.put("mapSouthWest",mapInfo.getM_southWest());
-                input.put("mapSouthEast",mapInfo.getM_southEast());
+                input.put("mapNorthWestLatitude",mapInfo.getM_northWest_latitude());
+                input.put("mapNorthWestLongitude",mapInfo.getM_northWest_longitude());
+                input.put("mapNorthEastLatitude",mapInfo.getM_northEast_latitude());
+                input.put("mapNorthEastLongitude",mapInfo.getM_northEast_longitude());
+                input.put("mapSouthWestLatitude",mapInfo.getM_southWest_latitude());
+                input.put("mapSouthWestLongitude",mapInfo.getM_southWest_longitude());
+                input.put("mapSouthEastLatitude",mapInfo.getM_southEast_latitude());
+                input.put("mapSouthEastLongitude",mapInfo.getM_southEast_longitude());
+
                 retrofitExService.postMapMake(input).enqueue(new Callback<OverlapExamineData>() {
                     @Override
                     public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
