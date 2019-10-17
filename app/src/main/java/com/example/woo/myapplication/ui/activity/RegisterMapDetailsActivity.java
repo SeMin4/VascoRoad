@@ -1,5 +1,6 @@
 package com.example.woo.myapplication.ui.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PointF;
@@ -39,6 +40,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class  RegisterMapDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
+    public static Activity registerMapDetailsActivity;
     private MapInfo mapInfo;
     private Marker missingPoint;
     private LatLng centerCoord;
@@ -50,7 +52,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_map_details);
-
+        registerMapDetailsActivity = RegisterMapDetailsActivity.this;
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);

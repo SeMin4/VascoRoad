@@ -65,8 +65,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_map);
+
+        RegisterNewMapActivity registerNewMapActivity =
+                (RegisterNewMapActivity) RegisterNewMapActivity.registerNewMapActivity;
+        registerNewMapActivity.finish();
+        RegisterMapDetailsActivity registerMapDetailsActivity =
+                (RegisterMapDetailsActivity) RegisterMapDetailsActivity.registerMapDetailsActivity;
+        registerMapDetailsActivity.finish();
 
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());

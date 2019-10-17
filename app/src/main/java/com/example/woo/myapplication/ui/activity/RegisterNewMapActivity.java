@@ -1,5 +1,6 @@
 package com.example.woo.myapplication.ui.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,6 +31,7 @@ import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.util.MarkerIcons;
 
 public class RegisterNewMapActivity extends AppCompatActivity implements OnMapReadyCallback {
+    public static Activity registerNewMapActivity;
     private InfoWindow infoWindow;
     private LatLng missingCoord;
     private Marker missingPoint;
@@ -42,6 +44,9 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_coord_center);
+
+        registerNewMapActivity = RegisterNewMapActivity.this;
+
         textView_bearing = findViewById(R.id.textView_bearing_value);
 
         ActionBar actionBar = getSupportActionBar();
