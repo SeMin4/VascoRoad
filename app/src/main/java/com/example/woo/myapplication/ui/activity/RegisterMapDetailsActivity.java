@@ -75,11 +75,11 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
 
 
         mapInfo = new MapInfo();
-        mapInfo.setMissing_lat(missingCoord.latitude);
-        mapInfo.setMissing_lng(missingCoord.longitude);
-        mapInfo.setCenter_lat(centerCoord.latitude);
-        mapInfo.setCenter_lng(centerCoord.longitude);
-        mapInfo.setBearing(intent.getDoubleExtra("bearing", 0));
+        mapInfo.setM_place_latitude(missingCoord.latitude+"");
+        mapInfo.setM_place_longitude(missingCoord.longitude+"");
+        mapInfo.setM_center_point_latitude(""+centerCoord.latitude);
+        mapInfo.setM_center_point_longitude(""+centerCoord.longitude);
+        mapInfo.setM_rotation(""+intent.getDoubleExtra("bearing", 0));
 
         // 실종지점 마커 생성
         missingPoint = new Marker();
@@ -110,7 +110,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
         missingPoint.setMap(naverMap);
 
         final CameraUpdateParams params = new CameraUpdateParams();
-        params.rotateBy(mapInfo.getBearing());
+        params.rotateBy(Double.parseDouble(mapInfo.getM_rotation()));
         params.scrollTo(centerCoord);
         naverMap.moveCamera(CameraUpdate.withParams(params));
 
@@ -132,7 +132,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                 String temp = scaleType.toString();
                 temp = temp.substring(0, temp.length()-1);
                 scale = Integer.parseInt(temp);
-                mapInfo.setUnit_scale(scale);
+                mapInfo.setM_unit_scale(scale+"");
 
                 ArrayList<String> sizeList = createSpinnerList(scale);
                 ArrayAdapter<String> sizeAdapter;
@@ -148,10 +148,10 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         CharSequence upScale = sizeAdapter.getItem(position);
                         String temp = upScale.toString();
                         int upHeight = Integer.parseInt(temp);
-                        mapInfo.setUp_height(upHeight);
+                        mapInfo.setM_up(""+upHeight);
 
-                        double lat_offset = LocationDistance.LatitudeInDifference(upHeight * Math.cos(LocationDistance.deg2rad(mapInfo.getBearing())));
-                        double lng_offset = LocationDistance.LongitudeInDifference(centerCoord.latitude, upHeight * Math.sin(LocationDistance.deg2rad(mapInfo.getBearing())));
+                        double lat_offset = LocationDistance.LatitudeInDifference(upHeight * Math.cos(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
+                        double lng_offset = LocationDistance.LongitudeInDifference(centerCoord.latitude, upHeight * Math.sin(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
                         LatLng upPoint =  new LatLng(centerCoord.latitude + lat_offset, centerCoord.longitude+lng_offset);
                         tempPoints[0] = upPoint;
                         upArrow.setMap(null);
@@ -172,7 +172,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                                     .fitBounds(district.getBounds())
                             );
                             naverMap.moveCamera(CameraUpdate
-                                    .withParams(new CameraUpdateParams().rotateTo(mapInfo.getBearing()))
+                                    .withParams(new CameraUpdateParams().rotateTo(Double.parseDouble(mapInfo.getM_rotation())))
                             );
 
 
@@ -196,10 +196,10 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         CharSequence downScale = sizeAdapter.getItem(position);
                         String temp = downScale.toString();
                         int downHeight = Integer.parseInt(temp);
-                        mapInfo.setDown_height(downHeight);
+                        mapInfo.setM_down(""+downHeight);
 
-                        double lat_offset = LocationDistance.LatitudeInDifference(downHeight * Math.cos(LocationDistance.deg2rad(mapInfo.getBearing())));
-                        double lng_offset = LocationDistance.LongitudeInDifference(centerCoord.latitude, downHeight * Math.sin(LocationDistance.deg2rad(mapInfo.getBearing())));
+                        double lat_offset = LocationDistance.LatitudeInDifference(downHeight * Math.cos(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
+                        double lng_offset = LocationDistance.LongitudeInDifference(centerCoord.latitude, downHeight * Math.sin(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
                         LatLng downPoint = new LatLng(centerCoord.latitude - lat_offset, centerCoord.longitude-lng_offset);
                         tempPoints[1] = downPoint;
 
@@ -219,7 +219,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                                     .fitBounds(district.getBounds())
                             );
                             naverMap.moveCamera(CameraUpdate
-                                    .withParams(new CameraUpdateParams().rotateTo(mapInfo.getBearing()))
+                                    .withParams(new CameraUpdateParams().rotateTo(Double.parseDouble(mapInfo.getM_rotation())))
                             );
 
                         }
@@ -241,10 +241,10 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         CharSequence leftScale = sizeAdapter.getItem(position);
                         String temp = leftScale.toString();
                         int leftWidth = Integer.parseInt(temp);
-                        mapInfo.setLeft_width(leftWidth);
+                        mapInfo.setM_left(""+leftWidth);
 
-                        double lat_offset = LocationDistance.LatitudeInDifference(leftWidth * Math.sin(LocationDistance.deg2rad(mapInfo.getBearing())));
-                        double lng_offset = LocationDistance.LongitudeInDifference(centerCoord.latitude, leftWidth * Math.cos(LocationDistance.deg2rad(mapInfo.getBearing())));
+                        double lat_offset = LocationDistance.LatitudeInDifference(leftWidth * Math.sin(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
+                        double lng_offset = LocationDistance.LongitudeInDifference(centerCoord.latitude, leftWidth * Math.cos(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
                         LatLng leftPoint = new LatLng(centerCoord.latitude + lat_offset, centerCoord.longitude - lng_offset);
                         tempPoints[2] = leftPoint;
 
@@ -264,7 +264,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                                     .fitBounds(district.getBounds())
                             );
                             naverMap.moveCamera(CameraUpdate
-                                    .withParams(new CameraUpdateParams().rotateTo(mapInfo.getBearing()))
+                                    .withParams(new CameraUpdateParams().rotateTo(Double.parseDouble(mapInfo.getM_rotation())))
                             );
 
 
@@ -285,10 +285,10 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         CharSequence rightScale = sizeAdapter.getItem(position);
                         String temp = rightScale.toString();
                         int rightWidth = Integer.parseInt(temp);
-                        mapInfo.setRight_width(rightWidth);
+                        mapInfo.setM_right(""+rightWidth);
 
-                        double lat_offset = LocationDistance.LatitudeInDifference(rightWidth * Math.sin(LocationDistance.deg2rad(mapInfo.getBearing())));
-                        double lng_offset = LocationDistance.LongitudeInDifference(centerCoord.latitude, rightWidth * Math.cos(LocationDistance.deg2rad(mapInfo.getBearing())));
+                        double lat_offset = LocationDistance.LatitudeInDifference(rightWidth * Math.sin(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
+                        double lng_offset = LocationDistance.LongitudeInDifference(centerCoord.latitude, rightWidth * Math.cos(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
                         LatLng rightPoint = new LatLng(centerCoord.latitude - lat_offset, centerCoord.longitude + lng_offset);
                         tempPoints[3] = rightPoint;
 
@@ -308,7 +308,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                                     .fitBounds(district.getBounds())
                             );
                             naverMap.moveCamera(CameraUpdate
-                                    .withParams(new CameraUpdateParams().rotateTo(mapInfo.getBearing()))
+                                    .withParams(new CameraUpdateParams().rotateTo(Double.parseDouble(mapInfo.getM_rotation())))
                             );
 
 

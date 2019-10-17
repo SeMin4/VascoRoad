@@ -84,10 +84,6 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(),"리스트 오류",Toast.LENGTH_SHORT).show();
             }
         });
-       // adapter.addItem(new Mperson("Minjeong","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"하비스트 먹다가 사라짐"));
-        //adapter.addItem(new Mperson("Joonhee","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"연어초밥 먹다가 사라짐"));
-        //adapter.addItem(new Mperson("Semin","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"인도네시아 스쿠터 타고 사라짐"));
-        //adapter.addItem(new Mperson("Seongki","대구광역시 달서구 진천동","2019년 4월 19일 13시경",R.drawable.boy,"엘렌에게 등짝맞아서 사라짐"));
         listView.setAdapter(adapter);
 
 
@@ -96,7 +92,6 @@ public class MainActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent intent = new Intent(getApplicationContext(), listVieww_popup.class);
-
                 Object putitem = adapter.getItem(position);
                 intent.putExtra("selecteditem", (Serializable) putitem);
                 startActivity(intent);
@@ -123,7 +118,7 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 //지도정보 받아오기
                 if(MyGlobals.getInstance().getMaplist() == null){
-                    retroService.getMapData(MyGlobals.getInstance().getUser().getU_id()).enqueue(new Callback<ArrayList<MyRoomItem>>() {
+                    retroService.getMypageMapData(MyGlobals.getInstance().getUser().getU_id()).enqueue(new Callback<ArrayList<MyRoomItem>>() {
                         @Override
                         public void onResponse(Call<ArrayList<MyRoomItem>> call, Response<ArrayList<MyRoomItem>> response) {
                             System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@@");

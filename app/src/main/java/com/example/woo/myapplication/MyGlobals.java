@@ -1,5 +1,6 @@
 package com.example.woo.myapplication;
 
+import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.data.Mperson;
 import com.example.woo.myapplication.data.User;
 
@@ -97,8 +98,11 @@ public class MyGlobals {
         @POST("/delete/room")
         Call<User> postDeleteRoom(@FieldMap HashMap<String,String> param);
 
-        @GET("/maplist?")
-        Call<ArrayList<MyRoomItem>> getMapData(@Query("u_id") String m_id);
+        @GET("mypage/maplist?")
+        Call<ArrayList<MyRoomItem>> getMypageMapData(@Query("u_id") String m_id);
+
+        @GET("person/maplist?")
+        Call<ArrayList<MapInfo>> getPersonMapData(@Query("p_id") String p_id);
     }
 
 }

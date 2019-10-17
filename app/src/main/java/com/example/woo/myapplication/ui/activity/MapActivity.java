@@ -129,10 +129,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
 
         // 지도 중심 설정
-        LatLng center_coord = new LatLng(mapInfo.getCenter_lat(), mapInfo.getCenter_lng());
+        LatLng center_coord = new LatLng(Double.parseDouble(mapInfo.getM_center_point_latitude()), Double.parseDouble(mapInfo.getM_center_point_longitude()));
         CameraUpdateParams params = new CameraUpdateParams();
         params.scrollTo(center_coord);
-        params.rotateBy(mapInfo.getBearing()); // 90(왼쪽으로 90도임),
+        params.rotateBy(Double.parseDouble(mapInfo.getM_rotation())); // 90(왼쪽으로 90도임),
         naverMap.moveCamera(CameraUpdate.withParams(params).animate(CameraAnimation.Easing));
 
         // 맵이 최대로 보이도록 확대
@@ -140,7 +140,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // 실종지점 등록
         Marker missingPoint = new Marker();
-        LatLng missing_coord = new LatLng(mapInfo.getMissing_lat(), mapInfo.getMissing_lng());
+        LatLng missing_coord = new LatLng(Double.parseDouble(mapInfo.getM_place_latitude()),Double.parseDouble(mapInfo.getM_place_longitude()));
         missingPoint.setPosition(missing_coord);
         missingPoint.setWidth(50);
         missingPoint.setHeight(50);
@@ -157,7 +157,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //        }
 
         /* 디버깅 중 */
-        ArrayList<PolygonOverlay> district = createDistrict(center_coord, mapInfo.getUnit_scale());
+        ArrayList<PolygonOverlay> district = createDistrict(center_coord, Double.parseDouble(mapInfo.getM_unit_scale()));
         for(PolygonOverlay p:district){
             for(LatLng l:p.getCoords()){
                 Marker m = new Marker();
@@ -230,15 +230,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // 중앙점 찾기
         double offset = unit*3;
-        double up_dist = (mapInfo.getUp_height() - offset/2) / offset;
+        double up_dist = (Double.parseDouble(mapInfo.getM_up()) - offset/2) / offset;
         double start_lat = center.latitude
                 + LocationDistance.LatitudeInDifference(offset*(up_dist+1));
-        double left_dist = (mapInfo.getLeft_width() - offset/2) / offset;
+        double left_dist = (Double.parseDouble(mapInfo.getM_left()) - offset/2) / offset;
         double start_lng = center.longitude
                 - LocationDistance.LongitudeInDifference(start_lat, offset*left_dist);
 
-        double row = (mapInfo.getLeft_width() + mapInfo.getRight_width()) / offset;
-        double col = (mapInfo.getUp_height() + mapInfo.getDown_height()) / offset;
+        double row = (Double.parseDouble(mapInfo.getM_left()) + Double.parseDouble(mapInfo.getM_right())) / offset;
+        double col = (Double.parseDouble(mapInfo.getM_up()) + Double.parseDouble(mapInfo.getM_down())) / offset;
 
         ArrayList<Marker> markers = new ArrayList<>();
         for(int i = 1; i <= (int) row; i++){
@@ -268,7 +268,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 double temp_lng = center.longitude + offsets_y[j];
                 LatLng temp = new LatLng(temp_lat, temp_lng);
                 // 실험 중
-                double angle_rad = LocationDistance.angleByPoint(center, temp) + LocationDistance.deg2rad(mapInfo.getBearing());
+                double angle_rad = LocationDistance.angleByPoint(center, temp) + LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()));
                 // 실험 끝
                 double k = LocationDistance.distance(center, temp, "meter");
                 double offset_lat = LocationDistance.LatitudeInDifference(k* Math.cos(angle_rad));

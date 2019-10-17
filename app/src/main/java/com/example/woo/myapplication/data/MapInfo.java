@@ -3,238 +3,168 @@ package com.example.woo.myapplication.data;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.naver.maps.geometry.LatLng;
 
-public class MapInfo implements Parcelable {
-    private final int STATUS_BEFORE_SEARCHING = 100;
-    private final int STATUS_SEARCHING = 101;
-    private final int STATUS_FINISH_SEARCHING = 102;
-    private int m_id;
-    private int p_id;
-    private String password;    // 보안작업 필요
-    private int owner_id;
-    private int status;     // 현재 수색작업 현황(시작전/수색중/수색완료...등등)
-    private int horizontal;
-    private int vertical;
-    private double bearing;   // 지도 기울기
-    private String missing_address;    // 실종위치 주소
-    private double missing_lat;
-    private double missing_lng;
-    private double center_lat;    // 지도 중심점
-    private double center_lng;
-    private double up_height;
-    private double down_height;
-    private double left_width;
-    private double right_width;
-    private double unit_scale;
+import java.io.Serializable;
 
+public class MapInfo implements Serializable {
 
-    public MapInfo(){
-        this.m_id = -1;
-        this.p_id = -1;
-        this.password = "0000";
-        this.owner_id = -1;
-        this.status = STATUS_BEFORE_SEARCHING;
-        this.horizontal = -1;
-        this.vertical = -1;
-        this.bearing = 0;
-        this.missing_address = "대구광역시 북구 대학로 80 공대 9호관 521호 세미나실";
-    }
+    private String m_id;
+    private String p_id;
+    private String m_owner;
+    private String m_status;     // 현재 수색작업 현황(시작전/수색중/수색완료...등등)
+    private String m_horizontal;
+    private String m_vertical;
+    private String m_rotation;   // 지도 기울기
+    private String m_place_string;    // 실종위치 주소
+    private String m_place_latitude;
+    private String m_place_longitude;
+    private String m_center_point_latitude;    // 지도 중심점
+    private String m_center_point_longitude;
+    private String m_up;
+    private String m_down;
+    private String m_left;
+    private String m_right;
+    private String m_unit_scale;
 
-    public MapInfo(Parcel parcel){
-        this.m_id = parcel.readInt();
-        this.p_id = parcel.readInt();
-        this.password = parcel.readString();
-        this.owner_id = parcel.readInt();
-        this.status = parcel.readInt();
-        this.horizontal = parcel.readInt();
-        this.vertical = parcel.readInt();
-        this.bearing = parcel.readDouble();
-        this.missing_address = parcel.readString();
-        this.missing_lat = parcel.readDouble();
-        this.missing_lng = parcel.readDouble();
-        this.center_lat = parcel.readDouble();
-        this.center_lng = parcel.readDouble();
-        this.up_height = parcel.readDouble();
-        this.down_height = parcel.readDouble();
-        this.left_width = parcel.readDouble();
-        this.right_width = parcel.readDouble();
-        this.unit_scale = parcel.readDouble();
-    }
-    public MapInfo(int _pid,
-                   int owner_id,
-                   int horizontal,
-                   int vertical,
-                   double bearing,
-                   String missing_address,
-                   LatLng missing_coord,
-                   LatLng center_coord,
-                   double up_height,
-                   double down_height,
-                   double left_width,
-                   double right_width,
-                   double unit_scale
-                    ){
-
-        this.p_id = _pid;
-        this.owner_id = owner_id;
-        this.status = STATUS_BEFORE_SEARCHING;
-        this.horizontal = horizontal;
-        this.vertical = vertical;
-        this.bearing = bearing;
-        this.missing_address = missing_address;
-        this.missing_lat = missing_coord.latitude;
-        this.missing_lng = missing_coord.longitude;
-        this.center_lat = center_coord.latitude;
-        this.center_lng = center_coord.longitude;
-        this.up_height = up_height;
-        this.down_height = down_height;
-        this.left_width = left_width;
-        this.right_width = right_width;
-        this.unit_scale = unit_scale;
-    }
-
-    public int getM_id() {
+    public String getM_id() {
         return m_id;
     }
 
-    public void setM_id(int m_id) {
+    public void setM_id(String m_id) {
         this.m_id = m_id;
     }
 
-    public int getP_id() {
+    public String getP_id() {
         return p_id;
     }
 
-    public void setP_id(int p_id) {
+    public void setP_id(String p_id) {
         this.p_id = p_id;
     }
 
-    public String getPassword() {
-        return password;
+    public String getM_owner() {
+        return m_owner;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setM_owner(String m_owner) {
+        this.m_owner = m_owner;
     }
 
-    public int getOwner_id() {
-        return owner_id;
+    public String getM_status() {
+        return m_status;
     }
 
-    public void setOwner_id(int owner_id) {
-        this.owner_id = owner_id;
+    public void setM_status(String m_status) {
+        this.m_status = m_status;
     }
 
-    public int getStatus() {
-        return status;
+    public String getM_horizontal() {
+        return m_horizontal;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setM_horizontal(String m_horizontal) {
+        this.m_horizontal = m_horizontal;
     }
 
-    public int getHorizontal() {
-        return horizontal;
+    public String getM_vertical() {
+        return m_vertical;
     }
 
-    public void setHorizontal(int horizontal) {
-        this.horizontal = horizontal;
+    public void setM_vertical(String m_vertical) {
+        this.m_vertical = m_vertical;
     }
 
-    public int getVertical() {
-        return vertical;
+    public String getM_rotation() {
+        return m_rotation;
     }
 
-    public void setVertical(int vertical) {
-        this.vertical = vertical;
+    public void setM_rotation(String m_rotation) {
+        this.m_rotation = m_rotation;
     }
 
-    public double getBearing(){ return bearing; }
-
-    public void setBearing(double bearing){ this.bearing = bearing; }
-
-    public String getMissing_address() {
-        return missing_address;
+    public String getM_place_string() {
+        return m_place_string;
     }
 
-    public void setMissing_address(String missing_address) {
-        this.missing_address = missing_address;
+    public void setM_place_string(String m_place_string) {
+        this.m_place_string = m_place_string;
     }
 
-    public double getMissing_lat() {
-        return missing_lat;
+    public String getM_place_latitude() {
+        return m_place_latitude;
     }
 
-    public void setMissing_lat(double missing_lat) {
-        this.missing_lat = missing_lat;
+    public void setM_place_latitude(String m_place_latitude) {
+        this.m_place_latitude = m_place_latitude;
     }
 
-    public double getMissing_lng() {
-        return missing_lng;
+    public String getM_place_longitude() {
+        return m_place_longitude;
     }
 
-    public void setMissing_lng(double missing_lng) {
-        this.missing_lng = missing_lng;
+    public void setM_place_longitude(String m_place_longitude) {
+        this.m_place_longitude = m_place_longitude;
     }
 
-    public double getCenter_lat() {
-        return center_lat;
+    public String getM_center_point_latitude() {
+        return m_center_point_latitude;
     }
 
-    public void setCenter_lat(double center_lat) {
-        this.center_lat = center_lat;
+    public void setM_center_point_latitude(String m_center_point_latitude) {
+        this.m_center_point_latitude = m_center_point_latitude;
     }
 
-    public double getCenter_lng() {
-        return center_lng;
+    public String getM_center_point_longitude() {
+        return m_center_point_longitude;
     }
 
-    public void setCenter_lng(double center_lng) {
-        this.center_lng = center_lng;
+    public void setM_center_point_longitude(String m_center_point_longitude) {
+        this.m_center_point_longitude = m_center_point_longitude;
     }
 
-    public double getUp_height() {
-        return up_height;
+    public String getM_up() {
+        return m_up;
     }
 
-    public void setUp_height(double up_height) {
-        this.up_height = up_height;
+    public void setM_up(String m_up) {
+        this.m_up = m_up;
     }
 
-    public double getDown_height() {
-        return down_height;
+    public String getM_down() {
+        return m_down;
     }
 
-    public void setDown_height(double down_height) {
-        this.down_height = down_height;
+    public void setM_down(String m_down) {
+        this.m_down = m_down;
     }
 
-    public double getLeft_width() {
-        return left_width;
+    public String getM_left() {
+        return m_left;
     }
 
-    public void setLeft_width(double left_width) {
-        this.left_width = left_width;
+    public void setM_left(String m_left) {
+        this.m_left = m_left;
     }
 
-    public double getRight_width() {
-        return right_width;
+    public String getM_right() {
+        return m_right;
     }
 
-    public void setRight_width(double right_width) {
-        this.right_width = right_width;
+    public void setM_right(String m_right) {
+        this.m_right = m_right;
     }
 
-    public double getUnit_scale() {
-        return unit_scale;
+    public String getM_unit_scale() {
+        return m_unit_scale;
     }
 
-    public void setUnit_scale(double unit_scale) {
-        this.unit_scale = unit_scale;
+    public void setM_unit_scale(String m_unit_scale) {
+        this.m_unit_scale = m_unit_scale;
     }
+}
 
-    public static final Parcelable.Creator<MapInfo> CREATOR = new Parcelable.Creator<MapInfo>(){
+
+   /* public static final Parcelable.Creator<MapInfo> CREATOR = new Parcelable.Creator<MapInfo>(){
 
         @Override
         public MapInfo createFromParcel(Parcel source) {
@@ -272,5 +202,5 @@ public class MapInfo implements Parcelable {
         dest.writeDouble(this.left_width);
         dest.writeDouble(this.right_width);
         dest.writeDouble(this.unit_scale);
-    }
-}
+    }*/
+
