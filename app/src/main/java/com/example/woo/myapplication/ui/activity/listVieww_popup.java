@@ -20,6 +20,7 @@ import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.data.Mperson;
 import com.naver.maps.geometry.LatLng;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -107,7 +108,7 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
 
         Mperson selected = (Mperson)getIntent().getSerializableExtra("selecteditem");
 
-        ImageView profile = (ImageView)findViewById(R.id.ImageView_person);
+        ImageView profile = (ImageView)findViewById(R.id.ImageView_popuptitle);
         TextView name = (TextView)findViewById(R.id.TextView_Name);
         TextView time = (TextView)findViewById(R.id.TextView_Time);
         TextView place = (TextView)findViewById(R.id.TextView_Place);
@@ -122,6 +123,23 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
                 Double.parseDouble(selected.getP_place_latitude()),
                 Double.parseDouble(selected.getP_place_longitude())
         );
+
+        if(selected.getP_photo() == null){
+            profile.setImageResource(R.drawable.boy);
+        }
+        else{
+            float rotation = 0;
+
+            Picasso.with(getApplicationContext())
+                    .load("http://13.125.95.139:9000/mperson_picture/"+selected.getP_photo())
+                    .fit()
+                    .rotate(90f)
+                    .into(profile);
+
+
+
+        }
+
         //***************************해당실종자***********
         retrofitExService.getPersonMapData( selected.getP_id()).enqueue(new Callback<ArrayList<MapInfo>>() {
             @Override

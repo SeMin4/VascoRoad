@@ -21,6 +21,42 @@ public class MapInfo implements Serializable {
     private String m_left;
     private String m_right;
     private String m_unit_scale;
+    private String m_northWest;
+    private String m_northEast;
+    private String m_southWest;
+    private String m_southEast;
+
+    public String getM_northWest() {
+        return m_northWest;
+    }
+
+    public void setM_northWest(String m_northWest) {
+        this.m_northWest = m_northWest;
+    }
+
+    public String getM_northEast() {
+        return m_northEast;
+    }
+
+    public void setM_northEast(String m_northEast) {
+        this.m_northEast = m_northEast;
+    }
+
+    public String getM_southWest() {
+        return m_southWest;
+    }
+
+    public void setM_southWest(String m_southWest) {
+        this.m_southWest = m_southWest;
+    }
+
+    public String getM_southEast() {
+        return m_southEast;
+    }
+
+    public void setM_southEast(String m_southEast) {
+        this.m_southEast = m_southEast;
+    }
 
     public String getM_id() {
         return m_id;

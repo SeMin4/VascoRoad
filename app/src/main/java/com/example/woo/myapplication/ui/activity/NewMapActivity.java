@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.os.health.SystemHealthManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
@@ -19,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.utils.LocationDistance;
@@ -35,10 +37,18 @@ import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 
 public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
@@ -52,6 +62,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private int COLOR_LINE_BLACK;
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
+    private Socket mSocket;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,6 +79,28 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
+
+        try{
+            mSocket = IO.socket("http://13.125.95.139:9000");
+            mSocket.connect();
+            //이벤트 등록
+            mSocket.on(Socket.EVENT_CONNECT,onConnect); //방 접속시;
+            mSocket.on("attendRoom",attendRoom);// 방접속시 user 아이디 보내기
+            mSocket.on("complete",complete);
+            mSocket.on("not_complete",not_complete);
+        }catch(URISyntaxException e){
+            e.printStackTrace();
+        }
+
+        JSONObject data = new JSONObject();
+        try{
+            System.out.println("attendRoom@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
+            data.put("id", MyGlobals.getInstance().getUser().getU_id());
+            mSocket.emit("attendRoom",data);
+        }catch(JSONException e){
+            System.out.println("attendRoom 에러");
+            e.printStackTrace();
+        }
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -99,6 +132,44 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
 
     }
+
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            //Toast.makeText(getApplicationContext(),"방에 접속했습니다.",Toast.LENGTH_SHORT).show();
+            System.out.println("방에 접속했습니다");
+        }
+    }; //제일처음 접속
+
+    private Emitter.Listener attendRoom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            try{
+                System.out.println("attendRoom@@@@@@@@@@@@@@@@@@@22222222222222222222");
+                JSONObject receivedData = (JSONObject)args[0];
+                System.out.println("msg: " +receivedData.getString("msg") +"@@@@@@@@@@");
+                System.out.println("data : "+receivedData.getString("data")+"@@@@@@@@@@@");
+
+            }catch(JSONException e){
+                System.out.println("JSONException 발생");
+                e.printStackTrace();
+            }
+        }
+    };
+
+    private Emitter.Listener complete = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
+
+    private Emitter.Listener not_complete = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+        }
+    };
 
     @Override
     protected void onDestroy() {
@@ -551,8 +622,24 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                     case "Find Finish":
                         districtNum = data.getIntExtra("district", -1);
                         index = data.getIntExtra("location", -1);
+                        System.out.println("districtNum : "+districtNum+"@@@@@@@@@@@@@@@@@@@" );
+                        System.out.println("index : "+index+"@@@@@@@@@@@@@@@@@@@" );
                         int color_finish = getResources().getColor(R.color.finish);
                         total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_finish, 100));
+
+                        try {
+                            JSONObject complete_data = new JSONObject();
+                            System.out.println("complete@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
+                            String area_districtNum = ""+districtNum;
+                            String area_index = ""+index;
+                            complete_data.put("mid",mapInfo.getM_id());
+                            complete_data.put("districtNum",area_districtNum);
+                            complete_data.put("index",area_index);
+                            mSocket.emit("complete", complete_data);
+                        }catch(JSONException e){
+                            System.out.println("complete 에러");
+                            e.printStackTrace();
+                        }
                         break;
                     case "Find Impossible":
                         String content = data.getStringExtra("content");

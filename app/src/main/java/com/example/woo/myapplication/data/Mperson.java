@@ -98,4 +98,6 @@ public class Mperson implements Serializable {
     public void setP_photo(String p_photo) {
         this.p_photo = p_photo;
     }
+
+   
 }

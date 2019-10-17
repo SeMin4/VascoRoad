@@ -221,6 +221,7 @@ public class MainActivity extends Activity {
             view.setName(item.getP_name());
             view.setPlace(item.getP_place_string());
             view.setTimee(item.getP_time());
+            view.setImage("http://13.125.95.139:9000/mperson_picture/",item.getP_photo());
             //view.setImage(item.getP_photo());
             return view;
         }
