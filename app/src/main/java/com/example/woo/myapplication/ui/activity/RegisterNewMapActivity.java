@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +24,8 @@ import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.util.MarkerIcons;
 
+import java.io.Serializable;
+
 public class RegisterNewMapActivity extends AppCompatActivity implements OnMapReadyCallback {
     public static Activity registerNewMapActivity;
     private InfoWindow infoWindow;
@@ -34,7 +35,7 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
     private double bearing = 0;
     String p_id;
     String m_place_string;
-
+    Serializable selected;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
         setContentView(R.layout.activity_set_coord_center);
 
         registerNewMapActivity = RegisterNewMapActivity.this;
+
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -51,6 +53,7 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
 
         // 실종지점 획득
         Intent intent = getIntent();
+        selected = intent.getSerializableExtra("selecteditem");
         double lat = intent.getDoubleExtra("missing_lat", 0);
         double lon = intent.getDoubleExtra("missing_long", 0);
         p_id = intent.getStringExtra("p_id");
@@ -86,6 +89,7 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
             intent.putExtra("bearing", bearing);
             intent.putExtra("p_id",p_id);
             intent.putExtra("m_place_string",m_place_string);
+            intent.putExtra("selecteditem",selected);
             startActivityForResult(intent, 1);
 
         }

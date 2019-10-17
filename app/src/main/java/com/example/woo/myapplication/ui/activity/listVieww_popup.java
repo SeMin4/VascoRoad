@@ -182,6 +182,7 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
         intent.putExtra("missing_long", missingPoint.longitude);
         intent.putExtra("p_id",(CharSequence)selected.getP_id());
         intent.putExtra("m_place_string", (CharSequence)selected.getP_place_string());
+        intent.putExtra("selecteditem",selected);
         startActivityForResult(intent, 1);
     }
 
@@ -193,6 +194,7 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
                 int index = data.getIntExtra("mapInfoIndex", -1);
                 Intent intent = new Intent(this, ExistingMapActivity.class);
                 intent.putExtra("mapInfo", maplist.get(index));
+                intent.putExtra("selecteditem",selected);
                 startActivityForResult(intent, 1);
             }
             else if(resultCode == RESULT_CANCELED){

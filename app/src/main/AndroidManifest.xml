@@ -57,6 +57,7 @@
         <activity android:name=".ui.activity.ExistingMapActivity" android:theme="@style/AppTheme" />
         <activity android:name=".ui.activity.listVieww_popup"></activity>
         <activity android:name=".ui.activity.EmptyRoomActivity"></activity>
+        <activity android:name=".ui.activity.MissingInfoActivity"></activity>
 
 
         <meta-data

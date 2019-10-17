@@ -9,6 +9,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapInfo;
@@ -24,6 +27,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     private int COLOR_LINE_BLACK;
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
+    Button mpersoninfo;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,6 +39,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
+        mpersoninfo = findViewById(R.id.button_mPerson_info);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -55,6 +61,11 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
         // mapInfo로 mapDetail정보까지 가져와야 함.
 
+    }
+
+    //버튼 누르면 웅앵웅
+    public void mOnInfoClick(View v) {
+        Toast.makeText(this, "여기 준희가 만든 실종자 정보 팝업화면 비스므리하게 연결하면 됨.", Toast.LENGTH_SHORT).show();
     }
 
     @Override

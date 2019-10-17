@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="#eeeeee"
     android:orientation="vertical"
-    tools:context=".ui.users.LoginErrorActivity">
+    tools:context=".ui.activity.LoginErrorActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,8 +17,9 @@
             android:textSize="20sp"
             android:gravity="center"
             android:textStyle="bold"
+            android:textColor="#FFFFFF"
             android:text="@string/roomDeleteCheckTitle"
-            android:background="@color/colorAccent">
+            android:background="@color/burgundy">
         </TextView>
     </LinearLayout>
     <LinearLayout

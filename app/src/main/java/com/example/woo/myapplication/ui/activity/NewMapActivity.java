@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapInfo;
+import com.example.woo.myapplication.data.Mperson;
 import com.example.woo.myapplication.utils.LocationDistance;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
@@ -63,11 +64,15 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
     private Socket mSocket;
+    Mperson selected;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+
+
 
         RegisterNewMapActivity registerNewMapActivity =
                 (RegisterNewMapActivity) RegisterNewMapActivity.registerNewMapActivity;
@@ -119,6 +124,8 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
         Intent intent = getIntent();
         mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
+        selected = (Mperson)intent.getSerializableExtra("selecteditem");
+
         double[] vertex_double = intent.getDoubleArrayExtra("vertex");
         for (int i = 0; i < vertex_double.length; i += 2) {
             int index = i / 2;
@@ -609,7 +616,15 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     public void mOnInfoClick(View v) {
-        Toast.makeText(this, "여기 준희가 만든 실종자 정보 팝업화면 비스므리하게 연결하면 됨.", Toast.LENGTH_SHORT).show();
+
+        //Toast.makeText(this, "여기 준희가 만든 실종자 정보 팝업화면 비스므리하게 연결하면 됨.", Toast.LENGTH_SHORT).show();
+
+        //정보받고(위에서 selected에 저장햇ㅇㅁ,)
+        //그대로 전달 -> 새로운 액티비ㅣㅌ 종나 만들어야함
+        Intent intent = new Intent(this,MissingInfoActivity.class);
+        intent.putExtra("selecteditem",selected);
+        startActivityForResult(intent,1);
+
     }
 
     @Override
