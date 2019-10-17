@@ -14,8 +14,8 @@ public class MapInfo implements Parcelable {
     private String password;    // 보안작업 필요
     private int owner_id;
     private int status;     // 현재 수색작업 현황(시작전/수색중/수색완료...등등)
-    private int horizontal;
-    private int vertical;
+    private double horizontal;
+    private double vertical;
     private double bearing;   // 지도 기울기
     private String missing_address;    // 실종위치 주소
     private double missing_lat;
@@ -47,8 +47,8 @@ public class MapInfo implements Parcelable {
         this.password = parcel.readString();
         this.owner_id = parcel.readInt();
         this.status = parcel.readInt();
-        this.horizontal = parcel.readInt();
-        this.vertical = parcel.readInt();
+        this.horizontal = parcel.readDouble();
+        this.vertical = parcel.readDouble();
         this.bearing = parcel.readDouble();
         this.missing_address = parcel.readString();
         this.missing_lat = parcel.readDouble();
@@ -134,19 +134,19 @@ public class MapInfo implements Parcelable {
         this.status = status;
     }
 
-    public int getHorizontal() {
+    public double getHorizontal() {
         return horizontal;
     }
 
-    public void setHorizontal(int horizontal) {
+    public void setHorizontal(double horizontal) {
         this.horizontal = horizontal;
     }
 
-    public int getVertical() {
+    public double getVertical() {
         return vertical;
     }
 
-    public void setVertical(int vertical) {
+    public void setVertical(double vertical) {
         this.vertical = vertical;
     }
 
@@ -259,8 +259,8 @@ public class MapInfo implements Parcelable {
         dest.writeString(this.password);
         dest.writeInt(this.owner_id);
         dest.writeInt(this.status);
-        dest.writeInt(this.horizontal);
-        dest.writeInt(this.vertical);
+        dest.writeDouble(this.horizontal);
+        dest.writeDouble(this.vertical);
         dest.writeDouble(this.bearing);
         dest.writeString(this.missing_address);
         dest.writeDouble(this.missing_lat);

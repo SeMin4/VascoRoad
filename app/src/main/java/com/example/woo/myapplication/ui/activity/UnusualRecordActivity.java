@@ -1,12 +1,24 @@
 package com.example.woo.myapplication.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,12 +29,17 @@ import android.widget.Toast;
 
 import com.example.woo.myapplication.R;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class UnusualRecordActivity extends Activity {
+    private final int PERMISSION_REQUEST_CODE = 100;
     private final int PICK_IMAGE = 0;
     private final int CAPTURE_IMAGE = 1;
     private ImageView imageView;
+    private String currentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +53,45 @@ public class UnusualRecordActivity extends Activity {
             showPictureDialog();
         });
 
+        /* For debugging */
+//        if(!checkPermission()){
+//            requestPermission();
+//        }
+    }
+
+    private boolean checkPermission(){
+        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_GRANTED){
+            Log.d("Permission", "권한있음");
+            return true;
+
+        } else {
+            Log.d("Permission", "권한없음");
+            return false;
+
+        }
+    }
+
+    private void requestPermission(){
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            Toast.makeText(this,"사진 저장을 위해 권한이 필요합니다.",Toast.LENGTH_LONG).show();
+        } else {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this,"Permission Granted, Now you can access location data.",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this,"Permission Denied, You cannot access location data.",Toast.LENGTH_LONG).show();
+
+                }
+                break;
+        }
     }
 
     private void showPictureDialog(){
@@ -47,27 +103,71 @@ public class UnusualRecordActivity extends Activity {
         pictureDialog.setItems(pictureDialogItems,
                 (dialog, which) -> {
                     switch (which) {
-                        case 0:
+                        case PICK_IMAGE:
                             choosePhotoFromGallary();
                             break;
-                        case 1:
-                            takePhotoFromCamera();
+                        case CAPTURE_IMAGE:
+                            dispatchTakePictureIntent();
                             break;
                     }
                 });
         pictureDialog.show();
     }
 
-    public void choosePhotoFromGallary() {
+    private void choosePhotoFromGallary() {
+        // 갤러리 실행
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
         startActivityForResult(galleryIntent, PICK_IMAGE);
     }
 
-    private void takePhotoFromCamera() {
-        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, CAPTURE_IMAGE);
+    private void galleryAddPic() {
+        File f = new File(currentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        Log.d("image", "사진위치: " + contentUri.getPath());
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        intent.setData(Uri.fromFile(f));
+        sendBroadcast(intent);
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        // Ensure that there's a camera activity to handle the intent
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // Create the File where the photo should go
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                // Error occurred while creating the File
+
+            }
+            // Continue only if the File was successfully created
+            if (photoFile != null) {
+                Uri photoURI = FileProvider.getUriForFile(this,
+                        "com.example.woo.myapplication.fileprovider",
+                        photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                startActivityForResult(takePictureIntent, CAPTURE_IMAGE);
+            }
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     @Override
@@ -82,7 +182,6 @@ public class UnusualRecordActivity extends Activity {
                 Uri contentURI = data.getData();
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
-                    saveImage(bitmap);
 
                     Toast.makeText(UnusualRecordActivity.this, "Image Saved!", Toast.LENGTH_SHORT).show();
                     imageView.setImageBitmap(bitmap);
@@ -94,18 +193,15 @@ public class UnusualRecordActivity extends Activity {
             }
 
         } else if (requestCode == CAPTURE_IMAGE) {
-            Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-            imageView.setImageBitmap(thumbnail);
-            saveImage(thumbnail);
-            Toast.makeText(UnusualRecordActivity.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+            galleryAddPic();
+            try{
+                Uri contentUri = Uri.fromFile(new File(currentPhotoPath));
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentUri);
+                imageView.setImageBitmap(bitmap);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
         }
-    }
-
-    public void saveImage(Bitmap bitmapImage) {
-        String filename = "firma-"+ System.currentTimeMillis()+".png";
-        String url = MediaStore.Images.Media.insertImage(getContentResolver(), bitmapImage, filename , "Firma creada desde Signature app");
-        Log.d("image", "path: " + url);
-
     }
 
     public void mOnSave(View v){
@@ -113,7 +209,7 @@ public class UnusualRecordActivity extends Activity {
         String content = unusual_things.getText().toString();
 
         Intent intent = new Intent();
-        intent.putExtra("Image", "PUT IMAGE HERE");
+        intent.putExtra("imagePath", currentPhotoPath);
         intent.putExtra("content", content);
         intent.putExtra("result", "Saved");
         setResult(RESULT_OK, intent);

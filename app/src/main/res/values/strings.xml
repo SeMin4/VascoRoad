@@ -27,8 +27,8 @@
 
     <string name="label_map_type">유형:</string>
     <string-array name="map_types">
-        <item>Basic</item>
         <item>Satellite</item>
+        <item>Basic</item>n
         <!--item>Hybrid</item-->
         <item>Terrain</item>
     </string-array>
@@ -59,4 +59,5 @@
     <string name="label_bearing">현재 회전 각도: </string>
     <string name="label_mPerson_info">실종자 정보</string>
     <string name="label_set_unit_scale">단위길이: </string>
+    <string name="limit">미허용 시, 카메라와 갤러리를 사용할 수 없습니다.</string>
 </resources>

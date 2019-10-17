@@ -60,10 +60,12 @@ public class PopUpActivity extends Activity {
             if(resultCode == RESULT_OK){
                 String result = data.getStringExtra("result");
                 if(result.equals("Saved")){
+                    String contentPath = data.getStringExtra("imagePath");
                     String content = data.getStringExtra("content");
 
                     Intent intent = new Intent();
                     intent.putExtra("result", "Find Impossible");
+                    intent.putExtra("imagePath", contentPath);  // 이미지가 저장된 경로
                     intent.putExtra("content", content);
                     intent.putExtra("district", districtNum);
                     intent.putExtra("location", index);

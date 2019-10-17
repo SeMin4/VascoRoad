@@ -1,9 +1,13 @@
 package com.example.woo.myapplication.ui.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +24,7 @@ import com.example.woo.myapplication.R;
 
 import com.example.woo.myapplication.data.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import retrofit2.Call;
@@ -29,6 +34,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
+    private final int MY_PERMISSIONS_REQUEST_MULTI = 100;
     public static Activity _LoginActivity;
     protected LinearLayout login_activity;
     protected Button login_sign_up_btn;
@@ -56,6 +62,13 @@ public class LoginActivity extends AppCompatActivity {
         //First, SharedPreferences don't have any information, and then make key to store value
         //First parameter is key, Second parameter is value(getString)
         //I don't have any value, so you make any key and null value
+
+        // 하나라도 권한 거부 시, 허용할 때까지 무한으로 물을거임.
+        ArrayList<String> permissions = new ArrayList<>();
+        permissions.add(Manifest.permission.CAMERA);
+        permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        checkPermission(permissions);
 
         if( (MyGlobals.getInstance().getRetrofit() == null) || (MyGlobals.getInstance().getRetrofitExService() ==null) ){
             retrofit = new Retrofit.Builder().baseUrl(MyGlobals.RetrofitExService.URL).addConverterFactory(GsonConverterFactory.create()).build();
@@ -195,6 +208,42 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void checkPermission(ArrayList<String> permissions){
+        ArrayList<String> request_list = new ArrayList<>();
+        for(String permission:permissions){
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                request_list.add(permission);
+            }
+        }
+        if (request_list.size() > 0) {
+            String[] reqPermissionArray = new String[permissions.size()];
+            reqPermissionArray = permissions.toArray(reqPermissionArray);
+            ActivityCompat.requestPermissions(this, reqPermissionArray, MY_PERMISSIONS_REQUEST_MULTI);
+        }
+    }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        ArrayList<String> request_list = new ArrayList<>();
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(grantResults.length > 0) {
+            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED)){
+                request_list.add(Manifest.permission.CAMERA);
+            }
+            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)){
+                request_list.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED)){
+                request_list.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
+            if (request_list.size() > 0){
+                checkPermission(request_list);
+            }
+
+        }
+
+    }
 
 }

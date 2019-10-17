@@ -125,17 +125,23 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
             }
         });
 
+        Toast.makeText(this, "지도를 회전시킨 후 중심위치를 터치해주세요.", Toast.LENGTH_LONG).show();
+
         // 중심점 지정 안내 말풍선 등록
         infoWindow = new InfoWindow();
-        infoWindow.setAnchor(new PointF(0, 1));
-        infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
-        infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
-        infoWindow.setAdapter(new InfoWindowAdapter(this));
-        infoWindow.setOnClickListener(overlay -> {
-            infoWindow.close();
-            centerCoord = null;
-            return true;
+        infoWindow.setAlpha(0.9f);
+        infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getApplicationContext()) {
+            @NonNull
+            @Override
+            public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                return "현재 중심위치";
+            }
         });
+//        infoWindow.setAnchor(new PointF(0, 1));
+//        infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
+//        infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
+//        infoWindow.setAdapter(new InfoWindowAdapter(this));
+
 
         naverMap.setOnMapClickListener((point, coord) -> {
             infoWindow.setPosition(coord);
@@ -144,6 +150,11 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
                     infoWindow.getPosition().latitude,
                     infoWindow.getPosition().longitude
             );
+            infoWindow.setOnClickListener(overlay -> {
+                infoWindow.close();
+                centerCoord = null;
+                return true;
+            });
         });
 
         naverMap.addOnCameraChangeListener((reason, animated) -> {

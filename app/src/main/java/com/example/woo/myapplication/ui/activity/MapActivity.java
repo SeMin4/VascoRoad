@@ -1,12 +1,17 @@
 package com.example.woo.myapplication.ui.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.ActionBar;
@@ -20,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.District;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.utils.LocationDistance;
 import com.naver.maps.geometry.LatLng;
@@ -30,12 +36,14 @@ import com.naver.maps.map.CameraUpdateParams;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.Projection;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,8 +53,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private FusedLocationSource locationSource;
     private MapInfo mapInfo;
+    LatLng[] vertex_list = new LatLng[4];
+    private LatLngBounds mapBounds;
     private ArrayList<Marker> markers = new ArrayList<>();
     private ArrayList<ArrayList<PolygonOverlay>> total_districts;
+    private District big_district;
     private int COLOR_LINE_BLACK;
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
@@ -78,10 +89,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         Intent intent = getIntent();
         mapInfo = intent.getParcelableExtra("mapInfo");
+        double[] vertex_double = intent.getDoubleArrayExtra("vertex");
 
+        for(int i = 0; i < vertex_double.length; i += 2){
+            int index = i/2;
+            Log.d("Map", "vertex index" + index);
+            vertex_list[index] = new LatLng(vertex_double[i], vertex_double[i+1]);
+        }
+        mapBounds = new LatLngBounds(
+                new LatLng(vertex_list[3].latitude, vertex_list[3].longitude),
+                new LatLng(vertex_list[1].latitude, vertex_list[1].longitude)
+        );
 
     }
-
 
     @Override
     protected void onDestroy() {
@@ -110,7 +130,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     @Override
-    public void onMapReady(@NonNull final NaverMap naverMap) {
+    public void onMapReady(@NonNull NaverMap naverMap) {
         /* 기본 맵 세팅 */
         // 지도 줌버튼 비활성화
         naverMap.getUiSettings().setZoomControlEnabled(false);
@@ -128,15 +148,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 //            }
         });
 
-        // 지도 중심 설정
-        LatLng center_coord = new LatLng(mapInfo.getCenter_lat(), mapInfo.getCenter_lng());
-        CameraUpdateParams params = new CameraUpdateParams();
-        params.scrollTo(center_coord);
-        params.rotateBy(mapInfo.getBearing()); // 90(왼쪽으로 90도임),
-        naverMap.moveCamera(CameraUpdate.withParams(params).animate(CameraAnimation.Easing));
 
-        // 맵이 최대로 보이도록 확대
-        //naverMap.moveCamera(CameraUpdate.fitBounds())
+        LatLng center_coord = new LatLng(mapInfo.getCenter_lat(), mapInfo.getCenter_lng());
+        naverMap.moveCamera(CameraUpdate.fitBounds(mapBounds, 10));
+        naverMap.moveCamera(CameraUpdate
+                .withParams(new CameraUpdateParams()
+                                .rotateBy(mapInfo.getBearing())
+                            )
+                .animate(CameraAnimation.Easing));
+
 
         // 실종지점 등록
         Marker missingPoint = new Marker();
@@ -146,26 +166,97 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         missingPoint.setHeight(50);
         missingPoint.setIcon(MarkerIcons.BLACK);
         missingPoint.setIconTintColor(Color.RED);
+        missingPoint.setCaptionText("실종 지점");
+        missingPoint.setCaptionColor(Color.RED);
         missingPoint.setMap(naverMap);
 
-        // 기본 지도 그리기
-//        total_districts = createDistricts(center_coord, mapInfo.getUnit_scale());
-//        for(ArrayList<PolygonOverlay> district: total_districts){
-//            for(PolygonOverlay square: district){
-//                square.setMap(naverMap);
-//            }
+        // 중앙점 등록
+//        Marker centerPoint = new Marker();
+//        centerPoint.setPosition(center_coord);
+//        centerPoint.setWidth(50);
+//        centerPoint.setHeight(50);
+//        centerPoint.setIcon(MarkerIcons.BLACK);
+//        centerPoint.setIconTintColor(Color.BLUE);
+//        centerPoint.setMap(naverMap);
+
+        // 지도 그리드 생성
+
+
+        /* Projection을 이용헤 지도좌표로 변환해보려 했지만 실패 */
+//        Projection p = naverMap.getProjection();
+//        //왼쪽시작점들
+//        Marker nw = new Marker();
+//        nw.setPosition(vertex_list[0]);
+//        nw.setCaptionText("북서점");
+//        nw.setMap(naverMap);
+//        Marker sw = new Marker();
+//        sw.setPosition(vertex_list[3]);
+//        sw.setCaptionText("남서점");
+//        sw.setMap(naverMap);
+//
+//        PointF northWest = p.toScreenLocation(vertex_list[0]);
+//        PointF southWest = p.toScreenLocation(vertex_list[1]);
+//        int count = (int) (mapInfo.getVertical() / (3*mapInfo.getUnit_scale()));
+//        double unit = (northWest.y - southWest.y) / count;
+//
+//        Marker center = new Marker();
+//        LatLng l = p.fromScreenLocation(new PointF(northWest.x, (float) ((northWest.y+southWest.y)/2)));
+//        center.setPosition(l);
+//        center.setCaptionText("가운데");
+//        center.setMap(naverMap);
+
+
+        /* 회전변환 적용한 각 district의 중심점 마커 표시 */
+//        ArrayList<Marker> mm = getRotateCenters(center_coord, mapInfo.getUnit_scale());
+//        Log.d("MapActivity", "size: " + mm.size());
+//        for(Marker m : mm){
+//            m.setMap(naverMap);
 //        }
 
-        /* 디버깅 중 */
-        ArrayList<PolygonOverlay> district = createDistrict(center_coord, mapInfo.getUnit_scale());
-        for(PolygonOverlay p:district){
-            for(LatLng l:p.getCoords()){
-                Marker m = new Marker();
-                m.setPosition(l);
-                m.setMap(naverMap);
+
+
+//        for(Marker m: createDistrictMarker(center_coord, mapInfo.getUnit_scale())){
+//            m.setMap(naverMap);
+//        }
+
+        /* 원래방법대로 그리드 그릴 때 */
+        /* 원래 중심 좌표 디버깅 중 - 제대로 전달 됨.*/
+//        for(Marker m : checkDistrictCenters(center_coord, mapInfo.getUnit_scale())){
+//            m.setMap(naverMap);
+//        }
+
+
+//        for(District d:total_districts.getChildren()){
+//            d.getGrid().setOutlineColor(COLOR_LINE_WHITE);
+//            d.getGrid().setMap(naverMap);
+//        }
+
+        /* 전체 영역 확인용 PolygonOverlay */
+        PolygonOverlay pp = new PolygonOverlay();
+        pp.setCoords(Arrays.asList(
+                vertex_list[0],
+                vertex_list[3],
+                vertex_list[2],
+                vertex_list[1]
+        ));
+        int color = ResourcesCompat.getColor(getResources(), R.color.light_gold, getTheme());
+        pp.setColor(ColorUtils.setAlphaComponent(color, 0));
+        pp.setOutlineWidth(getResources().getDimensionPixelSize(R.dimen.overlay_line_bold_width));
+        pp.setOutlineColor(COLOR_LINE_WHITE);
+        pp.setGlobalZIndex(10);
+        pp.setMap(naverMap);
+
+        // 지도 그리드
+
+        total_districts = createDistricts(center_coord, mapInfo.getUnit_scale());
+        for(ArrayList<PolygonOverlay> district: total_districts){
+            for(PolygonOverlay p: district){
+                p.setMap(naverMap);
             }
-            p.setMap(naverMap);
         }
+
+
+
 
         // 지도 타입 변경 스피너 등록
         final ArrayAdapter<CharSequence> mapAdapter;
@@ -181,24 +272,24 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 if (mapType != null) {
                     naverMap.setMapType(NaverMap.MapType.valueOf(mapType.toString()));
                     /* 지도 type에 따른 선 색상 지정 */
-//                    switch(mapType.toString()){
-//                        case "Satellite":
-//                            for(ArrayList<PolygonOverlay> district:total_districts){
-//                                for(PolygonOverlay square:district){
-//                                    square.setOutlineColor(COLOR_LINE_WHITE);
-//                                }
-//                            }
-//                            break;
-//                        case "Basic":
-//                        case "Terrain":
-//                            for(ArrayList<PolygonOverlay> district:total_districts){
-//                                for(PolygonOverlay square:district){
-//                                    square.setOutlineColor(COLOR_LINE_BLACK);
-//                                }
-//                            }
-//                            break;
-//
-//                    }
+                    switch(mapType.toString()){
+                        case "Satellite":
+                            for(ArrayList<PolygonOverlay> district:total_districts){
+                                for(PolygonOverlay square:district){
+                                    square.setOutlineColor(COLOR_LINE_WHITE);
+                                }
+                            }
+                            break;
+                        case "Basic":
+                        case "Terrain":
+                            for(ArrayList<PolygonOverlay> district:total_districts){
+                                for(PolygonOverlay square:district){
+                                    square.setOutlineColor(COLOR_LINE_BLACK);
+                                }
+                            }
+                            break;
+
+                    }
                 }
             }
 
@@ -224,7 +315,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
-
     private ArrayList<ArrayList<PolygonOverlay>> createDistricts(LatLng center, double unit){
         ArrayList<ArrayList<PolygonOverlay>> grids = new ArrayList<>();
 
@@ -237,8 +327,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         double start_lng = center.longitude
                 - LocationDistance.LongitudeInDifference(start_lat, offset*left_dist);
 
-        double row = (mapInfo.getLeft_width() + mapInfo.getRight_width()) / offset;
-        double col = (mapInfo.getUp_height() + mapInfo.getDown_height()) / offset;
+        double row = (mapInfo.getUp_height() + mapInfo.getDown_height()) / offset;
+        double col = (mapInfo.getLeft_width() + mapInfo.getRight_width()) / offset;
 
         ArrayList<Marker> markers = new ArrayList<>();
         for(int i = 1; i <= (int) row; i++){
@@ -254,6 +344,115 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         return grids;
     }
 
+    private ArrayList<Marker> checkDistrictCenters(LatLng center, double unit){
+        ArrayList<ArrayList<PolygonOverlay>> grids = new ArrayList<>();
+
+        // 중앙점 찾기
+        double offset = unit*3;
+        double up_dist = (mapInfo.getUp_height() - offset/2) / offset;
+        double start_lat = center.latitude
+                + LocationDistance.LatitudeInDifference(offset*(up_dist+1));
+        double left_dist = (mapInfo.getLeft_width() - offset/2) / offset;
+        double start_lng = center.longitude
+                - LocationDistance.LongitudeInDifference(start_lat, offset*left_dist);
+
+        double row = (mapInfo.getUp_height() + mapInfo.getDown_height()) / offset;
+        double col = (mapInfo.getLeft_width() + mapInfo.getRight_width()) / offset;
+
+        ArrayList<Marker> markers = new ArrayList<>();
+        for(int i = 1; i <= (int) row; i++){
+            LatLng row_temp = new LatLng(start_lat - LocationDistance.LatitudeInDifference(unit*3) * i, start_lng);
+            for(int j = 0; j < col; j++){
+                LatLng col_temp = new LatLng(
+                        row_temp.latitude,
+                        row_temp.longitude + LocationDistance.LongitudeInDifference(row_temp.latitude, offset)*j
+                );
+                //grids.add(createDistrict(col_temp, unit));
+                Marker m = new Marker();
+                m.setPosition(col_temp);
+                m.setWidth(50);
+                m.setHeight(50);
+                m.setIcon(MarkerIcons.BLACK);
+                m.setIconTintColor(Color.DKGRAY);
+                markers.add(m);
+            }
+        }
+        return markers;
+    }
+
+    private ArrayList<Marker> getRotateCenters(LatLng center, double unit){
+        ArrayList<ArrayList<PolygonOverlay>> grids = new ArrayList<>();
+
+        // 중앙점 찾기
+        double offset = unit*3;
+        double up_dist = (mapInfo.getUp_height() - offset/2) / offset;
+        double start_lat = center.latitude
+                + LocationDistance.LatitudeInDifference(offset*(up_dist+1));
+        double left_dist = (mapInfo.getLeft_width() - offset/2) / offset;
+        double start_lng = center.longitude
+                - LocationDistance.LongitudeInDifference(start_lat, offset*left_dist);
+
+        double row = (mapInfo.getUp_height() + mapInfo.getDown_height()) / offset;
+        double col = (mapInfo.getLeft_width() + mapInfo.getRight_width()) / offset;
+
+        ArrayList<Marker> markers = new ArrayList<>();
+        for(int i = 1; i <= (int) row; i++){
+            LatLng row_temp = new LatLng(start_lat - LocationDistance.LatitudeInDifference(unit*3) * i, start_lng);
+            for(int j = 0; j < col; j++){
+                LatLng col_temp = new LatLng(
+                        row_temp.latitude,
+                        row_temp.longitude + LocationDistance.LongitudeInDifference(row_temp.latitude, offset)*j
+                );
+                Marker m = new Marker();
+                m.setIconTintColor(Color.RED);
+                m.setPosition(LocationDistance.rotateTransformation(center, col_temp, mapInfo.getBearing()));
+                markers.add(m);
+            }
+        }
+        return markers;
+    }
+
+    private ArrayList<Marker> createDistrictMarker(LatLng center, /* 축척 */double unit){
+        double offset_x = LocationDistance.LatitudeInDifference(unit);
+        double offset_y = LocationDistance.LongitudeInDifference(center.latitude, unit);
+        double[] offsets_x = { 1.5*offset_x, 0.5*offset_x, -0.5*offset_x, -1.5*offset_x};
+        double[] offsets_y = { -1.5*offset_y, -0.5*offset_y, 0.5*offset_y, 1.5*offset_y};
+
+        ArrayList<LatLng> coords = new ArrayList<>();
+        ArrayList<Marker> markers = new ArrayList<>();
+        for(int i = 0; i < 4; i++){
+            for(int j = 0; j < 4; j++){
+                double temp_lat = center.latitude + offsets_x[i];
+                double temp_lng = center.longitude + offsets_y[j];
+                LatLng temp = new LatLng(temp_lat, temp_lng);
+//                // 실험 중
+//                double angle_rad = LocationDistance.angleByPoint(center, temp) + LocationDistance.deg2rad(mapInfo.getBearing());
+//                // 실험 끝
+                double k = LocationDistance.distance(center, temp, "meter");
+                //double offset_lat = LocationDistance.LatitudeInDifference(k* Math.cos(angle_rad));
+                //double offset_lng = LocationDistance.LongitudeInDifference(center.latitude, k* Math.sin(angle_rad));
+                double offset_lat = LocationDistance.LatitudeInDifference(k);
+                double offset_lng = LocationDistance.LongitudeInDifference(center.latitude, k);
+                LatLng point = new LatLng(
+                        temp_lat + offset_lat,
+                        temp_lng - offset_lng
+                );
+                //LatLng rotate_point = LocationDistance.rotateTransformation(center, point, mapInfo.getBearing());
+                Log.d("MapActivity::point",  point.latitude + " / " + point.longitude);
+                coords.add(point);
+                Marker m = new Marker();
+                m.setPosition(point);
+                m.setWidth(50);
+                m.setHeight(50);
+                m.setIcon(MarkerIcons.BLACK);
+                m.setIconTintColor(Color.GREEN);
+                markers.add(m);
+
+            }
+        }
+
+        return markers;
+    }
 
     private ArrayList<PolygonOverlay> createDistrict(LatLng center, /* 축척 */double unit){
         double offset_x = LocationDistance.LatitudeInDifference(unit);
@@ -267,24 +466,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 double temp_lat = center.latitude + offsets_x[i];
                 double temp_lng = center.longitude + offsets_y[j];
                 LatLng temp = new LatLng(temp_lat, temp_lng);
-                // 실험 중
-                double angle_rad = LocationDistance.angleByPoint(center, temp) + LocationDistance.deg2rad(mapInfo.getBearing());
-                // 실험 끝
-                double k = LocationDistance.distance(center, temp, "meter");
-                double offset_lat = LocationDistance.LatitudeInDifference(k* Math.cos(angle_rad));
-                double offset_lng = LocationDistance.LongitudeInDifference(center.latitude, k* Math.sin(angle_rad));
-                LatLng point = new LatLng(
-                  temp_lat + offset_lat,
-                        temp_lng - offset_lng
-                );
-                Log.d("MapActivity::point",  point.latitude + " / " + point.longitude);
-                coords.add(point);
+                coords.add(temp);
+//                double k = LocationDistance.distance(center, temp, "meter");
+//                double offset_lat = LocationDistance.LatitudeInDifference(k);
+//                double offset_lng = LocationDistance.LongitudeInDifference(center.latitude, k);
+//
+//                LatLng point = new LatLng(
+//                  temp_lat + offset_lat,
+//                        temp_lng - offset_lng
+//                );
+//                coords.add(point);
 
             }
         }
 
         ArrayList<PolygonOverlay> polygons = new ArrayList<>();
-
         for(double i = 2.5; i < 13; i++){
             if(i == 5.5 || i == 9.5) continue;
 
@@ -358,6 +554,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         Toast.makeText(this, "특이사항: " + content, Toast.LENGTH_SHORT).show();
                         districtNum = data.getIntExtra("district", -1);
                         index = data.getIntExtra("location", -1);
+                        String imagePath = data.getStringExtra("imagePath");
                         int color_impossible = getResources().getColor(R.color.impossible);
                         total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
                         break;

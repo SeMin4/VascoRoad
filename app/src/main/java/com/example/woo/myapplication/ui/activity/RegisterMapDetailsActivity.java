@@ -10,6 +10,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,7 @@ import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.utils.LocationDistance;
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.CameraUpdateParams;
 import com.naver.maps.map.MapFragment;
@@ -34,6 +36,7 @@ import com.naver.maps.map.util.MarkerIcons;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class  RegisterMapDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
     private MapInfo mapInfo;
@@ -96,7 +99,19 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
     public void mOnClick(View v){
         Toast.makeText(this, "새로운 맵이 생성되었습니다.", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MapActivity.class);
+
+        mapInfo.setVertical(mapInfo.getUp_height() + mapInfo.getDown_height());
+        mapInfo.setHorizontal(mapInfo.getLeft_width() + mapInfo.getRight_width());
         intent.putExtra("mapInfo", mapInfo);
+
+        List<LatLng> coords = district.getCoords();
+        double[] coords_double = new double[8];
+        int index = 0;
+        for(int i = 0; i < coords.size(); i++){
+            coords_double[index++] = coords.get(i).latitude;
+            coords_double[index++] = coords.get(i).longitude;
+        }
+        intent.putExtra("vertex", coords_double);
         startActivityForResult(intent, 1);
     }
 
@@ -163,13 +178,15 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         upArrow.setMap(naverMap);
 
                         if(tempPoints[3] != null){
-                            district.setCoords(findVertexByCenter(naverMap.getProjection(), tempPoints));
                             int color = ResourcesCompat.getColor(getResources(), R.color.light_gold, getTheme());
                             district.setColor(ColorUtils.setAlphaComponent(color, 150));
+
+                            List<LatLng> vertex = findVertexByCenter(naverMap.getProjection(), tempPoints);
+                            district.setCoords(vertex);
                             district.setMap(naverMap);
 
                             naverMap.moveCamera(CameraUpdate
-                                    .fitBounds(district.getBounds())
+                                    .fitBounds(new LatLngBounds(vertex.get(1), vertex.get(3)), 10)
                             );
                             naverMap.moveCamera(CameraUpdate
                                     .withParams(new CameraUpdateParams().rotateTo(mapInfo.getBearing()))
@@ -212,11 +229,12 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         downArrow.setMap(naverMap);
 
                         if(tempPoints[3] != null){
-                            district.setCoords(findVertexByCenter(naverMap.getProjection(), tempPoints));
+                            List<LatLng> vertex = findVertexByCenter(naverMap.getProjection(), tempPoints);
+                            district.setCoords(vertex);
                             district.setMap(naverMap);
 
                             naverMap.moveCamera(CameraUpdate
-                                    .fitBounds(district.getBounds())
+                                    .fitBounds(new LatLngBounds(vertex.get(1), vertex.get(3)), 10)
                             );
                             naverMap.moveCamera(CameraUpdate
                                     .withParams(new CameraUpdateParams().rotateTo(mapInfo.getBearing()))
@@ -257,11 +275,12 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         leftArrow.setMap(naverMap);
 
                         if(tempPoints[3] != null){
-                            district.setCoords(findVertexByCenter(naverMap.getProjection(), tempPoints));
+                            List<LatLng> vertex = findVertexByCenter(naverMap.getProjection(), tempPoints);
+                            district.setCoords(vertex);
                             district.setMap(naverMap);
 
                             naverMap.moveCamera(CameraUpdate
-                                    .fitBounds(district.getBounds())
+                                    .fitBounds(new LatLngBounds(vertex.get(1), vertex.get(3)), 2)
                             );
                             naverMap.moveCamera(CameraUpdate
                                     .withParams(new CameraUpdateParams().rotateTo(mapInfo.getBearing()))
@@ -301,11 +320,12 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         rightArrow.setMap(naverMap);
 
                         if(tempPoints[3] != null){
-                            district.setCoords(findVertexByCenter(naverMap.getProjection(), tempPoints));
+                            List<LatLng> vertex = findVertexByCenter(naverMap.getProjection(), tempPoints);
+                            district.setCoords(vertex);
                             district.setMap(naverMap);
 
                             naverMap.moveCamera(CameraUpdate
-                                    .fitBounds(district.getBounds())
+                                    .fitBounds(new LatLngBounds(vertex.get(1), vertex.get(3)), 2)
                             );
                             naverMap.moveCamera(CameraUpdate
                                     .withParams(new CameraUpdateParams().rotateTo(mapInfo.getBearing()))
