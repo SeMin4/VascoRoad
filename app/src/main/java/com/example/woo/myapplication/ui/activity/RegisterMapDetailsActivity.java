@@ -10,12 +10,15 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.woo.myapplication.MyGlobals;
+import com.example.woo.myapplication.OverlapExamineData;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.utils.LocationDistance;
@@ -34,7 +37,13 @@ import com.naver.maps.map.util.MarkerIcons;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class  RegisterMapDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
     public static Activity registerMapDetailsActivity;
@@ -44,7 +53,10 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
     private int scale = -1;
     private PolygonOverlay district;
     private LatLng[] tempPoints = new LatLng[4]; // up, down, left, right
-
+    protected String p_id;
+    protected String m_place_string;
+    private Retrofit retrofit;
+    private MyGlobals.RetrofitExService retrofitExService;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +86,8 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                 intent.getDoubleExtra("center_lat", 0),
                 intent.getDoubleExtra("center_lng", 0)
         );
-
+        p_id = intent.getStringExtra("p_id");
+        m_place_string = intent.getStringExtra("m_place_string");
 
         mapInfo = new MapInfo();
         mapInfo.setM_place_latitude(missingCoord.latitude+"");
@@ -344,21 +357,83 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
             if (resultCode == RESULT_OK) {
                 String password = data.getStringExtra("password");  // 지도 비밀번호
                 Intent intent = new Intent(this, NewMapActivity.class);
+                mapInfo.setP_id(p_id + "");
+                mapInfo.setM_owner(MyGlobals.getInstance().getUser().getU_id());
+                mapInfo.setM_status(1 + "");
+                mapInfo.setM_vertical(""+(Double.parseDouble(mapInfo.getM_up()) + Double.parseDouble(mapInfo.getM_down())));
+                mapInfo.setM_horizontal(""+(Double.parseDouble(mapInfo.getM_left()) + Double.parseDouble(mapInfo.getM_right())));
+                mapInfo.setM_place_string("위도: " + mapInfo.getM_center_point_latitude() +  "  경도 : "+ mapInfo.getM_place_longitude());
+                mapInfo.setM_southEast("1");
+                mapInfo.setM_southWest("1");
+                mapInfo.setM_northWest("1");
+                mapInfo.setM_northEast("1");
+//                mapInfo.setM_place_latitude();
+//                mapInfo.setM_place_longitude();
+//                mapInfo.setM_center_point_latitude();
+//                mapInfo.setM_center_point_longitude();
+//                mapInfo.setM_up();
+//                mapInfo.setM_down();
+//                mapInfo.setM_left();
+//                mapInfo.setM_right();
+//                mapInfo.setM_unit_scale();
+//                mapInfo.setM_northWest();
+//                mapInfo.setM_northEast();
+//                mapInfo.setM_southWest();
+//                mapInfo.setM_southEast();
+                retrofit=MyGlobals.getInstance().getRetrofit();
+                retrofitExService=MyGlobals.getInstance().getRetrofitExService();
+                HashMap<String,String> input = new HashMap<>();
+                input.put("mperson",mapInfo.getP_id());
+                input.put("mapPassword",password);
+                input.put("mapOwner",mapInfo.getM_owner());
+                input.put("mapStatus",mapInfo.getM_status());
+                input.put("mapHorizontal",mapInfo.getM_horizontal());
+                input.put("mapPlacestring",mapInfo.getM_place_string());
+                input.put("mapPlaceLatitude",mapInfo.getM_place_latitude());
+                input.put("mapPlaceLongitude",mapInfo.getM_place_longitude());
+                input.put("mapUp",mapInfo.getM_up());
+                input.put("mapDown",mapInfo.getM_down());
+                input.put("mapRight",mapInfo.getM_right());
+                input.put("mapLeft",mapInfo.getM_right());
+                input.put("mapUnitScale",mapInfo.getM_unit_scale());
+                input.put("mapRotation",mapInfo.getM_rotation());
+                input.put("mapCenterLatitude",mapInfo.getM_center_point_latitude());
+                input.put("mapCenterLongitude",mapInfo.getM_center_point_longitude());
+                input.put("mapNorthWest",mapInfo.getM_northWest());
+                input.put("mapNorthEast",mapInfo.getM_northEast());
+                input.put("mapSouthWest",mapInfo.getM_southWest());
+                input.put("mapSouthEast",mapInfo.getM_southEast());
+                retrofitExService.postMapMake(input).enqueue(new Callback<OverlapExamineData>() {
+                    @Override
+                    public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                        OverlapExamineData data = response.body();
+                        if(data.getOverlap_examine().equals("success")){
+                            listVieww_popup._listview_popup_activity.finish();
+                            intent.putExtra("mapInfo", mapInfo);
 
-                mapInfo.setM_vertical(mapInfo.getM_up() + mapInfo.getM_down());
-                mapInfo.setM_horizontal(mapInfo.getM_left() + mapInfo.getM_right());
-                intent.putExtra("mapInfo", mapInfo);
+                            List<LatLng> coords = district.getCoords();
+                            double[] coords_double = new double[8];
+                            int index = 0;
+                            for(int i = 0; i < coords.size(); i++){
+                                coords_double[index++] = coords.get(i).latitude;
+                                coords_double[index++] = coords.get(i).longitude;
+                            }
+                            intent.putExtra("whichPath", 1);
+                            intent.putExtra("vertex", coords_double);
+                            startActivityForResult(intent, 1);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(),"error",Toast.LENGTH_SHORT).show();
+                        }
 
-                List<LatLng> coords = district.getCoords();
-                double[] coords_double = new double[8];
-                int index = 0;
-                for(int i = 0; i < coords.size(); i++){
-                    coords_double[index++] = coords.get(i).latitude;
-                    coords_double[index++] = coords.get(i).longitude;
-                }
-                intent.putExtra("whichPath", 1);
-                intent.putExtra("vertex", coords_double);
-                startActivityForResult(intent, 1);
+                    }
+
+                    @Override
+                    public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                        Log.w("hongseongi",t);
+                    }
+                });
+
             }
         }
 

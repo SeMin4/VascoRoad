@@ -32,6 +32,8 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
     private Marker missingPoint;
     private LatLng centerCoord;
     private double bearing = 0;
+    String p_id;
+    String m_place_string;
 
 
     @Override
@@ -51,6 +53,8 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
         Intent intent = getIntent();
         double lat = intent.getDoubleExtra("missing_lat", 0);
         double lon = intent.getDoubleExtra("missing_long", 0);
+        p_id = intent.getStringExtra("p_id");
+        m_place_string = intent.getStringExtra("m_place_string");
         missingCoord = new LatLng(lat, lon);
 
         // 실종지점 마커 생성
@@ -80,6 +84,8 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
             intent.putExtra("center_lat", centerCoord.latitude);
             intent.putExtra("center_lng", centerCoord.longitude);
             intent.putExtra("bearing", bearing);
+            intent.putExtra("p_id",p_id);
+            intent.putExtra("m_place_string",m_place_string);
             startActivityForResult(intent, 1);
 
         }

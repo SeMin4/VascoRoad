@@ -30,6 +30,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
