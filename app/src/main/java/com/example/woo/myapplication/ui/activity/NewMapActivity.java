@@ -454,6 +454,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 m.setIcon(MarkerIcons.BLACK);
                 m.setIconTintColor(Color.DKGRAY);
                 markers.add(m);
+                
             }
         }
         return markers;
