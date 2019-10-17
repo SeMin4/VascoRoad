@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,9 +170,9 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 Intent intent = new Intent(getApplicationContext(), EnterMapPWActivity.class);
-                intent.putExtra("mapInfo", position);
+                intent.putExtra("mapInfoIndex", position);
                 intent.putExtra("mapId", maplist.get(position).getM_id());
-                startActivity(intent);
+                startActivityForResult(intent,0);
             }
         });
 
@@ -189,15 +190,17 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1){
+        Log.d("list", "onActivityResult");
+        if(requestCode == 0){
             if(resultCode == RESULT_OK){
+                Toast.makeText(this, "비밀번호 성립", Toast.LENGTH_LONG).show();
                 int index = data.getIntExtra("mapInfoIndex", -1);
                 Intent intent = new Intent(this, ExistingMapActivity.class);
                 intent.putExtra("mapInfo", maplist.get(index));
                 startActivityForResult(intent, 1);
             }
             else if(resultCode == RESULT_CANCELED){
-                //아무것도 안해도 될듯?
+                Toast.makeText(this, "비밀번호가 틀렸습니다.", Toast.LENGTH_LONG).show();
             }
         }
     }

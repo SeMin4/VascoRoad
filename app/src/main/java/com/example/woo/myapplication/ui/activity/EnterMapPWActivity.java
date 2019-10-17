@@ -42,6 +42,8 @@ public class EnterMapPWActivity extends Activity {
         mapId = intent.getStringExtra("mapId");
         password = (EditText) findViewById(R.id.EditText_password);
 
+        Log.d("Enter", "map index: " + mapInfo_index);
+
 
     }
 

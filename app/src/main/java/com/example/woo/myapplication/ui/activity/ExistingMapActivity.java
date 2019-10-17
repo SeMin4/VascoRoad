@@ -66,12 +66,12 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
     private Socket mSocket=null;
-    public int color_finish;
     public String received_districtNum;
     public String received_index;
     public String received_districtNum2;
     public String received_index2;
     public String received_content2;
+    public int color_finish;
     public int color_impossible;
     private Retrofit retrofit;
     private MyGlobals.RetrofitExService retrofitExService;
@@ -81,39 +81,14 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        RegisterNewMapActivity registerNewMapActivity =
-                (RegisterNewMapActivity) RegisterNewMapActivity.registerNewMapActivity;
-        registerNewMapActivity.finish();
-        RegisterMapDetailsActivity registerMapDetailsActivity =
-                (RegisterMapDetailsActivity) RegisterMapDetailsActivity.registerMapDetailsActivity;
-        registerMapDetailsActivity.finish();
+        Intent intent = getIntent();
+        mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
 
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
-
-        retrofit = MyGlobals.getInstance().getRetrofit();
-        retrofitExService = MyGlobals.getInstance().getRetrofitExService();
-
-        retrofitExService.getMapDetail(mapInfo.getM_id()).enqueue(new Callback<ArrayList<MapDetail>>() {
-            @Override
-            public void onResponse(Call<ArrayList<MapDetail>> call, Response<ArrayList<MapDetail>> response) {
-                System.out.println("onResponse@@@@@@@@@@@@@@@");
-                ArrayList<MapDetail> items = response.body();
-                for(int i =0;i<items.size();i++){
-                    MapDetail item = items.get(i);
-                    if(item.getMd_status().equals("1"))
-                        total_districts.get(Integer.parseInt(item.getMd_districtNum())).get(Integer.parseInt(item.getMd_index())).setColor(ColorUtils.setAlphaComponent(color_finish, 100));
-                    else if(item.getMd_status().equals("0"))
-                        total_districts.get(Integer.parseInt(item.getMd_districtNum())).get(Integer.parseInt(item.getMd_index())).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<MapDetail>> call, Throwable t) {
-                System.out.println("onFailure@@@@@@@@@@@@@@@");
-            }
-        });
+        color_finish = getResources().getColor(R.color.finish);
+        color_impossible = getResources().getColor(R.color.impossible);
 
 
         try {
@@ -160,8 +135,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
-        Intent intent = getIntent();
-        mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
+
 
         // mapInfo로 mapDetail정보까지 가져와야 함.
 
@@ -213,7 +187,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        total_districts.get(Integer.parseInt(received_districtNum)).get(Integer.parseInt(received_index)).setColor(ColorUtils.setAlphaComponent(color_finish, 100));
+                        total_districts.get(Integer.parseInt(received_districtNum)).get(Integer.parseInt(received_index)).setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 100));
                     }
                 });
 
@@ -305,6 +279,11 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 //            }
         });
 
+        mapBounds = new LatLngBounds(
+                new LatLng(Double.parseDouble(mapInfo.getM_southWest_latitude()), Double.parseDouble(mapInfo.getM_southWest_longitude())),
+                new LatLng(Double.parseDouble(mapInfo.getM_northEast_latitude()), Double.parseDouble(mapInfo.getM_northEast_longitude()))
+        );
+
         // 지도 중심 설정
         LatLng center_coord = new LatLng(Double.parseDouble(mapInfo.getM_center_point_latitude()), Double.parseDouble(mapInfo.getM_center_point_longitude()));
         naverMap.moveCamera(CameraUpdate.fitBounds(mapBounds, 10));
@@ -326,6 +305,11 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         missingPoint.setCaptionText("실종 지점");
         missingPoint.setCaptionColor(Color.RED);
         missingPoint.setMap(naverMap);
+
+        vertex_list[0] = new LatLng(Double.parseDouble(mapInfo.getM_northWest_latitude()), Double.parseDouble(mapInfo.getM_northWest_longitude()));
+        vertex_list[1] = new LatLng(Double.parseDouble(mapInfo.getM_northEast_latitude()), Double.parseDouble(mapInfo.getM_northEast_latitude()));
+        vertex_list[2] = new LatLng(Double.parseDouble(mapInfo.getM_southEast_latitude()), Double.parseDouble(mapInfo.getM_southEast_longitude()));
+        vertex_list[3] = new LatLng(Double.parseDouble(mapInfo.getM_southWest_latitude()), Double.parseDouble(mapInfo.getM_southWest_longitude()));
 
         // 중앙점 등록
 //        Marker centerPoint = new Marker();
@@ -388,19 +372,19 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 //        }
 
         /* 전체 영역 확인용 PolygonOverlay */
-        big_polygon = new PolygonOverlay();
-        big_polygon.setCoords(Arrays.asList(
-                vertex_list[0],
-                vertex_list[3],
-                vertex_list[2],
-                vertex_list[1]
-        ));
-        int color = ResourcesCompat.getColor(getResources(), R.color.light_gold, getTheme());
-        big_polygon.setColor(ColorUtils.setAlphaComponent(color, 0));
-        big_polygon.setOutlineWidth(getResources().getDimensionPixelSize(R.dimen.overlay_line_bold_width));
-        big_polygon.setOutlineColor(COLOR_LINE_WHITE);
-        big_polygon.setGlobalZIndex(10);
-        big_polygon.setMap(naverMap);
+//        big_polygon = new PolygonOverlay();
+//        big_polygon.setCoords(Arrays.asList(
+//                vertex_list[0],
+//                vertex_list[3],
+//                vertex_list[2],
+//                vertex_list[1]
+//        ));
+//        int color = ResourcesCompat.getColor(getResources(), R.color.light_gold, getTheme());
+//        big_polygon.setColor(ColorUtils.setAlphaComponent(color, 0));
+//        big_polygon.setOutlineWidth(getResources().getDimensionPixelSize(R.dimen.overlay_line_bold_width));
+//        big_polygon.setOutlineColor(COLOR_LINE_WHITE);
+//        big_polygon.setGlobalZIndex(10);
+//        big_polygon.setMap(naverMap);
 
         // 지도 그리드
 
@@ -410,6 +394,29 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 p.setMap(naverMap);
             }
         }
+
+        retrofit = MyGlobals.getInstance().getRetrofit();
+        retrofitExService = MyGlobals.getInstance().getRetrofitExService();
+
+        retrofitExService.getMapDetail(mapInfo.getM_id()).enqueue(new Callback<ArrayList<MapDetail>>() {
+            @Override
+            public void onResponse(Call<ArrayList<MapDetail>> call, Response<ArrayList<MapDetail>> response) {
+                System.out.println("onResponse@@@@@@@@@@@@@@@");
+                ArrayList<MapDetail> items = response.body();
+                for(int i =0;i<items.size();i++){
+                    MapDetail item = items.get(i);
+                    if(item.getMd_status().equals("1"))
+                        total_districts.get(Integer.parseInt(item.getMd_districtNum())).get(Integer.parseInt(item.getMd_index())).setColor(ColorUtils.setAlphaComponent(color_finish, 100));
+                    else if(item.getMd_status().equals("0"))
+                        total_districts.get(Integer.parseInt(item.getMd_districtNum())).get(Integer.parseInt(item.getMd_index())).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<MapDetail>> call, Throwable t) {
+                System.out.println("onFailure@@@@@@@@@@@@@@@");
+            }
+        });
 
         /* 디버깅 중 */
 //        ArrayList<PolygonOverlay> district = createDistrict(center_coord, Double.parseDouble(mapInfo.getM_unit_scale()));
@@ -438,7 +445,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                     /* 지도 type에 따른 선 색상 지정 */
                     switch (mapType.toString()) {
                         case "Satellite":
-                            big_polygon.setOutlineColor(COLOR_LINE_WHITE);
+                            if(big_polygon != null)
+                                big_polygon.setOutlineColor(COLOR_LINE_WHITE);
                             for (ArrayList<PolygonOverlay> district : total_districts) {
                                 for (PolygonOverlay square : district) {
                                     square.setOutlineColor(COLOR_LINE_WHITE);
@@ -447,7 +455,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                             break;
                         case "Basic":
                         case "Terrain":
-                            big_polygon.setOutlineColor(COLOR_LINE_BLACK);
+                            if(big_polygon != null)
+                                big_polygon.setOutlineColor(COLOR_LINE_BLACK);
                             for (ArrayList<PolygonOverlay> district : total_districts) {
                                 for (PolygonOverlay square : district) {
                                     square.setOutlineColor(COLOR_LINE_BLACK);
@@ -711,7 +720,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                     case "Find Finish":
                         districtNum = data.getIntExtra("district", -1);
                         index = data.getIntExtra("location", -1);
-                        color_finish = getResources().getColor(R.color.finish);
+                        //color_finish = getResources().getColor(R.color.finish);
                         //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_finish, 100));
                         try {
                             JSONObject complete_data = new JSONObject();
@@ -733,7 +742,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                         districtNum = data.getIntExtra("district", -1);
                         index = data.getIntExtra("location", -1);
                         String imagePath = data.getStringExtra("imagePath");
-                        color_impossible = getResources().getColor(R.color.impossible);
+                        //color_impossible = getResources().getColor(R.color.impossible);
                         //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
                         try{
                             JSONObject non_complete_data = new JSONObject();
