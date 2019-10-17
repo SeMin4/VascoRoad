@@ -96,7 +96,7 @@ public class MyGlobals {
 
         @FormUrlEncoded
         @POST("/delete/room")
-        Call<User> postDeleteRoom(@FieldMap HashMap<String,String> param);
+        Call<OverlapExamineData> postDeleteRoom(@FieldMap HashMap<String,String> param);
 
         @GET("mypage/maplist?")
         Call<ArrayList<MyRoomItem>> getMypageMapData(@Query("u_id") String m_id);
