@@ -13,12 +13,12 @@ public class Mperson implements Serializable {
     float p_place_latitude;
     float p_place_longitude;
     String p_place_description;
-    int p_photo;
+    String p_photo;
 
     public Mperson(){
 
     }
-    public Mperson(String p_name,  String p_place_string,String p_time, int p_photo, String p_place_description) {
+    public Mperson(String p_name,  String p_place_string,String p_time, String p_photo, String p_place_description) {
         this.p_name = p_name;
         this.p_time = p_time;
         this.p_place_string = p_place_string;
@@ -98,11 +98,11 @@ public class Mperson implements Serializable {
         this.p_photo = p_photo;
     }*/
 
-    public int getP_photo() {
+    public String getP_photo() {
         return p_photo;
     }
 
-    public void setP_photo(int p_photo) {
+    public void setP_photo(String p_photo) {
         this.p_photo = p_photo;
     }
 }
