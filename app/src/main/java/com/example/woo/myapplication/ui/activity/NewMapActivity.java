@@ -333,7 +333,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 //        }
 
 
-        // 지도 타입 변경 스피너 등록
+        // 지도 타입 변경 스피너 등록!
         final ArrayAdapter<CharSequence> mapAdapter;
         mapAdapter = ArrayAdapter.createFromResource(this, R.array.map_types,
                 android.R.layout.simple_spinner_item);
