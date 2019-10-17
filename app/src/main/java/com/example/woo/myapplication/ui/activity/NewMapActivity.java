@@ -70,7 +70,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     public String received_index2;
     public String received_content2;
     public int color_impossible;
-
+    public String m_id;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,7 +127,10 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
         Intent intent = getIntent();
+        m_id = intent.getStringExtra("m_id");
         mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
+        mapInfo.setM_id(m_id);
+
         double[] vertex_double = intent.getDoubleArrayExtra("vertex");
         for (int i = 0; i < vertex_double.length; i += 2) {
             int index = i / 2;
@@ -688,7 +691,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                             System.out.println("complete@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
                             String area_districtNum = ""+districtNum;
                             String area_index = ""+index;
-                            complete_data.put("mid",mapInfo.getM_id());
+                            complete_data.put("mid",m_id);
                             complete_data.put("districtNum",area_districtNum);
                             complete_data.put("index",area_index);
                             mSocket.emit("complete", complete_data);
@@ -709,7 +712,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                             JSONObject non_complete_data = new JSONObject();
                             String area_districtNum = ""+districtNum;
                             String area_index = ""+index;
-                            non_complete_data.put("mid", mapInfo.getM_id());
+                            non_complete_data.put("mid", m_id);
                             non_complete_data.put("districtNum",area_districtNum);
                             non_complete_data.put("index",area_index);
                             non_complete_data.put("content",content);

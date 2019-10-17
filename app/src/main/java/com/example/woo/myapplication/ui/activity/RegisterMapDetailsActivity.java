@@ -420,8 +420,10 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                     public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
                         OverlapExamineData data = response.body();
                         if(data.getOverlap_examine().equals("success")){
+                            String m_id = data.getM_id();
                             listVieww_popup._listview_popup_activity.finish();
                             intent.putExtra("mapInfo", mapInfo);
+                            intent.putExtra("m_id",m_id);
 
                             List<LatLng> coords = district.getCoords();
                             double[] coords_double = new double[8];
