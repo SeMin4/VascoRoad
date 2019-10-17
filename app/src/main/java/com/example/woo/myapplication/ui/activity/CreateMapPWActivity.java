@@ -65,6 +65,14 @@ public class CreateMapPWActivity extends Activity {
         }
     }
 
+    public void mOnCancel(View v){
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
+
+        //액티비티(팝업) 닫기
+        finish();
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
