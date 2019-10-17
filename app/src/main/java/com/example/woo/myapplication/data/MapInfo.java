@@ -21,41 +21,77 @@ public class MapInfo implements Serializable {
     private String m_left;
     private String m_right;
     private String m_unit_scale;
-    private String m_northWest;
-    private String m_northEast;
-    private String m_southWest;
-    private String m_southEast;
+    private String m_northWest_latitude;
+    private String m_northWest_longitude;
+    private String m_northEast_latitude;
+    private String m_northEast_longitude;
+    private String m_southWest_latitude;
+    private String m_southWest_longitude;
+    private String m_southEast_latitude;
+    private String m_southEast_longitude;
 
-    public String getM_northWest() {
-        return m_northWest;
+    public String getM_northWest_latitude() {
+        return m_northWest_latitude;
     }
 
-    public void setM_northWest(String m_northWest) {
-        this.m_northWest = m_northWest;
+    public void setM_northWest_latitude(String m_northWest_latitude) {
+        this.m_northWest_latitude = m_northWest_latitude;
     }
 
-    public String getM_northEast() {
-        return m_northEast;
+    public String getM_northWest_longitude() {
+        return m_northWest_longitude;
     }
 
-    public void setM_northEast(String m_northEast) {
-        this.m_northEast = m_northEast;
+    public void setM_northWest_longitude(String m_northWest_longitude) {
+        this.m_northWest_longitude = m_northWest_longitude;
     }
 
-    public String getM_southWest() {
-        return m_southWest;
+    public String getM_northEast_latitude() {
+        return m_northEast_latitude;
     }
 
-    public void setM_southWest(String m_southWest) {
-        this.m_southWest = m_southWest;
+    public void setM_northEast_latitude(String m_northEast_latitude) {
+        this.m_northEast_latitude = m_northEast_latitude;
     }
 
-    public String getM_southEast() {
-        return m_southEast;
+    public String getM_northEast_longitude() {
+        return m_northEast_longitude;
     }
 
-    public void setM_southEast(String m_southEast) {
-        this.m_southEast = m_southEast;
+    public void setM_northEast_longitude(String m_northEast_longitude) {
+        this.m_northEast_longitude = m_northEast_longitude;
+    }
+
+    public String getM_southWest_latitude() {
+        return m_southWest_latitude;
+    }
+
+    public void setM_southWest_latitude(String m_southWest_latitude) {
+        this.m_southWest_latitude = m_southWest_latitude;
+    }
+
+    public String getM_southWest_longitude() {
+        return m_southWest_longitude;
+    }
+
+    public void setM_southWest_longitude(String m_southWest_longitude) {
+        this.m_southWest_longitude = m_southWest_longitude;
+    }
+
+    public String getM_southEast_latitude() {
+        return m_southEast_latitude;
+    }
+
+    public void setM_southEast_latitude(String m_southEast_latitude) {
+        this.m_southEast_latitude = m_southEast_latitude;
+    }
+
+    public String getM_southEast_longitude() {
+        return m_southEast_longitude;
+    }
+
+    public void setM_southEast_longitude(String m_southEast_longitude) {
+        this.m_southEast_longitude = m_southEast_longitude;
     }
 
     public String getM_id() {

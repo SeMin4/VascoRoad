@@ -45,7 +45,7 @@ public class EnterMapPWActivity extends Activity {
             intent.putExtra("mapInfoIndex", mapInfo_index);
             setResult(RESULT_OK, intent);
             finish();
-        //}
+        //6+}
         //else{   // 비밀번호 불일치 일치할때까지 못넘어감 ㅎㅎ
         //    Toast.makeText(this, "비밀번호를 다시 확인하세요.", Toast.LENGTH_LONG).show();
         //}
