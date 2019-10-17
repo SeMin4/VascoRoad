@@ -31,12 +31,13 @@ import retrofit2.Retrofit;
 
 public class listVieww_popup extends Activity implements View.OnClickListener{
     ListView listView;
-    ListAdapter adapter;
+    public static Activity _listview_popup_activity;
+    static ListAdapter adapter;
     private LatLng missingPoint;
     private ArrayList<MapInfo> maplist;
     Retrofit retrofit = null;
     MyGlobals.RetrofitExService retrofitExService =null;
-
+    Mperson selected;
     public class ListAdapter extends BaseAdapter
         {
             ArrayList<MapInfo> listViewItemList = new ArrayList<MapInfo>();
@@ -100,13 +101,14 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popup);
+        _listview_popup_activity = listVieww_popup.this;
         retrofit = MyGlobals.getInstance().getRetrofit();
         retrofitExService = MyGlobals.getInstance().getRetrofitExService();
         listView = (ListView)findViewById(R.id.listView_popup);
         adapter = new ListAdapter();
         listView.setAdapter(adapter);
 
-        Mperson selected = (Mperson)getIntent().getSerializableExtra("selecteditem");
+        selected = (Mperson)getIntent().getSerializableExtra("selecteditem");
 
         ImageView profile = (ImageView)findViewById(R.id.ImageView_popuptitle);
         TextView name = (TextView)findViewById(R.id.TextView_Name);
@@ -147,7 +149,7 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
                 System.out.println("onResponse@@@@@@@@@@@@");
                 maplist = response.body();
                 System.out.println("maplist _size : "+maplist.size());
-                System.out.println("place : "+maplist.get(0).getM_place_string());
+//                System.out.println("place : "+maplist.get(0).getM_place_string());
                 for(int i =0;i<maplist.size();i++){
                     adapter.addItem(maplist.get(i));
                 }
@@ -178,6 +180,8 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
         Intent intent = new Intent(this, RegisterNewMapActivity.class);
         intent.putExtra("missing_lat", missingPoint.latitude);
         intent.putExtra("missing_long", missingPoint.longitude);
+        intent.putExtra("p_id",(CharSequence)selected.getP_id());
+        intent.putExtra("m_place_string", (CharSequence)selected.getP_place_string());
         startActivityForResult(intent, 1);
     }
 }

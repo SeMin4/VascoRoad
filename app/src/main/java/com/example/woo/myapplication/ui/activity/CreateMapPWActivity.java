@@ -50,7 +50,7 @@ public class CreateMapPWActivity extends Activity {
     public void mOnAccept(View v){
         String strPassword1 = password1.getText().toString();
         String strPassword2 = password2.getText().toString();
-        if (strPassword1.equals(strPassword2)) {
+        if (strPassword1.equals(strPassword2)&&!strPassword1.equals("")&&!strPassword2.equals("")) {
             Toast.makeText(this,
                     "Matching passwords="+strPassword2, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent();

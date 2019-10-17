@@ -103,6 +103,10 @@ public class MyGlobals {
 
         @GET("person/maplist?")
         Call<ArrayList<MapInfo>> getPersonMapData(@Query("p_id") String p_id);
+
+        @FormUrlEncoded
+        @POST("/map/make")
+        Call<OverlapExamineData> postMapMake(@FieldMap HashMap<String,String> param);
     }
 
 }
