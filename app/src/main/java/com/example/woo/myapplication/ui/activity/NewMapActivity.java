@@ -1,17 +1,12 @@
 package com.example.woo.myapplication.ui.activity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.ActionBar;
@@ -25,7 +20,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.woo.myapplication.R;
-import com.example.woo.myapplication.data.District;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.utils.LocationDistance;
 import com.naver.maps.geometry.LatLng;
@@ -36,28 +30,25 @@ import com.naver.maps.map.CameraUpdateParams;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.Projection;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
+public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
-    private FusedLocationSource locationSource;
-    private MapInfo mapInfo;
-    LatLng[] vertex_list = new LatLng[4];
-    private LatLngBounds mapBounds;
-    private ArrayList<Marker> markers = new ArrayList<>();
     private ArrayList<ArrayList<PolygonOverlay>> total_districts;
+    private FusedLocationSource locationSource;
+    private LatLng[] vertex_list = new LatLng[4];
     private PolygonOverlay big_polygon;
+    private LatLngBounds mapBounds;
+    private MapInfo mapInfo;
     private int COLOR_LINE_BLACK;
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
@@ -96,7 +87,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Intent intent = getIntent();
         mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
         double[] vertex_double = intent.getDoubleArrayExtra("vertex");
-
         for (int i = 0; i < vertex_double.length; i += 2) {
             int index = i / 2;
             Log.d("Map", "vertex index" + index);
@@ -106,6 +96,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 new LatLng(vertex_list[3].latitude, vertex_list[3].longitude),
                 new LatLng(vertex_list[1].latitude, vertex_list[1].longitude)
         );
+
 
     }
 
@@ -214,7 +205,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         /* 회전변환 적용한 각 district의 중심점 마커 표시 */
 //        ArrayList<Marker> mm = getRotateCenters(center_coord, mapInfo.getUnit_scale());
-//        Log.d("MapActivity", "size: " + mm.size());
+//        Log.d("NewMapActivity", "size: " + mm.size());
 //        for(Marker m : mm){
 //            m.setMap(naverMap);
 //        }
@@ -452,7 +443,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         temp_lng - offset_lng
                 );
                 //LatLng rotate_point = LocationDistance.rotateTransformation(center, point, mapInfo.getBearing());
-                Log.d("MapActivity::point", point.latitude + " / " + point.longitude);
+                Log.d("NewMapActivity::point", point.latitude + " / " + point.longitude);
                 coords.add(point);
                 Marker m = new Marker();
                 m.setPosition(point);
@@ -539,7 +530,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public void mOnPopupClick(int districtNum, int index) {
-        Intent intent = new Intent(this, PopUpActivity.class);
+        Intent intent = new Intent(this, DistrictRecordActivity.class);
         intent.putExtra("district", districtNum);
         intent.putExtra("index", index);
         startActivityForResult(intent, 1);

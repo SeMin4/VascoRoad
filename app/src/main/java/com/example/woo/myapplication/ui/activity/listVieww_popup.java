@@ -31,7 +31,8 @@ import retrofit2.Retrofit;
 public class listVieww_popup extends Activity implements View.OnClickListener{
     ListView listView;
     ListAdapter adapter;
-    private final LatLng missingPoint = new LatLng(35.886880, 128.608543); // 임시
+    private LatLng missingPoint;
+    private ArrayList<MapInfo> maplist;
     Retrofit retrofit = null;
     MyGlobals.RetrofitExService retrofitExService =null;
 
@@ -117,13 +118,16 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
         time.setText((CharSequence)selected.getP_time());
         place.setText((CharSequence)selected.getP_place_string());
         desc.setText((CharSequence)selected.getP_place_description());
+        missingPoint = new LatLng(
+                Double.parseDouble(selected.getP_place_latitude()),
+                Double.parseDouble(selected.getP_place_longitude())
+        );
         //***************************해당실종자***********
-
         retrofitExService.getPersonMapData( selected.getP_id()).enqueue(new Callback<ArrayList<MapInfo>>() {
             @Override
             public void onResponse(Call<ArrayList<MapInfo>> call, Response<ArrayList<MapInfo>> response) {
                 System.out.println("onResponse@@@@@@@@@@@@");
-                ArrayList<MapInfo> maplist = response.body();
+                maplist = response.body();
                 System.out.println("maplist _size : "+maplist.size());
                 System.out.println("place : "+maplist.get(0).getM_place_string());
                 for(int i =0;i<maplist.size();i++){
@@ -144,7 +148,8 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Intent intent = new Intent(getApplicationContext(), EmptyRoomActivity.class);
+                Intent intent = new Intent(getApplicationContext(), ExistingMapActivity.class);
+                intent.putExtra("mapInfo", maplist.get(position));
                 startActivity(intent);
             }
         });

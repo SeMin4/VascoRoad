@@ -3,7 +3,6 @@ package com.example.woo.myapplication.ui.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,7 +10,6 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,7 +26,6 @@ import com.naver.maps.map.CameraUpdateParams;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.Projection;
 import com.naver.maps.map.overlay.ArrowheadPathOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolygonOverlay;
@@ -100,21 +97,9 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
 
     public void mOnClick(View v){
         Toast.makeText(this, "새로운 맵이 생성되었습니다.", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, MapActivity.class);
 
-        mapInfo.setM_vertical(mapInfo.getM_up() + mapInfo.getM_down());
-        mapInfo.setM_horizontal(mapInfo.getM_left() + mapInfo.getM_right());
-        intent.putExtra("mapInfo", mapInfo);
-
-        List<LatLng> coords = district.getCoords();
-        double[] coords_double = new double[8];
-        int index = 0;
-        for(int i = 0; i < coords.size(); i++){
-            coords_double[index++] = coords.get(i).latitude;
-            coords_double[index++] = coords.get(i).longitude;
-        }
-        intent.putExtra("vertex", coords_double);
-        startActivityForResult(intent, 1);
+        Intent intent_pw = new Intent(this, CreateMapPWActivity.class);
+        startActivityForResult(intent_pw, 1);
     }
 
     @Override
@@ -183,7 +168,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                             int color = ResourcesCompat.getColor(getResources(), R.color.light_gold, getTheme());
                             district.setColor(ColorUtils.setAlphaComponent(color, 150));
 
-                            List<LatLng> vertex = findVertexByCenter(naverMap.getProjection(), tempPoints);
+                            List<LatLng> vertex = LocationDistance.findVertexByCenter(naverMap.getProjection(), tempPoints);
                             district.setCoords(vertex);
                             district.setMap(naverMap);
 
@@ -231,7 +216,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         downArrow.setMap(naverMap);
 
                         if(tempPoints[3] != null){
-                            List<LatLng> vertex = findVertexByCenter(naverMap.getProjection(), tempPoints);
+                            List<LatLng> vertex = LocationDistance.findVertexByCenter(naverMap.getProjection(), tempPoints);
                             district.setCoords(vertex);
                             district.setMap(naverMap);
 
@@ -277,7 +262,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         leftArrow.setMap(naverMap);
 
                         if(tempPoints[3] != null){
-                            List<LatLng> vertex = findVertexByCenter(naverMap.getProjection(), tempPoints);
+                            List<LatLng> vertex = LocationDistance.findVertexByCenter(naverMap.getProjection(), tempPoints);
                             district.setCoords(vertex);
                             district.setMap(naverMap);
 
@@ -322,7 +307,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                         rightArrow.setMap(naverMap);
 
                         if(tempPoints[3] != null){
-                            List<LatLng> vertex = findVertexByCenter(naverMap.getProjection(), tempPoints);
+                            List<LatLng> vertex = LocationDistance.findVertexByCenter(naverMap.getProjection(), tempPoints);
                             district.setCoords(vertex);
                             district.setMap(naverMap);
 
@@ -352,6 +337,34 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1){
+            if (resultCode == RESULT_OK) {
+                String password = data.getStringExtra("password");  // 지도 비밀번호
+                Intent intent = new Intent(this, NewMapActivity.class);
+
+                mapInfo.setM_vertical(mapInfo.getM_up() + mapInfo.getM_down());
+                mapInfo.setM_horizontal(mapInfo.getM_left() + mapInfo.getM_right());
+                intent.putExtra("mapInfo", mapInfo);
+
+                List<LatLng> coords = district.getCoords();
+                double[] coords_double = new double[8];
+                int index = 0;
+                for(int i = 0; i < coords.size(); i++){
+                    coords_double[index++] = coords.get(i).latitude;
+                    coords_double[index++] = coords.get(i).longitude;
+                }
+                intent.putExtra("whichPath", 1);
+                intent.putExtra("vertex", coords_double);
+                startActivityForResult(intent, 1);
+            }
+        }
+
+    }
+
+
     public ArrayList<String> createSpinnerList(int scale){
         int offset = scale * 3;
 
@@ -377,19 +390,6 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
         return polygon;
     }
 
-    private ArrayList<LatLng> findVertexByCenter(Projection projection, LatLng[] centers){
-        PointF up = projection.toScreenLocation(centers[0]);
-        PointF down = projection.toScreenLocation(centers[1]);
-        PointF left = projection.toScreenLocation(centers[2]);
-        PointF right = projection.toScreenLocation(centers[3]);
 
-        ArrayList<LatLng> vertex = new ArrayList<>();
-        vertex.add(projection.fromScreenLocation(new PointF(left.x, up.y)));    // LU
-        vertex.add(projection.fromScreenLocation(new PointF(right.x, up.y)));   // RU
-        vertex.add(projection.fromScreenLocation(new PointF(right.x, down.y))); // RD
-        vertex.add(projection.fromScreenLocation(new PointF(left.x, down.y)));  // LD
-
-        return vertex;
-    }
 
 }

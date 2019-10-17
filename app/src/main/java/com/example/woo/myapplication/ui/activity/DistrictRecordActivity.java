@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.example.woo.myapplication.R;
 
 
-public class PopUpActivity extends Activity {
+public class DistrictRecordActivity extends Activity {
     private int districtNum;
     private int index;
 

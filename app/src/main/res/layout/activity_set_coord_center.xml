@@ -36,27 +36,6 @@
         android:layout_marginStart="4dp"
         app:layout_constraintBottom_toTopOf="@+id/map_fragment"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_layout"
-        app:layout_constraintEnd_toStartOf="@+id/textView_bearing"/>
-
-    <TextView
-        android:id="@+id/textView_bearing"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:text="@string/label_bearing"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/map_fragment"
-        app:layout_constraintStart_toEndOf="@+id/spinner_map_type"
-        app:layout_constraintTop_toBottomOf="@+id/title_layout" />
-
-    <TextView
-        android:id="@+id/textView_bearing_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="0"
-        app:layout_constraintBottom_toTopOf="@+id/map_fragment"
-        app:layout_constraintStart_toEndOf="@+id/textView_bearing"
         app:layout_constraintTop_toBottomOf="@+id/title_layout" />
 
     <FrameLayout

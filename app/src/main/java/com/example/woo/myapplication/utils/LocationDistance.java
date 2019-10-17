@@ -1,8 +1,12 @@
 package com.example.woo.myapplication.utils;
 
+import android.graphics.PointF;
 import android.util.Log;
 
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.Projection;
+
+import java.util.ArrayList;
 
 public class LocationDistance {
 
@@ -71,8 +75,21 @@ public class LocationDistance {
         double longitude = cos_theta*(before.longitude - center.longitude) + sin_theta*(before.latitude - center.latitude) + center.longitude;
         double latitude = (-sin_theta)*(before.longitude - center.longitude) + cos_theta*(before.latitude - center.latitude) + center.latitude;
 
-//        double longitude = cos_theta*(before.longitude - center.longitude) + sin_theta*(before.latitude - center.latitude);
-//        double latitude = (-sin_theta)*(before.longitude - center.longitude) + cos_theta*(before.latitude - center.latitude);
         return new LatLng(latitude, longitude);
+    }
+
+    public static ArrayList<LatLng> findVertexByCenter(Projection projection, LatLng[] centers){
+        PointF up = projection.toScreenLocation(centers[0]);
+        PointF down = projection.toScreenLocation(centers[1]);
+        PointF left = projection.toScreenLocation(centers[2]);
+        PointF right = projection.toScreenLocation(centers[3]);
+
+        ArrayList<LatLng> vertex = new ArrayList<>();
+        vertex.add(projection.fromScreenLocation(new PointF(left.x, up.y)));    // LU
+        vertex.add(projection.fromScreenLocation(new PointF(right.x, up.y)));   // RU
+        vertex.add(projection.fromScreenLocation(new PointF(right.x, down.y))); // RD
+        vertex.add(projection.fromScreenLocation(new PointF(left.x, down.y)));  // LD
+
+        return vertex;
     }
 }

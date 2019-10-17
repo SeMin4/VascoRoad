@@ -1,10 +1,8 @@
 package com.example.woo.myapplication.ui.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,14 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.woo.myapplication.R;
 import com.naver.maps.geometry.LatLng;
-import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
@@ -36,8 +31,7 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
     private LatLng missingCoord;
     private Marker missingPoint;
     private LatLng centerCoord;
-    private TextView textView_bearing;
-    private double bearing;
+    private double bearing = 0;
 
 
     @Override
@@ -46,8 +40,6 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
         setContentView(R.layout.activity_set_coord_center);
 
         registerNewMapActivity = RegisterNewMapActivity.this;
-
-        textView_bearing = findViewById(R.id.textView_bearing_value);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -103,6 +95,7 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
         naverMap.getUiSettings().setZoomControlEnabled(false);
         // 현위치 버튼 활성화
         naverMap.getUiSettings().setLocationButtonEnabled(true);
+        naverMap.getUiSettings().setRotateGesturesEnabled(false);
 
         // 카메라 현위치 이동
         CameraUpdate cameraUpdate = CameraUpdate.scrollTo(missingCoord);
@@ -142,10 +135,6 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
                 return "현재 중심위치";
             }
         });
-//        infoWindow.setAnchor(new PointF(0, 1));
-//        infoWindow.setOffsetX(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_x));
-//        infoWindow.setOffsetY(getResources().getDimensionPixelSize(R.dimen.custom_info_window_offset_y));
-//        infoWindow.setAdapter(new InfoWindowAdapter(this));
 
 
         naverMap.setOnMapClickListener((point, coord) -> {
@@ -161,47 +150,5 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
                 return true;
             });
         });
-
-        naverMap.addOnCameraChangeListener((reason, animated) -> {
-            CameraPosition position = naverMap.getCameraPosition();
-            bearing = position.bearing;
-            int value = (int) Math.floor(bearing);
-            Log.d("RegisterNewActivity", "current bearing = " + value);
-            textView_bearing.setText(Integer.toString(value));
-
-        });
-    }
-
-    private static class InfoWindowAdapter extends InfoWindow.ViewAdapter {
-        @NonNull
-        private final Context context;
-        private View rootView;
-        private ImageView icon;
-        private TextView text;
-
-        private InfoWindowAdapter(@NonNull Context context) {
-            this.context = context;
-        }
-
-        @NonNull
-        @Override
-        public View getView(@NonNull InfoWindow infoWindow) {
-            if (rootView == null) {
-                rootView = View.inflate(context, R.layout.view_center_info_window, null);
-                icon = rootView.findViewById(R.id.icon);
-                text = rootView.findViewById(R.id.text);
-            }
-
-            if (infoWindow.getMarker() != null) {
-                icon.setImageResource(R.drawable.ic_place_black_24dp);
-                text.setText((String)infoWindow.getMarker().getTag());
-            } else {
-                icon.setImageResource(R.drawable.ic_center_location_black_24dp);
-                text.setText("현재 중심점");
-            }
-
-            return rootView;
-        }
-
     }
 }
