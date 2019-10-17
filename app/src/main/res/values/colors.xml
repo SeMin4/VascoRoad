@@ -17,4 +17,6 @@
     <color name="line">#FFFFFF</color>
     <color name="impossible">#C83631</color>
     <color name="finish">#F5C102</color>
+    <color name = "burgundy">#760c0c</color>
+    <color name = "marsala">#8a3b3b</color>
 </resources>

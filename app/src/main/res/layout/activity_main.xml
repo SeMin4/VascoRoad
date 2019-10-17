@@ -5,13 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.MainActivity"
+    tools:context=".ui.activity.MainActivity"
     android:weightSum="13">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="end"
+            android:layout_marginTop="12dp"
             android:orientation="horizontal"
             android:layout_weight="1">
                 <Button
@@ -19,11 +20,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/myPage"
+                    android:background="@drawable/button_background2"
+                    android:textStyle="bold"
+                    android:textColor="#ffffff"
+                    android:layout_marginHorizontal="7dp"
                     android:layout_gravity="end"
                     >
                 </Button>
                 <Button
+                    android:layout_marginHorizontal="7dp"
                     android:id="@+id/logout_btn"
+                    android:background="@drawable/button_background2"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/logout"
@@ -40,19 +49,21 @@
             android:weightSum="10">
                 <Spinner
                     android:paddingLeft="12dp"
+
                     android:paddingRight="12dp"
                     android:paddingTop="12dp"
                     android:id="@+id/spinner"
                     android:entries="@array/district"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_weight="5.5"
                     android:prompt="@string/district_prompt"/>
                 <EditText
                     android:id="@+id/search"
                     android:layout_width="0dp"
+                    android:hint="실종자 이름 입력"
                     android:layout_height="match_parent"
-                    android:layout_weight="7">
+                    android:layout_weight="4.5">
                 </EditText>
         </LinearLayout>
         <LinearLayout

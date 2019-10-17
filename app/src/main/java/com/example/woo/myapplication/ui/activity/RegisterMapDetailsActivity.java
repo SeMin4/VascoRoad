@@ -21,6 +21,7 @@ import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.OverlapExamineData;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapInfo;
+import com.example.woo.myapplication.data.Mperson;
 import com.example.woo.myapplication.utils.LocationDistance;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
@@ -35,6 +36,7 @@ import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.MarkerIcons;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,9 +59,12 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
     protected String m_place_string;
     private Retrofit retrofit;
     private MyGlobals.RetrofitExService retrofitExService;
+    Mperson selected;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        selected = (Mperson) getIntent().getSerializableExtra("selecteditem");
+
         setContentView(R.layout.activity_set_map_details);
         registerMapDetailsActivity = RegisterMapDetailsActivity.this;
         ActionBar actionBar = getSupportActionBar();
@@ -434,6 +439,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                             }
                             intent.putExtra("whichPath", 1);
                             intent.putExtra("vertex", coords_double);
+                            intent.putExtra("selecteditem", selected);
                             startActivityForResult(intent, 1);
                         }
                         else{

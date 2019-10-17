@@ -6,13 +6,13 @@
     android:background="@color/white"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
-    tools:context=".ui.UnusualRecordActivity">
+    tools:context=".ui.activity.UnusualRecordActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/unusual_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_purple"
+        android:background="@color/burgundy"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,8 @@
             android:layout_height="53dp"
             android:gravity="center"
             android:text="@string/label_unusual_location"
-            android:textColor="#fff"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

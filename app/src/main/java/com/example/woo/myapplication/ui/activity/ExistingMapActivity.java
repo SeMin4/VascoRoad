@@ -17,12 +17,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapDetail;
 import com.example.woo.myapplication.data.MapInfo;
+import com.example.woo.myapplication.data.Mperson;
 import com.example.woo.myapplication.utils.LocationDistance;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
@@ -75,6 +78,9 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     public int color_impossible;
     private Retrofit retrofit;
     private MyGlobals.RetrofitExService retrofitExService;
+    Button mpersoninfo;
+
+    Mperson selected;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,6 +89,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
         Intent intent = getIntent();
         mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
+        selected = (Mperson) intent.getSerializableExtra("selecteditem");
 
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());
@@ -119,6 +126,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
 
 
+        mpersoninfo = findViewById(R.id.button_mPerson_info);
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -138,6 +146,17 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
 
         // mapInfo로 mapDetail정보까지 가져와야 함.
+
+    }
+    public void mOnInfoClick(View v) {
+
+        //Toast.makeText(this, "여기 준희가 만든 실종자 정보 팝업화면 비스므리하게 연결하면 됨.", Toast.LENGTH_SHORT).show();
+
+        //정보받고(위에서 selected에 저장햇ㅇㅁ,)
+        //그대로 전달 -> 새로운 액티비ㅣㅌ 종나 만들어야함
+        Intent intent = new Intent(this,MissingInfoActivity.class);
+        intent.putExtra("selecteditem",selected);
+        startActivityForResult(intent,1);
 
     }
 
@@ -705,9 +724,6 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         startActivityForResult(intent, 1);
     }
 
-    public void mOnInfoClick(View v) {
-        Toast.makeText(this, "여기 준희가 만든 실종자 정보 팝업화면 비스므리하게 연결하면 됨.", Toast.LENGTH_SHORT).show();
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

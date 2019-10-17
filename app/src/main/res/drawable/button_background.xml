@@ -4,9 +4,8 @@
     <!--원래상태일때-->
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="80dp">
-            </corners>
-            <solid android:color="@color/colorPrimary">
+
+            <solid android:color="@color/burgundy">
 
             </solid>
 
@@ -15,15 +14,4 @@
     </item>
 
     <!--버튼을 눌럿을 떄-->
-    <item android:state_pressed="true">
-
-        <shape android:shape="rectangle">
-            <corners android:radius="80dp">
-            </corners>
-            <solid android:color="@color/colorGray">
-
-            </solid>
-
-        </shape>
-    </item>
 </selector>

@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="#eeeeee"
     android:orientation="vertical"
-    tools:context=".ui.users.LoginErrorActivity">
+    tools:context=".ui.activity.LoginErrorActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,8 @@
             android:text="@string/login_err"
             android:textSize="20sp"
             android:gravity="center"
-            android:background="@color/colorPrimary">
+            android:textColor="#ffffff"
+            android:background="@color/burgundy">
         </TextView>
     </LinearLayout>
     <LinearLayout
