@@ -405,8 +405,8 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 - LocationDistance.LongitudeInDifference(start_lat, offset * left_dist);
 
 
-        double row = (Double.parseDouble(mapInfo.getM_left()) + Double.parseDouble(mapInfo.getM_right())) / offset;
-        double col = (Double.parseDouble(mapInfo.getM_up()) + Double.parseDouble(mapInfo.getM_down())) / offset;
+        double col = (Double.parseDouble(mapInfo.getM_left()) + Double.parseDouble(mapInfo.getM_right())) / offset;
+        double row = (Double.parseDouble(mapInfo.getM_up()) + Double.parseDouble(mapInfo.getM_down())) / offset;
 
 
         ArrayList<Marker> markers = new ArrayList<>();
