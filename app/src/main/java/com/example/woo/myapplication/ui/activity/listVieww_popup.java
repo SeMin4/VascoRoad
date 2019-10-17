@@ -13,60 +13,59 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.data.Mperson;
 import com.naver.maps.geometry.LatLng;
 
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+
 public class listVieww_popup extends Activity implements View.OnClickListener{
     ListView listView;
     ListAdapter adapter;
     private final LatLng missingPoint = new LatLng(35.886880, 128.608543); // 임시
-
+    Retrofit retrofit = null;
+    MyGlobals.RetrofitExService retrofitExService =null;
 
     public class ListAdapter extends BaseAdapter
-    {
-        ArrayList<ListViewItem_popup> listViewItemList = new ArrayList<ListViewItem_popup>();
-
-        public ListAdapter()
-        {}
-        @Override
-        public int getCount() {
-            return listViewItemList.size();
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent)
         {
-            final int pos = position;
-            final Context context = parent.getContext();
+            ArrayList<MapInfo> listViewItemList = new ArrayList<MapInfo>();
 
-            if(convertView==null)
-            {
-               LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-               convertView = inflater.inflate(R.layout.custom_listview_popup,parent,false);
+            public ListAdapter()
+            {}
+            @Override
+            public int getCount() {
+                return listViewItemList.size();
             }
 
-            // 화면에 표시될 View(Layout이 IT터 위젯에 대한 참조 획득
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent)
+            {
+                final int pos = position;
+                final Context context = parent.getContext();
 
-            TextView name = (TextView) convertView.findViewById(R.id.TextView_Searchingname) ;
-            TextView place = (TextView) convertView.findViewById(R.id.TextView_Searchingplace) ;
+                if(convertView==null)
+                {
+                    LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    convertView = inflater.inflate(R.layout.custom_listview_popup,parent,false);
+                }
 
+                // 화면에 표시될 View(Layout이 IT터 위젯에 대한 참조 획득
 
-
-            ListViewItem_popup listViewItem = listViewItemList.get(position);
-
-            // 아이템 내 각 위젯에 데이터 반영
-            //iconImageView.setImageDrawable(listViewItem.getIcon());
-            name.setText(listViewItem.getName());
-
-            place.setText(listViewItem.getPlace());
-
-
-
-            return convertView;
+                TextView place = (TextView) convertView.findViewById(R.id.TextView_Searchingplace) ;
+                MapInfo listViewItem = listViewItemList.get(position);
+                // 아이템 내 각 위젯에 데이터 반영;
+                // place.setText("실종지점 위도 : "+listViewItem.getM_center_point_latitude() + " 실종지점 경도 : "+listViewItem.getM_center_point_longitude());
+                place.setText(listViewItem.getM_place_string());
+                return convertView;
         }
         @Override
         public long getItemId(int position) {
@@ -81,28 +80,29 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
 
         // 아이템 데이터 추가
 
-        public void addItem(ListViewItem_popup item)
+        public void addItem(MapInfo item)
         {
             listViewItemList.add(item);
         }
 
     }
+
+
     @Override
-    public void onClick(View view)
-    {}
+    public void onClick(View v) {
 
-
-
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
-        //맞나 모르겠는데 눈치껏 일단 짜봄.....
         setContentView(R.layout.activity_popup);
+        retrofit = MyGlobals.getInstance().getRetrofit();
+        retrofitExService = MyGlobals.getInstance().getRetrofitExService();
         listView = (ListView)findViewById(R.id.listView_popup);
         adapter = new ListAdapter();
+        listView.setAdapter(adapter);
 
         Mperson selected = (Mperson)getIntent().getSerializableExtra("selecteditem");
 
@@ -119,16 +119,26 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
         desc.setText((CharSequence)selected.getP_place_description());
         //***************************해당실종자***********
 
+        retrofitExService.getPersonMapData( selected.getP_id()).enqueue(new Callback<ArrayList<MapInfo>>() {
+            @Override
+            public void onResponse(Call<ArrayList<MapInfo>> call, Response<ArrayList<MapInfo>> response) {
+                System.out.println("onResponse@@@@@@@@@@@@");
+                ArrayList<MapInfo> maplist = response.body();
+                System.out.println("maplist _size : "+maplist.size());
+                System.out.println("place : "+maplist.get(0).getM_place_string());
+                for(int i =0;i<maplist.size();i++){
+                    adapter.addItem(maplist.get(i));
+                }
+                adapter.notifyDataSetChanged();
+            }
 
-        //리스트뷰********************************
-        adapter.addItem(new ListViewItem_popup("이규진","대구시 북구 대현동"));
-        listView.setAdapter(adapter);
-        adapter.addItem(new ListViewItem_popup("이규진","대구시 동구 신암동"));
-        listView.setAdapter(adapter);
-        adapter.addItem(new ListViewItem_popup("이규진","대구시 북구 침산동"));
-        listView.setAdapter(adapter);
-        adapter.addItem(new ListViewItem_popup("이규진","대구 어딘가"));
-        listView.setAdapter(adapter);
+            @Override
+            public void onFailure(Call<ArrayList<MapInfo>> call, Throwable t) {
+                System.out.println("onFailure@@@@@@@@@@@@@@");
+                Toast.makeText(getApplicationContext(),"지도 띄우기 실패",Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         //리스트뷰를 누르면 해당 지역의 수색 상황을 보여준다.
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
