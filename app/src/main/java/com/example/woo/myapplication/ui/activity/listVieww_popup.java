@@ -134,7 +134,7 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
             float rotation = 0;
 
             Picasso.with(getApplicationContext())
-                    .load("http://13.125.95.139:9000/mperson_picture/"+selected.getP_photo())
+                    .load("http://13.125.174.158:9000/mperson_picture/"+selected.getP_photo())
                     .fit()
                     .rotate(90f)
                     .into(profile);

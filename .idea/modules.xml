@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Documents-VascoRoad.iml" filepath="$PROJECT_DIR$/Documents-VascoRoad.iml" />
       <module fileurl="file://$PROJECT_DIR$/VascoRoad.iml" filepath="$PROJECT_DIR$/VascoRoad.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/VascoRoad-app.iml" filepath="$PROJECT_DIR$/app/VascoRoad-app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/VascoRoad2.iml" filepath="$PROJECT_DIR$/VascoRoad2.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/VascoRoad2-app.iml" filepath="$PROJECT_DIR$/app/VascoRoad2-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

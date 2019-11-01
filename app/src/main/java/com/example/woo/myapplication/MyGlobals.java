@@ -71,7 +71,7 @@ public class MyGlobals {
     }
 
     public interface RetrofitExService{ //interface 선언
-        public static final String URL = "http://13.125.95.139:9000/"; //서버 주소와 포트번호
+        public static final String URL = "http://13.125.174.158:9000/"; //서버 주소와 포트번호
 
         @GET("/mperson")
         Call<ArrayList<Mperson>> getData();

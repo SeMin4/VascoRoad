@@ -95,7 +95,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
         try{
             if(mSocket == null) {
-                mSocket = IO.socket("http://13.125.95.139:9000");
+                mSocket = IO.socket("http://13.125.174.158:9000");
                 mSocket.connect();
                 //이벤트 등록
                 mSocket.on(Socket.EVENT_CONNECT, onConnect); //방 접속시;
