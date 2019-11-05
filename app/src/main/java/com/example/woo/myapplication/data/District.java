@@ -1,17 +1,15 @@
 package com.example.woo.myapplication.data;
 
 import android.support.annotation.Nullable;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.graphics.ColorUtils;
 
-import com.example.woo.myapplication.R;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.overlay.PolygonOverlay;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class District {
     private ArrayList<District> children;
@@ -35,8 +33,8 @@ public class District {
         this.southEast = new LatLng(southWest.latitude, northEast.longitude);
         grid = new PolygonOverlay();
         grid.setCoords(Arrays.asList(
-                this.northEast,
                 this.northWest,
+                this.northEast,
                 this.southEast,
                 this.southWest
         ));
@@ -50,8 +48,8 @@ public class District {
 
         grid = new PolygonOverlay();
         grid.setCoords(Arrays.asList(
-                this.northEast,
                 this.northWest,
+                this.northEast,
                 this.southEast,
                 this.southWest
         ));
