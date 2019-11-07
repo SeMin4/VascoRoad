@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import com.example.woo.myapplication.data.MapInfo;
 import android.os.health.SystemHealthManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,9 +23,10 @@ import android.widget.Toast;
 
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
-import com.example.woo.myapplication.data.MapInfo;
+
 import com.example.woo.myapplication.data.Mperson;
 import com.example.woo.myapplication.utils.LocationDistance;
+import com.google.gson.JsonObject;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraAnimation;
@@ -80,6 +82,12 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         setContentView(R.layout.activity_map);
 
 
+        Intent intent = getIntent();
+        m_id = intent.getStringExtra("m_id");
+        mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
+        mapInfo.setM_id(m_id);
+        selected = (Mperson)intent.getSerializableExtra("selecteditem");
+
 
 
         RegisterNewMapActivity registerNewMapActivity =
@@ -99,7 +107,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 mSocket.connect();
                 //이벤트 등록
                 mSocket.on(Socket.EVENT_CONNECT, onConnect); //방 접속시;
-                mSocket.on("attendRoom", attendRoom);// 방접속시 user 아이디 보내기
+                mSocket.on("makeroom", makeroom);// 방접속시 user 아이디 보내기
                 mSocket.on("complete", complete);
                 mSocket.on("not_complete", not_complete);
             }
@@ -109,9 +117,10 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
         JSONObject data = new JSONObject();
         try{
-            System.out.println("attendRoom@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
+            System.out.println("makeRoom@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
             data.put("id", MyGlobals.getInstance().getUser().getU_id());
-            mSocket.emit("attendRoom",data);
+            data.put("mapid", mapInfo.getM_id());
+            mSocket.emit("makeroom",data);
         }catch(JSONException e){
             System.out.println("attendRoom 에러");
             e.printStackTrace();
@@ -132,11 +141,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
-        Intent intent = getIntent();
-        m_id = intent.getStringExtra("m_id");
-        mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
-        mapInfo.setM_id(m_id);
-        selected = (Mperson)intent.getSerializableExtra("selecteditem");
 
         double[] vertex_double = intent.getDoubleArrayExtra("vertex");
         for (int i = 0; i < vertex_double.length; i += 2) {
@@ -152,6 +156,19 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     }
 
+    private Emitter.Listener makeroom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            try{
+                JSONObject receivedData = (JSONObject)args[0];
+                System.out.println("msg : @@@@@@@@@@@@@@@"+ receivedData.getString("msg") );
+                System.out.println("data : @@@@@@@@@@@@@@@" + receivedData.getString("data"));
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+    };
+
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -160,7 +177,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         }
     }; //제일처음 접속
 
-    private Emitter.Listener attendRoom = new Emitter.Listener() {
+    /*private Emitter.Listener attendRoom = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             try{
@@ -174,7 +191,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 e.printStackTrace();
             }
         }
-    };
+    };*/
 
     private Emitter.Listener complete = new Emitter.Listener() {
         @Override
@@ -234,7 +251,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
             e.printStackTrace();
         }*/
         mSocket.disconnect();
-        mSocket.off("attendRoom",attendRoom);
+        //mSocket.off("attendRoom",attendRoom);
         mSocket.off("complete",complete);
         mSocket.off("not_complete",not_complete);
         mSocket.close();

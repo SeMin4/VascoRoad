@@ -118,6 +118,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         try {
             System.out.println("attendRoom@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
             data.put("id", MyGlobals.getInstance().getUser().getU_id());
+            data.put("mapid", mapInfo.getM_id());
             mSocket.emit("attendRoom", data);
         } catch (JSONException e) {
             System.out.println("attendRoom 에러");
