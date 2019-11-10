@@ -50,12 +50,30 @@
                 android:id="@+id/TextView_Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="곽두식 (남, 14세)"
+                android:text="곽두식"
                 android:textSize="20dp"
                 android:textStyle="bold"
                 >
-
             </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text=" ("
+                ></TextView>
+            <TextView
+                android:id="@+id/TextView_Age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="14"
+                android:textSize="20dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:text="세)"
+                />
 
         </LinearLayout>
             <!--실종위치-->

@@ -19,8 +19,9 @@ public class Mperson implements Serializable {
 
     }
 
-    public Mperson(String p_name, String p_place_string, String p_time, String p_photo, String p_place_description) {
+    public Mperson(String p_name,String p_age, String p_place_string, String p_time, String p_photo, String p_place_description) {
         this.p_name = p_name;
+        this.p_age = p_age;
         this.p_time = p_time;
         this.p_place_string = p_place_string;
         this.p_place_description = p_place_description;

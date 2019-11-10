@@ -25,6 +25,7 @@ public class MpersonItemView extends LinearLayout {
     TextView textView2; //실종장소
     TextView textView3; //실종시간
     ImageView imageView; // 실종자 사진
+    TextView textView4; //실종자 나이
 
 
     public MpersonItemView(Context context) {
@@ -54,6 +55,8 @@ public class MpersonItemView extends LinearLayout {
         //실종시간
         imageView = (ImageView) findViewById(R.id.ImageView_person);
         //실종자사진
+        textView4 = findViewById(R.id.TextView_Age);
+        //실종자 나이
 
     }
 
@@ -83,14 +86,11 @@ public class MpersonItemView extends LinearLayout {
                     .fit()
                     .rotate(90f)
                     .into(imageView);
-
-
-
         }
-
-
-
-
+    }
+    public void setAge(String age)
+    {
+        textView4.setText(age);
     }
 
 }
