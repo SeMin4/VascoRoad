@@ -114,8 +114,6 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
 
 
     public void mOnClick(View v){
-        Toast.makeText(this, "새로운 맵이 생성되었습니다.", Toast.LENGTH_SHORT).show();
-
         Intent intent_pw = new Intent(this, CreateMapPWActivity.class);
         startActivityForResult(intent_pw, 1);
     }
@@ -139,6 +137,27 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
         final ArrowheadPathOverlay leftArrow = new ArrowheadPathOverlay();
         final ArrowheadPathOverlay rightArrow = new ArrowheadPathOverlay();
 
+        // 지도 타입 변경 스피너 등록
+        final ArrayAdapter<CharSequence> mapAdapter;
+        mapAdapter = ArrayAdapter.createFromResource(this, R.array.map_types,
+                android.R.layout.simple_spinner_item);
+        mapAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        Spinner mapSpinner = findViewById(R.id.map_type_in_set_details);
+        mapSpinner.setAdapter(mapAdapter);
+        mapSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                CharSequence mapType = mapAdapter.getItem(position);
+                naverMap.setMapType(NaverMap.MapType.valueOf(mapType.toString()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        // 축적 스피너 등록
         Spinner scaleSpinner = findViewById(R.id.spinner_scale);
         final ArrayAdapter<CharSequence> scaleAdapter;
         scaleAdapter = ArrayAdapter.createFromResource(this, R.array.scale_type,
@@ -166,8 +185,9 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         CharSequence upScale = sizeAdapter.getItem(position);
-                        String temp = upScale.toString();
-                        int upHeight = Integer.parseInt(temp);
+                        String temp = upScale.toString().substring(0, upScale.length()-2);
+                        //int upHeight = Integer.parseInt(temp);
+                        int upHeight = scale*4;
                         mapInfo.setM_up(""+upHeight);
 
                         double lat_offset = LocationDistance.LatitudeInDifference(upHeight * Math.cos(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
@@ -216,8 +236,9 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         CharSequence downScale = sizeAdapter.getItem(position);
-                        String temp = downScale.toString();
-                        int downHeight = Integer.parseInt(temp);
+                        String temp = downScale.toString().substring(0, downScale.length()-2);
+                        //int downHeight = Integer.parseInt(temp);
+                        int downHeight = scale*4;
                         mapInfo.setM_down(""+downHeight);
 
                         double lat_offset = LocationDistance.LatitudeInDifference(downHeight * Math.cos(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
@@ -262,8 +283,9 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         CharSequence leftScale = sizeAdapter.getItem(position);
-                        String temp = leftScale.toString();
-                        int leftWidth = Integer.parseInt(temp);
+                        String temp = leftScale.toString().substring(0, leftScale.length()-2);
+                        //int leftWidth = Integer.parseInt(temp);
+                        int leftWidth = scale *4;
                         mapInfo.setM_left(""+leftWidth);
 
                         double lat_offset = LocationDistance.LatitudeInDifference(leftWidth * Math.sin(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
@@ -307,8 +329,9 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         CharSequence rightScale = sizeAdapter.getItem(position);
-                        String temp = rightScale.toString();
-                        int rightWidth = Integer.parseInt(temp);
+                        String temp = rightScale.toString().substring(0, rightScale.length()-2);
+                        //int rightWidth = Integer.parseInt(temp);
+                        int rightWidth = scale*4;
                         mapInfo.setM_right(""+rightWidth);
 
                         double lat_offset = LocationDistance.LatitudeInDifference(rightWidth * Math.sin(LocationDistance.deg2rad(Double.parseDouble(mapInfo.getM_rotation()))));
@@ -349,7 +372,6 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
-
 
 
 
@@ -460,13 +482,11 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
     }
 
 
-    public ArrayList<String> createSpinnerList(int scale){
-        int offset = scale * 3;
-
+    public ArrayList<String> createSpinnerList(int unit){
         ArrayList<String> list = new ArrayList<>();
         for(int i = 1; i <= 10; i++){
-            int value = (scale * 3 / 2) + offset * i;
-            list.add(Integer.toString(value));
+            String value = (4 * unit) +"m";
+            list.add(value);
         }
 
         return list;

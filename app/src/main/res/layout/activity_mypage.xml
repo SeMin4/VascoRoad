@@ -19,13 +19,15 @@
             android:layout_weight="1"
             android:padding="10dp"
             android:weightSum="10"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:layout_weight="3.5"
-                android:text="@string/email">
+                android:text="@string/email"
+                >
             </TextView>
             <TextView
                 android:id="@+id/user_id"

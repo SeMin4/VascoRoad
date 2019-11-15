@@ -101,11 +101,9 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         /* 기본 맵 세팅 */
-        // 지도 줌버튼 비활성화
-        naverMap.getUiSettings().setZoomControlEnabled(false);
-        // 현위치 버튼 활성화
-        naverMap.getUiSettings().setLocationButtonEnabled(true);
-        naverMap.getUiSettings().setRotateGesturesEnabled(false);
+        naverMap.getUiSettings().setZoomControlEnabled(false);  // 지도 줌버튼 비활성화
+        naverMap.getUiSettings().setRotateGesturesEnabled(true);
+        naverMap.getUiSettings().setLocationButtonEnabled(false);// 현위치 버튼 활성화
 
         // 카메라 현위치 이동
         CameraUpdate cameraUpdate = CameraUpdate.scrollTo(missingCoord);
@@ -160,5 +158,8 @@ public class RegisterNewMapActivity extends AppCompatActivity implements OnMapRe
                 return true;
             });
         });
+
+        // 지도 회전각도 획득
+        naverMap.addOnCameraChangeListener((reason, animated) -> bearing = naverMap.getCameraPosition().bearing);
     }
 }

@@ -55,6 +55,7 @@
         <activity android:name=".ui.activity.CreateMapPWActivity" android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".ui.activity.EnterMapPWActivity" android:theme="@android:style/Theme.Dialog" />
         <activity android:name=".ui.activity.ExistingMapActivity" android:theme="@style/AppTheme" />
+        <activity android:name=".ui.activity.DistrictActivity" android:theme="@style/AppTheme"/>
         <activity android:name=".ui.activity.listVieww_popup"></activity>
         <activity android:name=".ui.activity.EmptyRoomActivity"></activity>
         <activity android:name=".ui.activity.MissingInfoActivity"></activity>

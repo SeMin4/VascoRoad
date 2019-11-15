@@ -49,10 +49,10 @@ public class LocationDistance {
         return (dist);
     }
 
-    public static double angleByPoint(LatLng center, LatLng point){
-        double dx = Math.abs(center.longitude - point.longitude);
-        double dy = Math.abs(center.latitude - point.latitude);
-        return Math.atan(dy/dx);
+    public static double radByInnerProduct(double a1, double a2, double b1, double b2){
+        double numerator = a1*b1 + a2*b2;
+        double denominator = Math.sqrt(a1*a1 + a2*a2)*Math.sqrt(b1*b1 + b2*b2);
+        return Math.acos(numerator/denominator);
     }
 
     // This function converts decimal degrees to radians
@@ -65,17 +65,16 @@ public class LocationDistance {
         return (rad * 180 / Math.PI);
     }
 
-    public static LatLng rotateTransformation(LatLng center, LatLng before, double bearing){
+    public static LatLng rotateTransformation(LatLng origin, LatLng point, double bearing){
         // 현재 bearing은 degree임.
-        bearing = Math.ceil(bearing);
         double theta = deg2rad(bearing);
         double cos_theta = Math.cos(theta);
         double sin_theta = Math.sin(theta);
 
-        double longitude = cos_theta*(before.longitude - center.longitude) + sin_theta*(before.latitude - center.latitude) + center.longitude;
-        double latitude = (-sin_theta)*(before.longitude - center.longitude) + cos_theta*(before.latitude - center.latitude) + center.latitude;
+        double x = cos_theta*(point.longitude - origin.longitude) + sin_theta*(point.latitude - origin.latitude) + origin.longitude;
+        double y = (-sin_theta)*(point.longitude - origin.longitude) + cos_theta*(point.latitude - origin.latitude) + origin.latitude;
 
-        return new LatLng(latitude, longitude);
+        return new LatLng(y, x);
     }
 
     public static ArrayList<LatLng> findVertexByCenter(Projection projection, LatLng[] centers){

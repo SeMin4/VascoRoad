@@ -9,11 +9,13 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.District;
 
 
 public class DistrictRecordActivity extends Activity {
-    private int districtNum;
-    private int index;
+    private TextView prompt;
+    private int markerId;
+    private District district;
 
 
     @Override
@@ -24,15 +26,12 @@ public class DistrictRecordActivity extends Activity {
         setContentView(R.layout.popup_location_status);
 
         Intent intent = getIntent();
-        districtNum = intent.getIntExtra("district", -1);
-        index = intent.getIntExtra("index", -1);
 
-        int row = index / 3 + 1;
-        int col = index % 3 + 1;
-        String location = districtNum +"구역  " + row+"행 " + col+"열";
+        markerId = intent.getIntExtra("markerId", -1);
 
-        TextView popup_location = findViewById(R.id.popup_location);
-        popup_location.setText(location);
+
+        prompt = findViewById(R.id.popup_location);
+        prompt.setText("지점 등록");
 
     }
 
@@ -40,11 +39,7 @@ public class DistrictRecordActivity extends Activity {
     public void mOnFindFinish(View v){
         Intent intent = new Intent();
         intent.putExtra("result", "Find Finish");
-        intent.putExtra("district", districtNum);
-        intent.putExtra("location", index);
         setResult(RESULT_OK, intent);
-
-        //액티비티(팝업) 닫기
         finish();
     }
 
@@ -60,15 +55,14 @@ public class DistrictRecordActivity extends Activity {
             if(resultCode == RESULT_OK){
                 String result = data.getStringExtra("result");
                 if(result.equals("Saved")){
-                    String contentPath = data.getStringExtra("imagePath");
+                    String imagePath = data.getStringExtra("imagePath");
                     String content = data.getStringExtra("content");
 
                     Intent intent = new Intent();
                     intent.putExtra("result", "Find Impossible");
-                    intent.putExtra("imagePath", contentPath);  // 이미지가 저장된 경로
+                    intent.putExtra("imagePath", imagePath);  // 이미지가 저장된 경로
                     intent.putExtra("content", content);
-                    intent.putExtra("district", districtNum);
-                    intent.putExtra("location", index);
+                    intent.putExtra("markerId", markerId);
                     setResult(RESULT_OK, intent);
                     finish();
                 }
@@ -80,7 +74,8 @@ public class DistrictRecordActivity extends Activity {
         //데이터 전달하기
         Intent intent = new Intent();
         intent.putExtra("result", "Close Popup");
-        setResult(RESULT_OK, intent);
+        intent.putExtra("markerId", markerId);
+        setResult(RESULT_CANCELED, intent);
 
         //액티비티(팝업) 닫기
         finish();
@@ -98,6 +93,11 @@ public class DistrictRecordActivity extends Activity {
     @Override
     public void onBackPressed() {
         //안드로이드 백버튼 막기
-        return;
+        Intent intent = new Intent();
+        intent.putExtra("result", "Close Popup");
+        intent.putExtra("markerId", markerId);
+        setResult(RESULT_CANCELED, intent);
+        finish();
+
     }
 }

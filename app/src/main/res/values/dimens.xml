@@ -23,4 +23,5 @@
     <dimen name="pick_radius">30dp</dimen>
     <dimen name="unit_scale_spinner_width">110dp</dimen>
     <dimen name="spinner_height">45dp</dimen>
+    <dimen name="default_size">125dp</dimen>
 </resources>

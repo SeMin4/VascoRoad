@@ -7,11 +7,13 @@ import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.overlay.PolygonOverlay;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class District {
+public class District implements Serializable {
+    private int rowIdx;
+    private int colIdx;
     private ArrayList<District> children;
     private PolygonOverlay grid;
     private LatLng center;
@@ -21,26 +23,15 @@ public class District {
     private LatLng northEast;
 
     public District(){
+        rowIdx = 0;
+        colIdx = 0;
         children = new ArrayList<>();
-    }
-
-    public District(LatLng sw, LatLng ne){
-        // 회전각도 0일때만 가능
-        children = new ArrayList<>();
-        this.southWest = sw;
-        this.northEast = ne;
-        this.northWest = new LatLng(northEast.latitude, southWest.longitude);
-        this.southEast = new LatLng(southWest.latitude, northEast.longitude);
         grid = new PolygonOverlay();
-        grid.setCoords(Arrays.asList(
-                this.northWest,
-                this.northEast,
-                this.southEast,
-                this.southWest
-        ));
     }
 
-    public District(LatLng nw, LatLng sw, LatLng se, LatLng ne){
+    public District(LatLng nw, LatLng ne, LatLng se, LatLng sw){
+        rowIdx = 0;
+        colIdx = 0;
         this.northWest = nw;
         this.southWest = sw;
         this.southEast = se;
@@ -48,10 +39,10 @@ public class District {
 
         grid = new PolygonOverlay();
         grid.setCoords(Arrays.asList(
-                this.northWest,
-                this.northEast,
-                this.southEast,
-                this.southWest
+                new LatLng(this.northWest.latitude, this.northWest.longitude),
+                new LatLng(this.northEast.latitude, this.northEast.longitude),
+                new LatLng(this.southEast.latitude, this.southEast.longitude),
+                new LatLng(this.southWest.latitude, this.southWest.longitude)
         ));
         children = new ArrayList<>();
     }
@@ -62,6 +53,22 @@ public class District {
         grid.setOutlineColor(color);
         grid.setGlobalZIndex(10);
         grid.setMap(naverMap);
+    }
+
+    public int getRowIdx() {
+        return rowIdx;
+    }
+
+    public void setRowIdx(int rowIdx) {
+        this.rowIdx = rowIdx;
+    }
+
+    public int getColIdx() {
+        return colIdx;
+    }
+
+    public void setColIdx(int colIdx) {
+        this.colIdx = colIdx;
     }
 
     public ArrayList<District> getChildren() {
@@ -115,5 +122,4 @@ public class District {
     public void setNorthEast(LatLng northEast) {
         this.northEast = northEast;
     }
-
 }

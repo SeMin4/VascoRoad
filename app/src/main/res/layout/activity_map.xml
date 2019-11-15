@@ -29,6 +29,17 @@
         app:layout_constraintStart_toEndOf="@+id/label_map_type"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textView_zoomLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="116dp"
+        tools:layout_editor_absoluteY="17dp"
+        app:layout_constraintStart_toEndOf="@+id/map_type"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/map_fragment"/>
+
     <Button
         android:id="@+id/button_mPerson_info"
         android:layout_width="wrap_content"
@@ -52,5 +63,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map_type" />
+
+
 
 </android.support.constraint.ConstraintLayout>
