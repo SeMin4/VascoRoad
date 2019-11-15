@@ -126,6 +126,12 @@ public class MyGlobals {
         @POST("/not_complete/image")
         Call<OverlapExamineData> postNotComplete(@Part MultipartBody.Part file,@Part("mid")RequestBody requestBody);
 
+        @Multipart
+        @POST("/insert/mperson")
+        Call<OverlapExamineData> postInsertMperson(@Part MultipartBody.Part file,@Part("p_name")RequestBody name,@Part("p_age")RequestBody age,
+        @Part("p_time")RequestBody date,@Part("p_place_string")RequestBody place,@Part("p_place_latitude")RequestBody latitude,@Part("p_place_longitude")RequestBody longitude,
+                                                   @Part("p_place_description")RequestBody description);
+
     }
 
 }

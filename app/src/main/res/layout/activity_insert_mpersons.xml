@@ -125,10 +125,24 @@
                 android:hint="@string/MpersonDesc">
             </EditText>
 
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:gravity="center|left"
+                android:textSize="10pt"
+                android:background="@drawable/form"
+                android:src="@drawable/default_unusual_photo"
+                android:hint="@string/mpersonPhoto">
+            </ImageView>
+
+
             <Button
                 android:layout_marginHorizontal="40dp"
                 android:layout_marginVertical="10dp"
-                android:id="@+id/insertMperson"
+                android:id="@+id/insert"
                 android:textColor="#ffffff"
                 android:textStyle="bold"
                 android:textSize="20dp"
@@ -137,8 +151,9 @@
                 android:layout_height="50dp"
                 android:text="@string/insertMperson"
                 >
-
             </Button>
+
+
         </LinearLayout>
     </ScrollView>
 
