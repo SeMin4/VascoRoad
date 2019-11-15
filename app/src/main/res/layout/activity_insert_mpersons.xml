@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.activity.InsertMpersons"
+    android:id="@+id/insertMperson_layout">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+
+                android:layout_width="match_parent"
+                android:textStyle="bold"
+                android:textColor="#ffffff"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="25dp"
+                android:paddingVertical="11dp"
+                android:background="@color/burgundy"
+                android:text="@string/addMperson">
+            </TextView>
+
+
+            <EditText
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:id="@+id/mperson_name"
+                tools:ignore="LabelFor"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:inputType="textNoSuggestions|textPassword"
+                android:importantForAutofill="no"
+                android:cursorVisible="true"
+                android:hint="@string/mpersonName"
+                android:background="@drawable/form">
+            </EditText>
+
+            <TextView
+                android:id="@+id/mperson_age"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center|left"
+                android:textSize="10pt"
+                android:background="@drawable/form"
+                android:text="@string/selectAge">
+            </TextView>
+
+
+            <TextView
+                android:id="@+id/mperson_select_date"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center|left"
+                android:textSize="10pt"
+                android:background="@drawable/form"
+                android:text="@string/selectDate">
+            </TextView>
+
+            <LinearLayout
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="13dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/search_location"
+                    tools:ignore="LabelFor"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:inputType="textNoSuggestions"
+                    android:importantForAutofill="no"
+                    android:cursorVisible="true"
+                    android:hint="지역"
+                    android:background="@drawable/form">
+                </EditText>
+                <Button
+                    android:id="@+id/getLocation_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
+                    android:background="@color/colorGray"
+                    android:text="@string/searchLocation"
+                    >
+                </Button>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/mperson_latitude_longitude"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:gravity="center|left"
+                android:textSize="10pt"
+                android:background="@drawable/form"
+                android:text="위도 경도">
+            </TextView>
+
+            <EditText
+                android:id="@+id/mperson_description"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:gravity="center|left"
+                android:textSize="10pt"
+                android:background="@drawable/form"
+                android:hint="@string/MpersonDesc">
+            </EditText>
+
+            <Button
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginVertical="10dp"
+                android:id="@+id/insertMperson"
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:background="@drawable/button_background2"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="@string/insertMperson"
+                >
+
+            </Button>
+        </LinearLayout>
+    </ScrollView>
+
+
+</LinearLayout>
+
+
+
+
+
