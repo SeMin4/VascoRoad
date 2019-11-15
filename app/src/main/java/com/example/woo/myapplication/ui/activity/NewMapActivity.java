@@ -40,6 +40,8 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.Projection;
+import com.naver.maps.map.overlay.CircleOverlay;
+import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.PolygonOverlay;
@@ -78,6 +80,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private int COLOR_LINE_BLACK;
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
+    private int COLOR_RED;
     private Socket mSocket = null;
     public String received_districtNum;
     public String received_index;
@@ -105,6 +108,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
+        COLOR_RED = ResourcesCompat.getColor(getResources(), R.color.impossible, getTheme());
 
         try{
             if(mSocket == null) {
@@ -288,12 +292,12 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
-        /* 기본 맵 세팅 */
         // 지도 줌버튼 비활성화
         naverMap.getUiSettings().setZoomControlEnabled(false);
         // 현위치 버튼 활성화
         naverMap.getUiSettings().setLocationButtonEnabled(true);
         naverMap.setLocationSource(locationSource);
+
         // 위치 변경 리스너 등록
         naverMap.addOnLocationChangeListener(location -> {
             /* 현재 위치 획득 */
@@ -310,8 +314,14 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
             }
             int innerIndex = findDistrictCoord(child.getChildren().get(0), cur, scale);
 
-            child.getChildren().get(innerIndex).getGrid().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 150));
-            child.getChildren().get(innerIndex).getGrid().setMap(naverMap);
+            District grandChild = child.getChildren().get(innerIndex);
+            // grandChild.setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 150));
+            // grandChild.setMap(naverMap);
+
+            if(grandChild.getFootPrint().getColor() != COLOR_FINISH){
+                grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 150));
+                grandChild.getFootPrint().setMap(naverMap);
+            }
         });
 
         // 지도 중심 설정
@@ -619,7 +629,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
     public void mOnInfoClick(View v) {
-        //그대로 전달 -> 새로운 액티비ㅣㅌ 종나 만들어야함
         Intent intent = new Intent(this,MissingInfoActivity.class);
         intent.putExtra("selecteditem",selected);
         startActivityForResult(intent,1);

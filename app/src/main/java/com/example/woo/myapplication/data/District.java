@@ -1,10 +1,13 @@
 package com.example.woo.myapplication.data;
 
+import android.location.Location;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 
+import com.example.woo.myapplication.utils.LocationDistance;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.overlay.CircleOverlay;
 import com.naver.maps.map.overlay.PolygonOverlay;
 
 import java.io.Serializable;
@@ -16,6 +19,7 @@ public class District implements Serializable {
     private int colIdx;
     private ArrayList<District> children;
     private PolygonOverlay grid;
+    private CircleOverlay footPrint;
     private LatLng center;
     private LatLng northWest;
     private LatLng southWest;
@@ -27,6 +31,7 @@ public class District implements Serializable {
         colIdx = 0;
         children = new ArrayList<>();
         grid = new PolygonOverlay();
+        footPrint = new CircleOverlay();
     }
 
     public District(LatLng nw, LatLng ne, LatLng se, LatLng sw){
@@ -44,6 +49,9 @@ public class District implements Serializable {
                 new LatLng(this.southEast.latitude, this.southEast.longitude),
                 new LatLng(this.southWest.latitude, this.southWest.longitude)
         ));
+
+        footPrint = new CircleOverlay();
+        footPrint.setRadius(LocationDistance.distance(nw, sw, "meter") * Math.sqrt(2) / 2);
         children = new ArrayList<>();
     }
 
@@ -79,17 +87,24 @@ public class District implements Serializable {
         this.children = child;
     }
 
-    public PolygonOverlay getGrid() {
-        return grid;
+    public PolygonOverlay getGrid() { return grid; }
+
+    public void setGrid(PolygonOverlay grid) { this.grid = grid; }
+
+    public CircleOverlay getFootPrint() {
+        return footPrint;
     }
 
-    public void setGrid(PolygonOverlay grid) {
-        this.grid = grid;
+    public void setFootPrint(CircleOverlay footPrint) {
+        this.footPrint = footPrint;
     }
 
     public LatLng getCenter(){ return center; }
 
-    public void setCenter(LatLng center){ this.center = center; }
+    public void setCenter(LatLng center){
+        this.center = center;
+        footPrint.setCenter(center);
+    }
 
     public LatLng getNorthWest() {
         return northWest;
