@@ -41,6 +41,7 @@ public class MainActivity extends Activity {
     protected Button logout_btn;
     protected Button myPage_btn;
     protected FloatingActionButton fab_btn;
+    public static Activity _MainActivity;
     ListView listView;
     MpersonAdapter adapter;
     Retrofit retrofit;
@@ -51,6 +52,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        _MainActivity = MainActivity.this;
         _LoginActivity.finish();
         logout_btn = (Button) findViewById(R.id.logout_btn);
         myPage_btn = (Button) findViewById(R.id.my_page_btn);

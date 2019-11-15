@@ -1,5 +1,6 @@
 package com.example.woo.myapplication.ui.activity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -61,6 +62,7 @@ public class InsertMpersons extends AppCompatActivity {
     private Button insert;
     protected EditText description;
 
+
     private String searchLocate = "";
     private MyGlobals.RetrofitExService retrofitExService;
 
@@ -117,6 +119,9 @@ public class InsertMpersons extends AppCompatActivity {
                 OverlapExamineData data = response.body();
                 if(data.getOverlap_examine().equals("yes")){
                     Toast.makeText(getApplicationContext(),"삽입 성공",Toast.LENGTH_SHORT).show();
+                    MainActivity._MainActivity.finish();
+                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    startActivity(intent);
                 }else{
                     Toast.makeText(getApplicationContext(),"삽입 실패",Toast.LENGTH_SHORT).show();
                 }
@@ -165,8 +170,9 @@ public class InsertMpersons extends AppCompatActivity {
                 String a1 = age.split(" ")[0];
                 String a2 = age.split(" ")[1];
                 String a3 = age.split(" ")[2];
-                age = a1.substring(0,a1.length()-1)+" "+a2.substring(0,a2.length()-1) +a3.substring(0,a3.length()-1);
-                String.format("02%d");
+                a2 = String.format("%02d",Integer.parseInt(a2.substring(0,a2.length()-1)));
+                a3 = String.format("%02d",Integer.parseInt(a3.substring(0,a3.length()-1)));
+                age = a1.substring(0,a1.length()-1)+a2+a3;
                 String date = Mperson_select_date.getText().toString();
                 String place = "대구";
                 String lat = "123";
