@@ -8,6 +8,8 @@ import com.example.woo.myapplication.data.User;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -17,7 +19,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public class MyGlobals {
@@ -116,6 +120,11 @@ public class MyGlobals {
 
         @GET("/mapdetail?")
         Call<ArrayList<MapDetail>> getMapDetail(@Query("m_id") String m_id);
+
+
+        @Multipart
+        @POST("/not_complete/image")
+        Call<OverlapExamineData> postNotComplete(@Part MultipartBody.Part file,@Part("mid")RequestBody requestBody);
 
     }
 

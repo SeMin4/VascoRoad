@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+
+import com.example.woo.myapplication.OverlapExamineData;
 import com.example.woo.myapplication.data.MapInfo;
 import android.os.health.SystemHealthManager;
 import android.support.annotation.NonNull;
@@ -43,15 +45,24 @@ import com.naver.maps.map.util.MarkerIcons;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 
 public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
@@ -75,6 +86,8 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     public int color_impossible;
     public String m_id;
     Mperson selected;
+    Retrofit retrofit = null;
+    MyGlobals.RetrofitExService retrofitExService = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -82,6 +95,8 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         setContentView(R.layout.activity_map);
 
 
+        retrofit = MyGlobals.getInstance().getRetrofit();
+        retrofitExService = MyGlobals.getInstance().getRetrofitExService();
         Intent intent = getIntent();
         m_id = intent.getStringExtra("m_id");
         mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
@@ -739,6 +754,8 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                         index = data.getIntExtra("location", -1);
                         String imagePath = data.getStringExtra("imagePath");
                          color_impossible = getResources().getColor(R.color.impossible);
+                         if(imagePath!=null)
+                             updateImage(imagePath);
                         //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
                         try{
                             JSONObject non_complete_data = new JSONObject();
@@ -761,5 +778,36 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         }
     }
+
+    public void updateImage(String filePath){
+        File file = new File(filePath);
+        System.out.println("upload 이미지@@@@@@@@@@@@");
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"),file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("upload",file.getName(),fileReqBody);
+        RequestBody description = RequestBody.create(MediaType.parse("text/plain"),m_id);
+       ;
+
+        retrofitExService.postNotComplete(part,description).enqueue(new Callback<OverlapExamineData>() {
+            @Override
+            public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
+                OverlapExamineData data = response.body();
+                if(data.getOverlap_examine().equals("yes")){
+                    System.out.println("yes");
+                    // Toast.makeText(getApplicationContext(),"insert 성공",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),data.getOverlap_examine(),Toast.LENGTH_SHORT).show();
+                }else{
+                    // Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                System.out.println("onFailure 호출됨@@@@@@@@@@@@@@@");
+                Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
 
