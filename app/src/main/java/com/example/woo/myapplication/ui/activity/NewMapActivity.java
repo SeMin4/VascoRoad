@@ -65,7 +65,6 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-
 public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private FusedLocationSource locationSource;
@@ -613,6 +612,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         Intent intent = new Intent(this, DistrictActivity.class);
         intent.putExtra("row", district.getRowIdx());
         intent.putExtra("col", district.getColIdx());
+        intent.putExtra("mapId", Double.parseDouble(mapInfo.getM_id()));
         List<LatLng> coords = district.getGrid().getCoords();
         intent.putExtra("coords", (Serializable) coords);
         startActivityForResult(intent, 1);

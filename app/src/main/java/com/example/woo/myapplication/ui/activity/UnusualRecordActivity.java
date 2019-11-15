@@ -3,21 +3,12 @@ package com.example.woo.myapplication.ui.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -35,9 +26,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class UnusualRecordActivity extends Activity {
-    private final int PERMISSION_REQUEST_CODE = 100;
     private final int PICK_IMAGE = 0;
     private final int CAPTURE_IMAGE = 1;
+    private int mapId;
+    private double latitude;
+    private double longitude;
     private ImageView imageView;
     private String currentPhotoPath;
 
@@ -48,50 +41,15 @@ public class UnusualRecordActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.popup_unusual_status);
 
-        imageView = (ImageView)findViewById(R.id.imageView);
+        imageView = findViewById(R.id.imageView);
         imageView.setOnClickListener(v ->{
             showPictureDialog();
         });
 
-        /* For debugging */
-//        if(!checkPermission()){
-//            requestPermission();
-//        }
-    }
-
-    private boolean checkPermission(){
-        int result = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED){
-            Log.d("Permission", "권한있음");
-            return true;
-
-        } else {
-            Log.d("Permission", "권한없음");
-            return false;
-
-        }
-    }
-
-    private void requestPermission(){
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            Toast.makeText(this,"사진 저장을 위해 권한이 필요합니다.",Toast.LENGTH_LONG).show();
-        } else {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this,"Permission Granted, Now you can access location data.",Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(this,"Permission Denied, You cannot access location data.",Toast.LENGTH_LONG).show();
-
-                }
-                break;
-        }
+        Intent intent = getIntent();
+        mapId = intent.getIntExtra("mapId", -1);
+        latitude = intent.getDoubleExtra("latitude", -1);
+        longitude = intent.getDoubleExtra("longitude", -1);
     }
 
     private void showPictureDialog(){
@@ -133,17 +91,14 @@ public class UnusualRecordActivity extends Activity {
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        // Ensure that there's a camera activity to handle the intent
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            // Create the File where the photo should go
             File photoFile = null;
             try {
                 photoFile = createImageFile();
             } catch (IOException ex) {
                 // Error occurred while creating the File
-
             }
-            // Continue only if the File was successfully created
+
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
                         "com.example.woo.myapplication.fileprovider",
@@ -206,13 +161,15 @@ public class UnusualRecordActivity extends Activity {
 
     public void mOnSave(View v){
         EditText unusual_things = findViewById(R.id.editText_for_unusual);
-        String content = unusual_things.getText().toString();
 
         Intent intent = new Intent();
-        intent.putExtra("imagePath", currentPhotoPath);
-        intent.putExtra("content", content);
         intent.putExtra("result", "Saved");
         setResult(RESULT_OK, intent);
+
+        /* 수색 불가 지점에 대한 정보를 서버로 전송(홍성기) */
+        // currentPhotoPath: 이미지 저장 경로
+        // content: 수색불가한 이유
+        String content = unusual_things.getText().toString();
 
         finish();
     }
@@ -228,8 +185,7 @@ public class UnusualRecordActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //바깥레이어 클릭시 안닫히게
-        if(event.getAction()== MotionEvent.ACTION_OUTSIDE){
+        if(event.getAction()== MotionEvent.ACTION_OUTSIDE){ // 바깥레이어 클릭시 안닫히게
             return false;
         }
         return true;
@@ -237,7 +193,10 @@ public class UnusualRecordActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        //안드로이드 백버튼 막기
-        return;
+        Intent intent = new Intent();
+        intent.putExtra("result", "Close Popup");
+        setResult(RESULT_OK, intent);
+
+        finish();
     }
 }

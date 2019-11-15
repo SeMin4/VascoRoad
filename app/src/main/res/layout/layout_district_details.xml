@@ -36,7 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
-        android:gravity="end"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_title_map_details"
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="해당 수색대원 정보를 넣으면 좋을 듯 함." />
+            android:text="등록할 위치를 길게 누르고, 초록색 마커를 클릭하세요." />
     </LinearLayout>
 
     <com.example.woo.myapplication.ui.view.SquareFrameLayout

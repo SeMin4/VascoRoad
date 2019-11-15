@@ -8,7 +8,6 @@ import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.woo.myapplication.R;
 import com.naver.maps.geometry.LatLng;
@@ -29,11 +28,12 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     private HashMap<Integer, Marker> markerHashMap = new HashMap<Integer, Marker>();
     private PolygonOverlay district = new PolygonOverlay();
     private FusedLocationSource locationSource;
-    int row;
-    int col;
-    int colorOutline;
-    int colorFound;
-    int colorImpossible;
+    private int mapId;
+    private int row;
+    private int col;
+    private int colorOutline;
+    private int colorFound;
+    private int colorImpossible;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
 
         /* 색상 resource 획득 */
         colorOutline = getResources().getColor(R.color.white);
-        colorFound = getResources().getColor(R.color.finish);
+        colorFound = getResources().getColor(R.color.colorPrimary);
         colorImpossible = getResources().getColor(R.color.primary);
 
         /* 이전 Activity로부터 정보 획득 */
@@ -50,6 +50,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
 
         row = intent.getIntExtra("row",-1);
         col = intent.getIntExtra("col", -1);
+        mapId = intent.getIntExtra("mapId", -1);
 
         TextView district_title = findViewById(R.id.textView_district_details);
         String str = (row+1) + "행" + (col+1) + "열 ";
@@ -72,6 +73,8 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         // LocationSource 획득
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
+        /* 서버로부터 수색불가 및 발견지점 위경도 획득(홍성기) */
+
     }
 
     @Override
@@ -83,7 +86,8 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         naverMap.getUiSettings().setScrollGesturesEnabled(true);   // 스크롤 제스쳐 비활성화
         naverMap.getUiSettings().setTiltGesturesEnabled(false);     // 기울임 제스쳐 비활성화
         naverMap.getUiSettings().setStopGesturesEnabled(false);     // 애니메이션 비활성화
-        naverMap.getUiSettings().setRotateGesturesEnabled(false);   // 회전 제스쳐 비활성화
+        naverMap.getUiSettings().setRotateGesturesEnabled(true);   // 회전 제스쳐 비활성화
+        naverMap.getUiSettings().setZoomGesturesEnabled(true);
         naverMap.setMapType(NaverMap.MapType.valueOf("Satellite"));
 
         /* 구역 등록 및 확대 */
@@ -91,6 +95,10 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         // 중심점 획득 시, 중심도 설정하면 좋을 듯.
         naverMap.moveCamera(CameraUpdate.fitBounds(district.getBounds(), 100));
         naverMap.setMinZoom(naverMap.getCameraPosition().zoom);     // 최소 줌레벨 제한.
+
+
+        /* 서버로부터 받은 수색불가 및 발견지점을 마커로 등록(홍성기) */
+
 
         /* LongClick 이벤트 등 */
         naverMap.setOnMapLongClickListener((pointF, latLng) -> {
@@ -100,6 +108,9 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
             marker.setOnClickListener(overlay -> {
                 Intent intent = new Intent(DistrictActivity.this, DistrictRecordActivity.class);
                 intent.putExtra("markerId", marker.hashCode());
+                intent.putExtra("latitude", latLng.latitude);
+                intent.putExtra("longitude", latLng.longitude);
+                intent.putExtra("mapId", mapId);
                 startActivityForResult(intent, 0);
                 return true;
             });
@@ -110,33 +121,30 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == 0){
+            int markerId = data.getIntExtra("markerId", -1);
+            Marker point = markerHashMap.get(markerId);
+            point.setIcon(MarkerIcons.BLACK);
+            point.setWidth(50);
+            point.setHeight(70);
+
             switch(resultCode){
                 case RESULT_OK:
-                    int markerId = data.getIntExtra("markerId", -1);
-                    Marker point = markerHashMap.get(markerId);
-                    point.setIcon(MarkerIcons.BLACK);
-                    point.setWidth(50);
-                    point.setHeight(50);
-
                     String opt = data.getStringExtra("result");
                     if(opt.toLowerCase().contains("finish")){
-                        point.setIconTintColor(colorFound);
                         point.setCaptionText("발견 지점");
                         point.setCaptionColor(colorFound);
+                        point.setIconTintColor(colorFound);
                     }
                     else if(opt.toLowerCase().contains("impossible")){
-                        point.setIconTintColor(colorImpossible);
                         point.setCaptionText("수색 불가");
                         point.setCaptionColor(colorImpossible);
-
-                        String imagePath = data.getStringExtra("imagePath");
-                        String content = data.getStringExtra("content");
+                        point.setIconTintColor(colorImpossible);
                     }
                     break;
                 case RESULT_CANCELED:
-                    // Do nothing.
-
+                    point.setMap(null);
             }
+
         }
 
     }
