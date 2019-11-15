@@ -834,9 +834,11 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
      private void uploadImage(String filePath){
         File file = new File(filePath);
         System.out.println("upload 이미지@@@@@@@@@@@@");
+
+        RequestBody description = RequestBody.create(MediaType.parse("text/plain"),mapInfo.getM_id());
         RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"),file);
         MultipartBody.Part part = MultipartBody.Part.createFormData("upload",file.getName(),fileReqBody);
-        RequestBody description = RequestBody.create(MediaType.parse("text/plain"),mapInfo.getM_id());
+
 
        /* Call<OverlapExamineData> c = retrofitExService.postNotComplete(part,description);
         try{
@@ -847,7 +849,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         }*/
 
 
-        retrofitExService.postNotComplete(part,description).enqueue(new Callback<OverlapExamineData>() {
+        retrofitExService.postNotComplete(description,part).enqueue(new Callback<OverlapExamineData>() {
             @Override
             public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
                 System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");

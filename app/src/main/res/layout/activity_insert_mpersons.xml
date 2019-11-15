@@ -37,7 +37,7 @@
                 tools:ignore="LabelFor"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:inputType="textNoSuggestions|textPassword"
+                android:inputType="textNoSuggestions"
                 android:importantForAutofill="no"
                 android:cursorVisible="true"
                 android:hint="@string/mpersonName"

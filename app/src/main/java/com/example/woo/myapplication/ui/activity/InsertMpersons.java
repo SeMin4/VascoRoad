@@ -31,6 +31,7 @@ import java.util.Locale;
 public class InsertMpersons extends AppCompatActivity {
     protected TextView Mperson_select_date;
     protected DatePickerDialog.OnDateSetListener mDateSetListener;
+    protected DatePickerDialog.OnDateSetListener mAgeSetListener;
     protected Button getLocationBtn;
     protected TextView latitude_txt_view;
     protected EditText mpersonName;
@@ -82,12 +83,22 @@ public class InsertMpersons extends AppCompatActivity {
                 DatePickerDialog dialog = new DatePickerDialog(
                         InsertMpersons.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                        mDateSetListener,
+                        mAgeSetListener,
                         year,month,day);
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
         });
+        mAgeSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                Log.d("Date", "onDateSet: mm/dd/yyy: "+ year + month + dayOfMonth);
+                month  = month + 1;
+                String  Date = year + "년 " + month + "월 " + dayOfMonth +"일";
+                Mperson_age.setText(Date);
+            }
+
+        };
 
         Mperson_select_date.setOnClickListener(new View.OnClickListener() {
             @Override

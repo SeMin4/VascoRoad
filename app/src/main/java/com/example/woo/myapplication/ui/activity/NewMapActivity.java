@@ -787,7 +787,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         RequestBody description = RequestBody.create(MediaType.parse("text/plain"),m_id);
        ;
 
-        retrofitExService.postNotComplete(part,description).enqueue(new Callback<OverlapExamineData>() {
+        retrofitExService.postNotComplete(description, part).enqueue(new Callback<OverlapExamineData>() {
             @Override
             public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
                 System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
