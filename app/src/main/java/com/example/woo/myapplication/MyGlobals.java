@@ -124,7 +124,7 @@ public class MyGlobals {
 
         @Multipart
         @POST("/not_complete/image")
-        Call<OverlapExamineData> postNotComplete(@Part MultipartBody.Part file,@Part("mid")RequestBody requestBody);
+        Call<OverlapExamineData> postNotComplete(@Part("mid")RequestBody requestBody,@Part MultipartBody.Part file);
 
         @Multipart
         @POST("/insert/mperson")
