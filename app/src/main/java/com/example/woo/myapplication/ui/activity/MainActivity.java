@@ -224,7 +224,7 @@ public class MainActivity extends Activity {
             view.setTimee(item.getP_time());
             view.setImage("http://13.125.174.158:9000/mperson_picture/",item.getP_photo());
             //view.setImage(item.getP_photo());
-            view.setAge(item.getP_age());
+            view.setAge(item.birthToAge());
             return view;
         }
 

@@ -55,7 +55,7 @@ public class MissingInfoActivity extends Activity {
         time.setText((CharSequence)selected.getP_time());
         place.setText((CharSequence)selected.getP_place_string());
         desc.setText((CharSequence)selected.getP_place_description());
-        age.setText((CharSequence)selected.getP_age());
+        age.setText((CharSequence)selected.birthToAge());
         if(selected.getP_photo() == null){
             profile.setImageResource(R.drawable.boy);
         }
