@@ -9,6 +9,9 @@ import android.location.LocationListener;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+
+import com.example.woo.myapplication.OverlapExamineData;
+import com.example.woo.myapplication.data.MapInfo;
 import android.os.health.SystemHealthManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,8 +32,10 @@ import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.District;
 import com.example.woo.myapplication.data.MapInfo;
+
 import com.example.woo.myapplication.data.Mperson;
 import com.example.woo.myapplication.utils.LocationDistance;
+import com.google.gson.JsonObject;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraAnimation;
@@ -52,10 +57,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.io.File;
 import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 import java.util.concurrent.Executor;
@@ -66,6 +73,13 @@ import java.util.concurrent.TimeUnit;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
@@ -89,12 +103,25 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     public String received_content2;
     public String m_id;
     Mperson selected;
+    Retrofit retrofit = null;
+    MyGlobals.RetrofitExService retrofitExService = null;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
+
+        retrofit = MyGlobals.getInstance().getRetrofit();
+        retrofitExService = MyGlobals.getInstance().getRetrofitExService();
+        Intent intent = getIntent();
+        m_id = intent.getStringExtra("m_id");
+        mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
+        mapInfo.setM_id(m_id);
+        selected = (Mperson)intent.getSerializableExtra("selecteditem");
+
+
 
         RegisterNewMapActivity registerNewMapActivity =
                 (RegisterNewMapActivity) RegisterNewMapActivity.registerNewMapActivity;
@@ -116,7 +143,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 mSocket.connect();
                 //이벤트 등록
                 mSocket.on(Socket.EVENT_CONNECT, onConnect); //방 접속시;
-                mSocket.on("attendRoom", attendRoom);// 방접속시 user 아이디 보내기
+                mSocket.on("makeroom", makeroom);// 방접속시 user 아이디 보내기
                 mSocket.on("complete", complete);
                 mSocket.on("not_complete", not_complete);
             }
@@ -126,9 +153,10 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
         JSONObject data = new JSONObject();
         try{
-            System.out.println("attendRoom@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
+            System.out.println("makeRoom@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
             data.put("id", MyGlobals.getInstance().getUser().getU_id());
-            mSocket.emit("attendRoom",data);
+            data.put("mapid", mapInfo.getM_id());
+            mSocket.emit("makeroom",data);
         }catch(JSONException e){
             System.out.println("attendRoom 에러");
             e.printStackTrace();
@@ -149,11 +177,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
-        Intent intent = getIntent();
-        m_id = intent.getStringExtra("m_id");
-        mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
-        mapInfo.setM_id(m_id);
-        selected = (Mperson)intent.getSerializableExtra("selecteditem");
 
         double[] vertex_double = intent.getDoubleArrayExtra("vertex");
         for (int i = 0; i < vertex_double.length; i += 2) {
@@ -180,6 +203,19 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         }
     }
 
+    private Emitter.Listener makeroom = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            try{
+                JSONObject receivedData = (JSONObject)args[0];
+                System.out.println("msg : @@@@@@@@@@@@@@@"+ receivedData.getString("msg") );
+                System.out.println("data : @@@@@@@@@@@@@@@" + receivedData.getString("data"));
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+    };
+
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
@@ -188,7 +224,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         }
     }; //제일처음 접속
 
-    private Emitter.Listener attendRoom = new Emitter.Listener() {
+    /*private Emitter.Listener attendRoom = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             try{
@@ -202,7 +238,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 e.printStackTrace();
             }
         }
-    };
+    };*/
 
     private Emitter.Listener complete = new Emitter.Listener() {
         @Override
@@ -262,7 +298,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
             e.printStackTrace();
         }*/
         mSocket.disconnect();
-        mSocket.off("attendRoom",attendRoom);
+        //mSocket.off("attendRoom",attendRoom);
         mSocket.off("complete",complete);
         mSocket.off("not_complete",not_complete);
         mSocket.close();
@@ -669,6 +705,10 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                         districtNum = data.getIntExtra("district", -1);
                         index = data.getIntExtra("location", -1);
                         String imagePath = data.getStringExtra("imagePath");
+                         color_impossible = getResources().getColor(R.color.impossible);
+                         if(imagePath!=null)
+                             updateImage(imagePath);
+                        //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
                         try{
                             JSONObject non_complete_data = new JSONObject();
                             String area_districtNum = ""+districtNum;
@@ -690,5 +730,36 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         }
     }
+
+    public void updateImage(String filePath){
+        File file = new File(filePath);
+        System.out.println("upload 이미지@@@@@@@@@@@@");
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"),file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("upload",file.getName(),fileReqBody);
+        RequestBody description = RequestBody.create(MediaType.parse("text/plain"),m_id);
+       ;
+
+        retrofitExService.postNotComplete(description, part).enqueue(new Callback<OverlapExamineData>() {
+            @Override
+            public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
+                OverlapExamineData data = response.body();
+                if(data.getOverlap_examine().equals("yes")){
+                    System.out.println("yes");
+                    // Toast.makeText(getApplicationContext(),"insert 성공",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),data.getOverlap_examine(),Toast.LENGTH_SHORT).show();
+                }else{
+                    // Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                System.out.println("onFailure 호출됨@@@@@@@@@@@@@@@");
+                Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 }
 

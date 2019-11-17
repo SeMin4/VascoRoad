@@ -64,7 +64,7 @@ public class MissingInfoActivity extends Activity {
             Picasso.with(getApplicationContext())
                     .load("http://13.125.95.139:9000/mperson_picture/"+selected.getP_photo())
                     .fit()
-                    .rotate(90f)
+                    .rotate(0f)
                     .into(profile);
 
 

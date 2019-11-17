@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.woo.myapplication.MyGlobals;
+import com.example.woo.myapplication.OverlapExamineData;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.MapDetail;
 import com.example.woo.myapplication.data.MapInfo;
@@ -43,14 +44,20 @@ import com.naver.maps.map.util.MarkerIcons;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -81,6 +88,45 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     Button mpersoninfo;
 
     Mperson selected;
+
+   /*private void uploadImage(String filePath){
+        File file = new File(filePath);
+
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"),file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("upload",file.getName(),fileReqBody);
+        RequestBody description = RequestBody.create(MediaType.parse("text/plain"),"image-type");
+
+        String name,age,time,p_string,latitude,longitude,desc,photo;
+
+        HashMap<String,String> input = new HashMap<>();
+        input.put("p_name",name);
+        input.put("p_age",age);
+        input.put("p_time",time);
+        input.put("p_place_string",p_string);
+        input.put("p_place_latitude",latitude);
+        input.put("p_place_longitude",longitude);
+        input.put("p_place_description",desc);
+
+        retrofitExService.postInsertMperson(input,part,description).enqueue(new Callback<OverlapExamineData>() {
+            @Override
+            public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
+                OverlapExamineData data = response.body();
+                if(data.getOverlap_examine().equals("yes")){
+                    System.out.println("yes");
+                    Toast.makeText(getApplicationContext(),"insert 성공",Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                System.out.println("onFailure 호출됨@@@@@@@@@@@@@@@");
+                Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show()
+            }
+        });
+    }*/
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,6 +164,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         try {
             System.out.println("attendRoom@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
             data.put("id", MyGlobals.getInstance().getUser().getU_id());
+            data.put("mapid", mapInfo.getM_id());
             mSocket.emit("attendRoom", data);
         } catch (JSONException e) {
             System.out.println("attendRoom 에러");
@@ -755,9 +802,13 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                     case "Find Impossible":
                         String content = data.getStringExtra("content");
                         Toast.makeText(this, "특이사항: " + content, Toast.LENGTH_SHORT).show();
+                        System.out.println("content : "+content);
                         districtNum = data.getIntExtra("district", -1);
                         index = data.getIntExtra("location", -1);
                         String imagePath = data.getStringExtra("imagePath");
+                        System.out.println("imagepath : "+imagePath);
+                        if(imagePath!=null)
+                            uploadImage(imagePath);
                         //color_impossible = getResources().getColor(R.color.impossible);
                         //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
                         try{
@@ -778,6 +829,46 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 }
             }
         }
+    }
+
+     private void uploadImage(String filePath){
+        File file = new File(filePath);
+        System.out.println("upload 이미지@@@@@@@@@@@@");
+
+        RequestBody description = RequestBody.create(MediaType.parse("text/plain"),mapInfo.getM_id());
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"),file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("upload",file.getName(),fileReqBody);
+
+
+       /* Call<OverlapExamineData> c = retrofitExService.postNotComplete(part,description);
+        try{
+            OverlapExamineData data = c.execute().body();
+            System.out.println("overlapdata : "+data.getOverlap_examine());
+        }catch (IOException e){
+            e.printStackTrace();
+        }*/
+
+
+        retrofitExService.postNotComplete(description,part).enqueue(new Callback<OverlapExamineData>() {
+            @Override
+            public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
+                OverlapExamineData data = response.body();
+                if(data.getOverlap_examine().equals("yes")){
+                    System.out.println("yes");
+                   // Toast.makeText(getApplicationContext(),"insert 성공",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),data.getOverlap_examine(),Toast.LENGTH_SHORT).show();
+                }else{
+                   // Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                System.out.println("onFailure 호출됨@@@@@@@@@@@@@@@");
+                Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
 

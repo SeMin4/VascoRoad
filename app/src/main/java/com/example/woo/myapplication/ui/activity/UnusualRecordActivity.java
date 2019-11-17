@@ -135,6 +135,12 @@ public class UnusualRecordActivity extends Activity {
         if (requestCode == PICK_IMAGE) {
             if (data != null) {
                 Uri contentURI = data.getData();
+                String[] proj = { MediaStore.Images.Media.DATA };
+
+                Cursor cursor = getContentResolver().query(contentURI, proj, null, null, null);
+                cursor.moveToNext();
+                String path = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+                currentPhotoPath = path;
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
 

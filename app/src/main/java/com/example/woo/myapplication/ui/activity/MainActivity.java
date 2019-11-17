@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -39,6 +40,8 @@ public class MainActivity extends Activity {
     LoginActivity _LoginActivity = (LoginActivity)LoginActivity._LoginActivity;
     protected Button logout_btn;
     protected Button myPage_btn;
+    protected FloatingActionButton fab_btn;
+    public static Activity _MainActivity;
     ListView listView;
     MpersonAdapter adapter;
     Retrofit retrofit;
@@ -49,15 +52,19 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        _MainActivity = MainActivity.this;
         _LoginActivity.finish();
         logout_btn = (Button) findViewById(R.id.logout_btn);
         myPage_btn = (Button) findViewById(R.id.my_page_btn);
+        fab_btn = (FloatingActionButton) findViewById(R.id.fab);
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
         listView = (ListView) findViewById(R.id.listView);
         search = (EditText)findViewById(R.id.search);
         listView.setAdapter(adapter);
         adapter = new MpersonAdapter();
-
+        if(MyGlobals.getInstance().getUser().getU_email().equals("admin") == false){
+            fab_btn.hide();
+        }
         if( (MyGlobals.getInstance().getRetrofit() == null) || (MyGlobals.getInstance().getRetrofitExService() ==null) ) {
             retrofit = new Retrofit.Builder().baseUrl(MyGlobals.RetrofitExService.URL).addConverterFactory(GsonConverterFactory.create()).build();
             retroService = retrofit.create(MyGlobals.RetrofitExService.class);
@@ -161,6 +168,14 @@ public class MainActivity extends Activity {
                 finish();
             }
         });
+        fab_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), InsertMpersons.class);
+                startActivity(intent);
+            }
+        });
+
 
         search.addTextChangedListener(new TextWatcher() {
             @Override
@@ -223,6 +238,10 @@ public class MainActivity extends Activity {
             view.setPlace(item.getP_place_string());
             view.setTimee(item.getP_time());
             view.setImage("http://13.125.174.158:9000/mperson_picture/",item.getP_photo());
+            if(item.getP_photo() != null){
+                Log.w("photoName: ", item.getP_photo());
+            }
+
             //view.setImage(item.getP_photo());
             return view;
         }

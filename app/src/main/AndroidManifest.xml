@@ -2,16 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.woo.myapplication">
 
-    <!-- 위치 권한 -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-    <!-- 카메라 및 갤러리 권한 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true" />
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/playstore_icon"
@@ -21,9 +11,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.activity.RoomDeleteActivity"
+        <activity android:name=".ui.activity.InsertMpersons"
+            android:windowSoftInputMode="adjustNothing"
+            ></activity>
+        <activity
+            android:name=".ui.activity.RoomDeleteActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/RoomDeleteTheme"></activity>
+            android:theme="@style/RoomDeleteTheme" />
         <activity
             android:name=".ui.activity.ErrorActivity"
             android:screenOrientation="portrait"
@@ -63,7 +57,7 @@
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="qir3dsnn0a"/>
+            android:value="qir3dsnn0a" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -76,6 +70,14 @@
         </provider>
     </application>
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 </manifest>
