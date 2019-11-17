@@ -24,28 +24,47 @@
             >
 
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="horizontal">
             <!--실종자 이름, 성별, 나이-->
             <TextView
                 android:id="@+id/TextView_Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="이규진(남, 14세)"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="20dp"
-                android:textSize="18sp"
-                android:textStyle="bold"
+                android:text="이규진"
                 >
-
             </TextView>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=" ("
+                    >
+                </TextView>
+                <TextView
+                    android:id="@+id/TextView_Age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="14"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="세)"/>
+            </LinearLayout>
 
             <!--실종위치-->
             <TextView
                 android:id="@+id/TextView_Place"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="20dp"
-                android:text="경북대학교 공대 9호관 세미나실"
+                android:text="경북대학교 공대9호관 세미나실"
                 android:textSize="12sp"
                 >
 
@@ -54,7 +73,7 @@
             <!--실종 시간-->
             <TextView
                 android:id="@+id/TextView_Time"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:textSize="12sp"

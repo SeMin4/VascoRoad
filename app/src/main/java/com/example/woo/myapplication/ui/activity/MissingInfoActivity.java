@@ -48,13 +48,14 @@ public class MissingInfoActivity extends Activity {
         TextView time = (TextView)findViewById(R.id.TextView_Time);
         TextView place = (TextView)findViewById(R.id.TextView_Place);
         TextView desc = (TextView)findViewById(R.id.TextView_Characteristic);
+        TextView age = (TextView)findViewById(R.id.TextView_Age);
 
         //이름 장소 시간 사진 특징
         name.setText((CharSequence)selected.getP_name());
         time.setText((CharSequence)selected.getP_time());
         place.setText((CharSequence)selected.getP_place_string());
         desc.setText((CharSequence)selected.getP_place_description());
-
+        age.setText((CharSequence)selected.birthToAge());
         if(selected.getP_photo() == null){
             profile.setImageResource(R.drawable.boy);
         }

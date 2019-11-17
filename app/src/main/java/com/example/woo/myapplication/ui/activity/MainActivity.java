@@ -243,6 +243,7 @@ public class MainActivity extends Activity {
             }
 
             //view.setImage(item.getP_photo());
+            view.setAge(item.birthToAge());
             return view;
         }
 
