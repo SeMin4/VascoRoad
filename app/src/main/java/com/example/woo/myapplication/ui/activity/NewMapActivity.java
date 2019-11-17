@@ -705,7 +705,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                         districtNum = data.getIntExtra("district", -1);
                         index = data.getIntExtra("location", -1);
                         String imagePath = data.getStringExtra("imagePath");
-                         color_impossible = getResources().getColor(R.color.impossible);
                          if(imagePath!=null)
                              updateImage(imagePath);
                         //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
