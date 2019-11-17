@@ -81,7 +81,7 @@ public class MpersonItemView extends LinearLayout {
             Picasso.with(getContext())
                     .load(imageBaseDirectory+imageName)
                     .fit()
-                    .rotate(90f)
+                    .rotate(0f)
                     .into(imageView);
 
 
