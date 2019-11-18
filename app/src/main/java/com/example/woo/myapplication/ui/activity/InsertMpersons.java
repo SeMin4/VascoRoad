@@ -61,7 +61,7 @@ public class InsertMpersons extends AppCompatActivity {
     private String currentPhotoPath;
     private Button insert;
     protected EditText description;
-
+    public static Activity _InsertMpersons;
 
     private String searchLocate = "";
     private MyGlobals.RetrofitExService retrofitExService;
@@ -140,7 +140,7 @@ public class InsertMpersons extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insert_mpersons);
-
+        _InsertMpersons = InsertMpersons.this;
         retrofitExService = MyGlobals.getInstance().getRetrofitExService();
         Mperson_select_date = (TextView) findViewById(R.id.mperson_select_date);
         getLocationBtn = (Button) findViewById(R.id.getLocation_btn) ;
