@@ -38,6 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends Activity {
     LoginActivity _LoginActivity = (LoginActivity)LoginActivity._LoginActivity;
+    InsertMpersons _InsertMpersons = (InsertMpersons)InsertMpersons._InsertMpersons;
     protected Button logout_btn;
     protected Button myPage_btn;
     protected FloatingActionButton fab_btn;
@@ -53,6 +54,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         _MainActivity = MainActivity.this;
+        if(_InsertMpersons != null){
+            _InsertMpersons.finish();
+        }
+
         _LoginActivity.finish();
         logout_btn = (Button) findViewById(R.id.logout_btn);
         myPage_btn = (Button) findViewById(R.id.my_page_btn);
