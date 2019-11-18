@@ -3,6 +3,7 @@ package com.example.woo.myapplication;
 import com.example.woo.myapplication.data.MapDetail;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.data.Mperson;
+import com.example.woo.myapplication.data.NotCompleteList;
 import com.example.woo.myapplication.data.User;
 
 import java.util.ArrayList;
@@ -135,6 +136,9 @@ public class MyGlobals {
         @Part("p_time")RequestBody date,@Part("p_place_string")RequestBody place,@Part("p_place_latitude")RequestBody latitude,@Part("p_place_longitude")RequestBody longitude,
                                                    @Part("p_place_description")RequestBody description);
 
+
+        @GET("/not_complete/list?")
+        Call<ArrayList<NotCompleteList>> getNotCompleteList(@Query("m_id") String m_id);
     }
 
 }

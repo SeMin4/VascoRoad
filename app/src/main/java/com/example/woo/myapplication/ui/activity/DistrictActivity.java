@@ -6,11 +6,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.MapDetail;
+import com.example.woo.myapplication.data.NotCompleteList;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
@@ -21,8 +25,14 @@ import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class DistrictActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
@@ -36,6 +46,8 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     private int colorOutline;
     private int colorFound;
     private int colorImpossible;
+    private Retrofit retrofit;
+    private MyGlobals.RetrofitExService retrofitExService;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,7 +112,32 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
 
 
         /* 서버로부터 받은 수색불가 및 발견지점을 마커로 등록(홍성기) */
+        retrofit = MyGlobals.getInstance().getRetrofit();
+        retrofitExService = MyGlobals.getInstance().getRetrofitExService();
 
+        retrofitExService.getNotCompleteList(mapId+"").enqueue(new Callback<ArrayList<NotCompleteList>>() {
+            @Override
+            public void onResponse(Call<ArrayList<NotCompleteList>> call, Response<ArrayList<NotCompleteList>> response) {
+                Log.w("Success", "retrofit success");
+                ArrayList<NotCompleteList> items = response.body();
+                for(int i =0;i<items.size();i++){
+                    NotCompleteList item = items.get(i);
+                    Log.w("item_ul_id", item.getUl_id());
+                    Log.w("item_m_id", item.getM_id());
+                    Log.w("item_ul_latitude", item.getUl_latitude());
+                    Log.w("item_ul_longitude", item.getUl_longitude());
+                    Log.w("item_ul_desc", item.getUl_desc());
+                    if(!item.getUl_file().equals("null")){
+                        Log.w("item_ul_file", item.getUl_file());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<NotCompleteList>> call, Throwable t) {
+                Log.w("Fail", "retrofit Failure");
+            }
+        });
 
         /* LongClick 이벤트 등 */
         naverMap.setOnMapLongClickListener((pointF, latLng) -> {
