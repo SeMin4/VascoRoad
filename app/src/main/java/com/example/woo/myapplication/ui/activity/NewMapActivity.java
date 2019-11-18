@@ -144,7 +144,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 //이벤트 등록
                 mSocket.on(Socket.EVENT_CONNECT, onConnect); //방 접속시;
                 mSocket.on("makeroom", makeroom);// 방접속시 user 아이디 보내기
-                mSocket.on("complete", complete);
+                //mSocket.on("complete", complete);
                 mSocket.on("not_complete", not_complete);
             }
         }catch(URISyntaxException e){
@@ -240,7 +240,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         }
     };*/
 
-    private Emitter.Listener complete = new Emitter.Listener() {
+  /*  private Emitter.Listener complete = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             try {
@@ -263,7 +263,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 e.printStackTrace();
             }
         }
-    };
+    };*/
 
     private Emitter.Listener not_complete = new Emitter.Listener() {
         @Override
@@ -299,7 +299,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         }*/
         mSocket.disconnect();
         //mSocket.off("attendRoom",attendRoom);
-        mSocket.off("complete",complete);
+       // mSocket.off("complete",complete);
         mSocket.off("not_complete",not_complete);
         mSocket.close();
         mSocket = null;
@@ -658,7 +658,8 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         Intent intent = new Intent(this, DistrictActivity.class);
         intent.putExtra("row", district.getRowIdx());
         intent.putExtra("col", district.getColIdx());
-        intent.putExtra("mapId", Double.parseDouble(mapInfo.getM_id()));
+        System.out.println("mapinfo : "+ mapInfo.getM_id());
+        intent.putExtra("mapId", Integer.parseInt(mapInfo.getM_id()));
         List<LatLng> coords = district.getGrid().getCoords();
         intent.putExtra("coords", (Serializable) coords);
         startActivityForResult(intent, 1);
@@ -671,7 +672,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     }
 
-    public void updateImage(String filePath){
+    /*public void updateImage(String filePath){
         File file = new File(filePath);
         System.out.println("upload 이미지@@@@@@@@@@@@");
         RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"),file);
@@ -699,7 +700,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 
 }
 

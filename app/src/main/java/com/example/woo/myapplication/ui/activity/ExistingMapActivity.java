@@ -808,7 +808,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                         String imagePath = data.getStringExtra("imagePath");
                         System.out.println("imagepath : "+imagePath);
                         if(imagePath!=null)
-                            uploadImage(imagePath);
+                            //uploadImage(imagePath);
                         //color_impossible = getResources().getColor(R.color.impossible);
                         //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
                         try{
@@ -831,7 +831,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-     private void uploadImage(String filePath){
+     /*private void uploadImage(String filePath){
         File file = new File(filePath);
         System.out.println("upload 이미지@@@@@@@@@@@@");
 
@@ -849,7 +849,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         }*/
 
 
-        retrofitExService.postNotComplete(description,part).enqueue(new Callback<OverlapExamineData>() {
+        /*retrofitExService.postNotComplete(description,part).enqueue(new Callback<OverlapExamineData>() {
             @Override
             public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
                 System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
@@ -869,7 +869,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
             }
         });
-    }
+    }*/
 }
 
 
