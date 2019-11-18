@@ -94,7 +94,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private int COLOR_LINE_BLACK;
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
-    private Socket mSocket = null;
+    public static Socket mSocket = null;
     public String received_districtNum;
     public String received_index;
     public String received_districtNum2;

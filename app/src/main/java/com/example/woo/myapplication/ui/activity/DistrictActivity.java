@@ -1,6 +1,7 @@
 package com.example.woo.myapplication.ui.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
@@ -21,8 +23,17 @@ import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class DistrictActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
@@ -30,12 +41,15 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     private Marker findLocation;
     private PolygonOverlay district = new PolygonOverlay();
     private FusedLocationSource locationSource;
+    private NaverMap naverMapInstance;
     private int mapId;
     private int row;
     private int col;
     private int colorOutline;
     private int colorFound;
     private int colorImpossible;
+    private Socket mSocket=null;
+    String lat,lng;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +60,16 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         colorOutline = getResources().getColor(R.color.white);
         colorFound = getResources().getColor(R.color.colorPrimary);
         colorImpossible = getResources().getColor(R.color.primary);
+
+        if(ExistingMapActivity.mSocket != null)
+            mSocket = ExistingMapActivity.mSocket;
+        else
+            mSocket = NewMapActivity.mSocket;
+        mSocket.on("complete", complete);
+
+           // mSocket.on("not_complete", not_complete);
+
+
 
         /* 이전 Activity로부터 정보 획득 */
         Intent intent = getIntent();
@@ -78,6 +102,37 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         /* 서버로부터 수색불가 및 발견지점 위경도 획득(홍성기) */
 
     }
+
+
+    private Emitter.Listener complete = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+
+            try {
+                JSONObject receivedData = (JSONObject) args[0];
+                lat = receivedData.getString("lat");
+                lng = receivedData.getString("lng");
+                System.out.println("lat : @@@@@@@@@@@@@@" + receivedData.getString("lat") + "@@@@@@@@@@@@@@@");
+                System.out.println("index : @@@@@@@@@@@@@@@@@@@@@@" + receivedData.getString("lng") + "@@@@@@@@@@@@@");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Marker foundMarker = new Marker();
+                        foundMarker.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
+                        foundMarker.setIcon(MarkerIcons.BLACK);
+                        foundMarker.setIconTintColor(Color.MAGENTA);
+                        foundMarker.setCaptionText("발견 지점");
+                        foundMarker.setMap(naverMapInstance);
+                    }
+                });
+            } catch (JSONException e) {
+                System.out.println("complete JsonException");
+                e.printStackTrace();
+            }
+
+        }
+    };
+
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
@@ -118,6 +173,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
             });
             marker.setMap(naverMap);
         });
+        naverMapInstance = naverMap;
     }
 
     @Override
@@ -137,8 +193,16 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                             point.setCaptionText("발견 지점");
                             point.setCaptionColor(colorFound);
                             point.setIconTintColor(colorFound);
-                            /* 발견지점 서버로 전송해야 함. (홍성기) */
                             findLocation = point;
+                            JSONObject s_data = new JSONObject();
+                            try{
+                                s_data.put("mid",mapId);
+                                s_data.put("lat",findLocation.getPosition().latitude);
+                                s_data.put("lng",findLocation.getPosition().longitude);
+                                mSocket.emit("complete",s_data);
+                            }catch (JSONException e){
+                                e.printStackTrace();
+                            }
                         }
                         else{
                             Toast.makeText(DistrictActivity.this, "이미 등록된 발견지점이 있습니다.", Toast.LENGTH_LONG).show();
