@@ -187,7 +187,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                     Log.w("item_ul_latitude", item.getUl_latitude());
                     Log.w("item_ul_longitude", item.getUl_longitude());
                     Log.w("item_ul_desc", item.getUl_desc());
-                    if(!item.getUl_file().equals("null")){
+                    if(item.getUl_file()!=null){
                         Log.w("item_ul_file", item.getUl_file());
                     }
                 }
