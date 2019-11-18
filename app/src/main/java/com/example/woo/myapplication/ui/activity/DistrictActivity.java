@@ -8,6 +8,7 @@ import android.support.v4.graphics.ColorUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.woo.myapplication.R;
 import com.naver.maps.geometry.LatLng;
@@ -26,6 +27,7 @@ import java.util.List;
 public class DistrictActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private HashMap<Integer, Marker> markerHashMap = new HashMap<Integer, Marker>();
+    private Marker findLocation;
     private PolygonOverlay district = new PolygonOverlay();
     private FusedLocationSource locationSource;
     private int mapId;
@@ -131,9 +133,16 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                 case RESULT_OK:
                     String opt = data.getStringExtra("result");
                     if(opt.toLowerCase().contains("finish")){
-                        point.setCaptionText("발견 지점");
-                        point.setCaptionColor(colorFound);
-                        point.setIconTintColor(colorFound);
+                        if(findLocation == null){
+                            point.setCaptionText("발견 지점");
+                            point.setCaptionColor(colorFound);
+                            point.setIconTintColor(colorFound);
+                            /* 발견지점 서버로 전송해야 함. (홍성기) */
+                            findLocation = point;
+                        }
+                        else{
+                            Toast.makeText(DistrictActivity.this, "이미 등록된 발견지점이 있습니다.", Toast.LENGTH_LONG).show();
+                        }
                     }
                     else if(opt.toLowerCase().contains("impossible")){
                         point.setCaptionText("수색 불가");
@@ -157,7 +166,6 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
 
     @Override
     public void onBackPressed() {
-        //안드로이드 백버튼 막기
         Intent intent = new Intent();
         intent.putExtra("result", "Close Popup");
         setResult(RESULT_OK, intent);

@@ -671,65 +671,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                String result = data.getStringExtra("result");
-                int districtNum;
-                int index;
-                switch (result) {
-                    case "Find Finish":
-                        districtNum = data.getIntExtra("district", -1);
-                        index = data.getIntExtra("location", -1);
-                        System.out.println("districtNum : "+districtNum+"@@@@@@@@@@@@@@@@@@@" );
-                        System.out.println("index : "+index+"@@@@@@@@@@@@@@@@@@@" );
-
-                        try {
-                            JSONObject complete_data = new JSONObject();
-                            System.out.println("complete@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@1111111111111111111");
-                            String area_districtNum = ""+districtNum;
-                            String area_index = ""+index;
-                            complete_data.put("mid",m_id);
-                            complete_data.put("districtNum",area_districtNum);
-                            complete_data.put("index",area_index);
-                            mSocket.emit("complete", complete_data);
-                        }catch(JSONException e){
-                            System.out.println("complete 에러");
-                            e.printStackTrace();
-                        }
-                        break;
-                    case "Find Impossible":
-                        String content = data.getStringExtra("content");
-                        Toast.makeText(this, "특이사항: " + content, Toast.LENGTH_SHORT).show();
-                        districtNum = data.getIntExtra("district", -1);
-                        index = data.getIntExtra("location", -1);
-                        String imagePath = data.getStringExtra("imagePath");
-                         if(imagePath!=null)
-                             updateImage(imagePath);
-                        //total_districts.get(districtNum).get(index).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
-                        try{
-                            JSONObject non_complete_data = new JSONObject();
-                            String area_districtNum = ""+districtNum;
-                            String area_index = ""+index;
-                            non_complete_data.put("mid", m_id);
-                            non_complete_data.put("districtNum",area_districtNum);
-                            non_complete_data.put("index",area_index);
-                            non_complete_data.put("content",content);
-                            mSocket.emit("not_complete",non_complete_data);
-                        }catch (JSONException e){
-                            e.printStackTrace();
-                        }
-                        break;
-                    case "Close Popup":
-                        break;
-
-
-                }
-            }
-        }
-    }
-
     public void updateImage(String filePath){
         File file = new File(filePath);
         System.out.println("upload 이미지@@@@@@@@@@@@");
