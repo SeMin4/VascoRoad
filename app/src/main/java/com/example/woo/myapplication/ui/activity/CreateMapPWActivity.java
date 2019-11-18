@@ -1,14 +1,17 @@
 package com.example.woo.myapplication.ui.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +21,7 @@ import com.example.woo.myapplication.R;
 public class CreateMapPWActivity extends Activity {
     private EditText password1;
     private EditText password2;
+    private ConstraintLayout createMapPWActivity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,6 +32,7 @@ public class CreateMapPWActivity extends Activity {
 
         password1 = (EditText) findViewById(R.id.EditText_password);
         password2 = (EditText) findViewById(R.id.EditText_re_password);
+        createMapPWActivity = (ConstraintLayout)findViewById(R.id.create_map_password_layout);
         TextView error = (TextView) findViewById(R.id.textView_error);
 
         password2.addTextChangedListener(new TextWatcher() {
@@ -44,7 +49,14 @@ public class CreateMapPWActivity extends Activity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
         });
-
+        createMapPWActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(password1.getWindowToken(), 0);
+                inputMethodManager.hideSoftInputFromWindow(password2.getWindowToken(), 0);
+            }
+        });
     }
 
     public void mOnAccept(View v){
@@ -65,6 +77,7 @@ public class CreateMapPWActivity extends Activity {
         }
     }
 
+
     public void mOnCancel(View v){
         Intent intent = new Intent();
         setResult(RESULT_CANCELED, intent);
@@ -72,7 +85,6 @@ public class CreateMapPWActivity extends Activity {
         //액티비티(팝업) 닫기
         finish();
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
