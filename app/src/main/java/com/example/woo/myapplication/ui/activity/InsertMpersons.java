@@ -99,11 +99,13 @@ public class InsertMpersons extends AppCompatActivity {
             }
         }
         else if(requestCode == PICK_LOCATION){
-            double lat = data.getDoubleExtra("latitude", -1);
-            double lng = data.getDoubleExtra("longitude", -1);
-            String address = "선택된 주소: " + findAddress(lat, lng);
-            missingLocation.setVisibility(View.VISIBLE);
-            missingLocation.setText(address);
+            if(resultCode == RESULT_OK){
+                double lat = data.getDoubleExtra("latitude", -1);
+                double lng = data.getDoubleExtra("longitude", -1);
+                String address = "선택된 주소: " + findAddress(lat, lng);
+                missingLocation.setVisibility(View.VISIBLE);
+                missingLocation.setText(address);
+            }
         }
     }
 
