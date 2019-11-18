@@ -38,7 +38,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_district_details);
+        setContentView(R.layout.activity_district_details);
 
         /* 색상 resource 획득 */
         colorOutline = getResources().getColor(R.color.white);

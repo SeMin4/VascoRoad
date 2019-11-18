@@ -13,6 +13,7 @@ import android.location.Geocoder;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,7 +33,6 @@ import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.OverlapExamineData;
 import com.example.woo.myapplication.R;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
@@ -51,13 +51,14 @@ public class InsertMpersons extends AppCompatActivity {
     protected DatePickerDialog.OnDateSetListener mDateSetListener;
     protected DatePickerDialog.OnDateSetListener mAgeSetListener;
     protected Button getLocationBtn;
-    protected TextView latitude_txt_view;
     protected EditText mpersonName;
     protected EditText searchLocation;
+    protected TextView missingLocation;
     protected TextView Mperson_age;
     protected LinearLayout insertMpersonLayout;
     protected ImageView imageView;
     private final int PICK_IMAGE = 0;
+    private final int PICK_LOCATION = 1;
     private String currentPhotoPath;
     private Button insert;
     protected EditText description;
@@ -96,6 +97,13 @@ public class InsertMpersons extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Failed!", Toast.LENGTH_SHORT).show();
                 }
             }
+        }
+        else if(requestCode == PICK_LOCATION){
+            double lat = data.getDoubleExtra("latitude", -1);
+            double lng = data.getDoubleExtra("longitude", -1);
+            String address = "선택된 주소: " + findAddress(lat, lng);
+            missingLocation.setVisibility(View.VISIBLE);
+            missingLocation.setText(address);
         }
     }
 
@@ -144,15 +152,16 @@ public class InsertMpersons extends AppCompatActivity {
         retrofitExService = MyGlobals.getInstance().getRetrofitExService();
         Mperson_select_date = (TextView) findViewById(R.id.mperson_select_date);
         getLocationBtn = (Button) findViewById(R.id.getLocation_btn) ;
-        latitude_txt_view = (TextView) findViewById(R.id.mperson_latitude_longitude);
-        latitude_txt_view.setMovementMethod(new ScrollingMovementMethod());
         searchLocation = (EditText)findViewById(R.id.search_location);
+        missingLocation = findViewById(R.id.mperson_missing_address);
         insertMpersonLayout = (LinearLayout)findViewById(R.id.insertMperson_layout);
         mpersonName = (EditText)findViewById(R.id.mperson_name);
         Mperson_age = (TextView) findViewById(R.id.mperson_age);
         imageView = (ImageView)findViewById(R.id.imageView);
         insert = (Button)findViewById(R.id.insert);
         description = (EditText)findViewById(R.id.mperson_description);
+
+        missingLocation.setVisibility(View.INVISIBLE);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -266,10 +275,12 @@ public class InsertMpersons extends AppCompatActivity {
                  }
                  if(list != null){
                      if(list.size() == 0){
-                         latitude_txt_view.setText("주소 없음");
+                         Toast.makeText(InsertMpersons.this, "구글지도에 제공되지 않는 위치입니다.", Toast.LENGTH_LONG).show();
                      }else{
-                         String Address = findAddress(list.get(0).getLatitude(), list.get(0).getLongitude());
-                         latitude_txt_view.setText(list.get(0).toString() + Address);
+                         Intent intent = new Intent(InsertMpersons.this, RegisterMissinLatLng.class);
+                         intent.putExtra("latitude", list.get(0).getLatitude());
+                         intent.putExtra("longitude", list.get(0).getLongitude());
+                         startActivityForResult(intent, PICK_LOCATION);
                      }
                  }
 
@@ -301,5 +312,6 @@ public class InsertMpersons extends AppCompatActivity {
         return buffer.toString();
 
     }
+
 
 }

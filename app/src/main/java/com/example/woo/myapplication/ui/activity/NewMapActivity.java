@@ -355,7 +355,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
             // grandChild.setMap(naverMap);
 
             if(grandChild.getFootPrint().getColor() != COLOR_FINISH){
-                grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 150));
+                grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 250));
                 grandChild.getFootPrint().setMap(naverMap);
             }
         });

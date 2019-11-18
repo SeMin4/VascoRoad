@@ -102,16 +102,13 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/mperson_latitude_longitude"
+                android:id="@+id/mperson_missing_address"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginVertical="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="50dp"
                 android:gravity="center|left"
-                android:textSize="10pt"
-                android:background="@drawable/form"
-                android:text="위도 경도">
-            </TextView>
+                android:text="TextView" />
 
             <EditText
                 android:id="@+id/mperson_description"

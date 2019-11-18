@@ -53,6 +53,7 @@
         <activity android:name=".ui.activity.listVieww_popup"></activity>
         <activity android:name=".ui.activity.EmptyRoomActivity"></activity>
         <activity android:name=".ui.activity.MissingInfoActivity"></activity>
+        <activity android:name=".ui.activity.RegisterMissinLatLng" android:theme="@style/AppTheme"/>
 
 
         <meta-data
