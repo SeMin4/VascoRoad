@@ -94,7 +94,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private int COLOR_LINE_BLACK;
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
-    private int COLOR_RED;
     private Socket mSocket = null;
     public String received_districtNum;
     public String received_index;
@@ -135,7 +134,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
-        COLOR_RED = ResourcesCompat.getColor(getResources(), R.color.impossible, getTheme());
 
         try{
             if(mSocket == null) {
@@ -372,7 +370,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
             String str = String.format("%.2f", naverMap.getCameraPosition().zoom);
             zoomLevel.setText(str);
         });
-        Projection projection = naverMap.getProjection();
 
         // 실종지점 등록
         Marker missingPoint = new Marker();
@@ -387,6 +384,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         missingPoint.setMap(naverMap);
 
         /* 쓰레드(지도 그리드 생성) 등록 */
+        Projection projection = naverMap.getProjection();
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
         executor.schedule(() -> {
@@ -668,7 +666,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         Intent intent = new Intent(this,MissingInfoActivity.class);
         intent.putExtra("selecteditem",selected);
         startActivityForResult(intent,1);
-
     }
 
     public void updateImage(String filePath){
