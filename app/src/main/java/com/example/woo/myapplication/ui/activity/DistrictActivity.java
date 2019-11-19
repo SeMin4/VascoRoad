@@ -60,6 +60,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     private int colorOutline;
     private int colorFound;
     private int colorImpossible;
+    String lat2,lng2,desc,photo_name;
 
     private Socket mSocket=null;
     String lat,lng;
@@ -83,6 +84,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         else
             mSocket = NewMapActivity.mSocket;
         mSocket.on("complete", complete);
+        mSocket.on("not_complete", not_complete);
 
            // mSocket.on("not_complete", not_complete);
 
@@ -144,6 +146,31 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                 });
             } catch (JSONException e) {
                 System.out.println("complete JsonException");
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+    private Emitter.Listener not_complete = new Emitter.Listener() { //수색불가
+        @Override
+        public void call(Object... args) {
+            try{
+                JSONObject receivedData = (JSONObject)args[0];
+
+                lat2 = receivedData.getString("lat");
+                lng2 = receivedData.getString("lng");
+                desc = receivedData.getString("desc");
+                photo_name = receivedData.getString("photo_name");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Marker notComplete = new Marker();
+                        notComplete.setPosition(new LatLng(Double.parseDouble(lat2), Double.parseDouble(lng2)));
+                        notComplete.setMap(naverMapInstance);
+                    }
+                });
+            }catch(JSONException e){
                 e.printStackTrace();
             }
 

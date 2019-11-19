@@ -88,16 +88,21 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     public static Socket mSocket=null;
     public String lat;
     public String lng;
-    public String received_districtNum2;
-    public String received_index2;
-    public String received_content2;
+    public String lat2;
+    public String lng2;
+    public String desc;
+    public String photo_name;
     public int color_finish;
     public int color_impossible;
     private Retrofit retrofit;
     private MyGlobals.RetrofitExService retrofitExService;
     Button mpersoninfo;
-
     Mperson selected;
+
+    String prev_lat = null;
+    String prev_lng = null;
+    String cur_lat = null;
+    String cur_lng = null; //보여주기용
 
 
 
@@ -126,6 +131,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 //mSocket.on(Socket.EVENT_DISCONNECT, disConnect);
                 mSocket.on("attendRoom", attendRoom);// 방접속시 user 아이디 보내기
                 mSocket.on("complete", complete);
+                mSocket.on("seeroad",seeroad); // 보여주기용
                 //mSocket.on("disconnect",disConnect);
                 mSocket.on("not_complete", not_complete);
             }
@@ -164,10 +170,66 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         locationSource = new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
 
+        double unit = Double.parseDouble(mapInfo.getM_unit_scale());
+        if(unit == 20){
+            scale = 4;
+        } else if(unit == 30 || unit == 50){
+            scale = 8;
+        } else if(unit == 100){
+            scale = 16;
+        } else if(unit == 250){
+            scale = 32;
+        } else{
+            scale = 64;
+        }
 
         // mapInfo로 mapDetail정보까지 가져와야 함.
 
     }
+
+    private Emitter.Listener seeroad = new Emitter.Listener() {
+        @Override
+        public void call(Object... args) {
+            try {
+                JSONObject recived_data = (JSONObject)args[0];
+                String lat = recived_data.getString("lat");
+                String lng = recived_data.getString("lng");
+                System.out.println("lat :"+lat +" , lng:"+lng);
+
+                ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+                Handler handler = new Handler(Looper.getMainLooper());
+                executor.schedule(() -> {
+                    // 백그라운드 스레드
+                    LatLng cur = new LatLng(Double.parseDouble(lat), Double.parseDouble(lng));
+                    int outerIndex = findDistrictCoord(outerDistrict.getChildren().get(0), cur, 8);
+
+                    handler.post(() -> {
+                        // 메인 스레드
+
+                        /* 속한 InnerDistrict 계산 */
+                        District child = outerDistrict.getChildren().get(outerIndex);
+                        if(!child.getGrid().getBounds().contains(cur)){
+                            Toast.makeText(ExistingMapActivity.this, "현위치가 그리드를 벗어났습니다.", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        int innerIndex = findDistrictCoord(child.getChildren().get(0), cur, scale);
+
+                        District grandChild = child.getChildren().get(innerIndex);
+                        if(grandChild.getFootPrint().getColor() != COLOR_FINISH){
+                            grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 250));
+                            grandChild.getFootPrint().setMap(naverMapInstance);
+                        }
+                    });
+                }, 0, TimeUnit.MILLISECONDS);
+
+
+
+
+            }catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+    };
 
     private Emitter.Listener onConnect = new Emitter.Listener() {
         @Override
@@ -235,13 +297,17 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         public void call(Object... args) {
             try{
                 JSONObject receivedData = (JSONObject)args[0];
-                received_districtNum2 = receivedData.getString("districtNum");
-                received_index2 = receivedData.getString("index");
-                received_content2 = receivedData.getString("content");
+
+                lat2 = receivedData.getString("lat");
+                lng2 = receivedData.getString("lng");
+                desc = receivedData.getString("desc");
+                photo_name = receivedData.getString("photo_name");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        total_districts.get(Integer.parseInt(received_districtNum2)).get(Integer.parseInt(received_index2)).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
+                        Marker notComplete = new Marker();
+                        notComplete.setPosition(new LatLng(Double.parseDouble(lat2), Double.parseDouble(lng2)));
+                        notComplete.setMap(naverMapInstance);
                     }
                 });
             }catch(JSONException e){
@@ -303,7 +369,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         naverMap.addOnLocationChangeListener(location -> {
             /* 현재 위치 획득 */
             LatLng cur = new LatLng(location.getLatitude(), location.getLongitude());
-
+            cur_lat = ""+cur.latitude;
+            cur_lng = ""+cur.longitude;
             /* 속한 OuterDistrict 계산 */
             int outerIndex = findDistrictCoord(outerDistrict.getChildren().get(0), cur, 8);
 
@@ -323,6 +390,23 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 250));
                 grandChild.getFootPrint().setMap(naverMap);
             }
+
+            //보여주기용 데이터보내기
+            if((prev_lat != cur_lat) || (prev_lng != cur_lng) )
+            {
+                try {
+                    JSONObject data = new JSONObject();
+                    data.put("mid",mapInfo.getM_id());
+                    data.put("lat", cur_lat);
+                    data.put("lng", cur_lng);
+                    prev_lat = cur_lat;
+                    prev_lng = cur_lng;
+                    mSocket.emit("seeroad", data);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+
         });
 
         mapBounds = new LatLngBounds(

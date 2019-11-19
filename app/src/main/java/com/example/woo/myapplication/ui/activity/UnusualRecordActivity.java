@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
+import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,11 +24,16 @@ import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.OverlapExamineData;
 import com.example.woo.myapplication.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -41,10 +47,12 @@ public class UnusualRecordActivity extends Activity {
     private int mapId;
     private double latitude;
     private double longitude;
+    private Socket mSocket;
     private ImageView imageView;
     private String currentPhotoPath=null;
     private MyGlobals.RetrofitExService retrofitExService=null;
     private  EditText unusual_things;
+    private String lat,lng,content,photo_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +60,11 @@ public class UnusualRecordActivity extends Activity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.popup_unusual_status);
-
+        if(ExistingMapActivity.mSocket!=null)
+            mSocket = ExistingMapActivity.mSocket;
+        else
+            mSocket = NewMapActivity.mSocket;
+        mSocket.on("not_complete", not_complete);
         unusual_things = findViewById(R.id.editText_for_unusual);
         retrofitExService = MyGlobals.getInstance().getRetrofitExService();
         imageView = findViewById(R.id.imageView);
@@ -178,60 +190,36 @@ public class UnusualRecordActivity extends Activity {
             }
         }
     }
-    private void uploadImage(String filePath,String content){
+    private void uploadImage(String filePath){
 
-        System.out.println("f_path : "+filePath +", content : "+content );
-        if(filePath ==null){
-            retrofitExService.getNotComplete(""+mapId,content,""+latitude,""+longitude).enqueue(new Callback<OverlapExamineData>() {
-                @Override
-                public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
-                    System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
-                    OverlapExamineData data = response.body();
-                    if (data.getOverlap_examine().equals("yes")) {
-                        System.out.println("yes");
-                        Toast.makeText(getApplicationContext(), data.getOverlap_examine(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
-                    }
+        System.out.println("f_path : "+filePath );
+        File file = new File(filePath);
+        System.out.println("upload 이미지@@@@@@@@@@@@");
+
+        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
+        RequestBody map_id = RequestBody.create(MediaType.parse("text/plain"), "" + mapId);
+        System.out.println("mapid : " + mapId);
+
+        retrofitExService.postNotComplete(map_id,part).enqueue(new Callback<OverlapExamineData>() {
+            @Override
+            public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+                System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
+                OverlapExamineData data = response.body();
+                if (data.getOverlap_examine().equals("yes")) {
+                    System.out.println("yes");
+                    Toast.makeText(getApplicationContext(), data.getOverlap_examine(), Toast.LENGTH_SHORT).show();
+                } else {
+                    // Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
                 }
+            }
 
-                @Override
-                public void onFailure(Call<OverlapExamineData> call, Throwable t) {
-
-                }
-            });
-        }else {
-            File file = new File(filePath);
-            System.out.println("upload 이미지@@@@@@@@@@@@");
-
-            RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"), file);
-            MultipartBody.Part part = MultipartBody.Part.createFormData("upload", file.getName(), fileReqBody);
-            RequestBody map_id = RequestBody.create(MediaType.parse("text/plain"), "" + mapId);
-            RequestBody description = RequestBody.create(MediaType.parse("text/plain"), content);
-            RequestBody lat = RequestBody.create(MediaType.parse("text/plain"), ""+latitude);
-            RequestBody lng = RequestBody.create(MediaType.parse("text/plain"), ""+longitude);
-            System.out.println("mapid : " + mapId);
-
-            retrofitExService.postNotComplete(map_id, description,lat,lng ,part).enqueue(new Callback<OverlapExamineData>() {
-                @Override
-                public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
-                    System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
-                    OverlapExamineData data = response.body();
-                    if (data.getOverlap_examine().equals("yes")) {
-                        System.out.println("yes");
-                        Toast.makeText(getApplicationContext(), data.getOverlap_examine(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<OverlapExamineData> call, Throwable t) {
-                    System.out.println("onFailure 호출됨@@@@@@@@@@@@@@@");
-                    Toast.makeText(getApplicationContext(), "insert 실패", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+            @Override
+            public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+                System.out.println("onFailure 호출됨@@@@@@@@@@@@@@@");
+                Toast.makeText(getApplicationContext(), "insert 실패", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void mOnSave(View v){
@@ -240,7 +228,35 @@ public class UnusualRecordActivity extends Activity {
         setResult(RESULT_OK, intent);
         String content = unusual_things.getText().toString();
 
-        uploadImage(currentPhotoPath,content);
+        if(currentPhotoPath!=null){
+            uploadImage(currentPhotoPath);
+            JSONObject data = new JSONObject();
+            try{
+                data.put("mid",mapId);
+                data.put("desc",content);
+                data.put("lat",latitude);
+                data.put("lng",longitude);
+                String[] temp = currentPhotoPath.split("/");
+                data.put("photo_name", temp[temp.length-1]);
+            }catch (JSONException e){
+                System.out.println("수색불과 정보 보냈을 때 에러");
+            }
+            mSocket.emit("not_complete", data);
+        }else{
+            JSONObject data = new JSONObject();
+            try{
+                data.put("mid",mapId);
+                data.put("desc",content);
+                data.put("lat",latitude);
+                data.put("lng",longitude);
+            }catch (JSONException e){
+                System.out.println("수색불과 정보 보냈을 때 에러");
+            }
+            mSocket.emit("not_complete", data);
+        }
+
+
+
         /* 수색 불가 지점에 대한 정보를 서버로 전송(홍성기) */
         // currentPhotoPath: 이미지 저장 경로
         // content: 수색불가한 이유
@@ -248,6 +264,28 @@ public class UnusualRecordActivity extends Activity {
 
         finish();
     }
+
+    private Emitter.Listener not_complete = new Emitter.Listener() { //수색불가
+        @Override
+        public void call(Object... args) {
+            try{
+                JSONObject receivedData = (JSONObject)args[0];
+                lat = receivedData.getString("lat");
+                lng = receivedData.getString("lng");
+                content = receivedData.getString("desc");
+                photo_name = receivedData.getString("photo_name");
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                });
+            }catch(JSONException e){
+                e.printStackTrace();
+            }
+
+        }
+    };
 
 
     public void mOnCancel(View v){

@@ -125,7 +125,7 @@ public class MyGlobals {
 
         @Multipart
         @POST("/not_complete/image")
-        Call<OverlapExamineData> postNotComplete(@Part("mid")RequestBody mid,@Part("desc")RequestBody desc,@Part("lat")RequestBody lat,@Part("lng")RequestBody lng,@Part MultipartBody.Part file);
+        Call<OverlapExamineData> postNotComplete(@Part("mid")RequestBody mid,@Part MultipartBody.Part file);
 
         @GET("/not_complete/?")
         Call<OverlapExamineData> getNotComplete(@Query("mid") String m_id,@Query("desc") String desc,@Query("lat") String lat,@Query("lng") String lng);
