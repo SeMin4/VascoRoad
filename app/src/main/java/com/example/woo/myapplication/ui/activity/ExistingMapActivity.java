@@ -102,7 +102,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     String prev_lat = null;
     String prev_lng = null;
     String cur_lat = null;
-    String cur_lng = null; //보여주기용
+    String cur_lng = null; 
 
 
 
