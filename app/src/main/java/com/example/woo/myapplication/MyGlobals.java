@@ -1,5 +1,6 @@
 package com.example.woo.myapplication;
 
+import com.example.woo.myapplication.data.CompleteData;
 import com.example.woo.myapplication.data.DetailData;
 import com.example.woo.myapplication.data.MapDetail;
 import com.example.woo.myapplication.data.MapInfo;
@@ -78,6 +79,9 @@ public class MyGlobals {
 
         @GET("/mperson")
         Call<ArrayList<Mperson>> getData();
+
+        @GET("/complete/data?")
+        Call<CompleteData> getCompleteData(@Query("m_id") String m_id);
 
         @GET("/not_complete/list?") //특정 인덱스 부분에 해당하는 수색불가정보
         Call<ArrayList<Not_Complete_Data>> getNotCompleteList(@Query("m_id") String m_id,@Query("index")String index);

@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.CompleteData;
 import com.example.woo.myapplication.data.DetailData;
 import com.example.woo.myapplication.data.District;
 import com.example.woo.myapplication.data.MapInfo;
@@ -106,6 +107,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     String prev_lng = null;
     String cur_lat = null;
     String cur_lng = null;
+
+
 
 
     String[][] Run_Length;
@@ -529,8 +532,6 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
             //자기위치 데이터보내기 데이터보내기
 
-
-            //보여주기용 데이터보내기
             if((prev_lat != cur_lat) || (prev_lng != cur_lng) )
             {
                 try {
@@ -713,9 +714,6 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                     }
                 }
 
-
-
-
             });
         }, 200, TimeUnit.MILLISECONDS);
 
@@ -767,10 +765,29 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
             }
         });
         //디비로부터 정보받아오기(완료,불가,트래킹)
+        retrofitExService.getCompleteData(mapInfo.getM_id()).enqueue(new Callback<CompleteData>() {
+            @Override
+            public void onResponse(Call<CompleteData> call, Response<CompleteData> response) {
+                Log.d("오삼삼","complete onResponse");
+                CompleteData data = response.body();
+                Log.d("오삼삼","data : "+data.getM_find_latitude()+"   "+data.getM_find_longitude());
+                if(data.getM_find_longitude()!=null && data.getM_find_latitude()!=null) {
+                    Marker notComplete = new Marker();
+                    notComplete.setPosition(new LatLng(Double.parseDouble(data.getM_find_latitude()), Double.parseDouble(data.getM_find_longitude())));
+                    notComplete.setMap(naverMap);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CompleteData> call, Throwable t) {
+                Log.d("오삼삼","complete onFailure");
+                Log.d("오삼삼",""+t);
+            }
+        });
         retrofitExService.getMapDetailData(mapInfo.getM_id()).enqueue(new Callback<ArrayList<DetailData>>() {
             @Override
             public void onResponse(Call<ArrayList<DetailData>> call, Response<ArrayList<DetailData>> response) {
-                System.out.println("getMapDetail onResponse@@@@@@@@@@@@@@@@@");
+                Log.d("오삼삼","getMapDetail onResponse@@@@@@@@@@@@@@@@@");
                 ArrayList<DetailData> data =  response.body(); //트래킹 데이터가 들어가있음
                 System.out.println("size@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+data.size());
                 //for(int i =0;i<data.size();i++)
@@ -779,7 +796,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onFailure(Call<ArrayList<DetailData>> call, Throwable t) {
-                System.out.println("onFailure@@@@@@@@@@@@@@@@@222222222222");
+                Log.d("오삼삼","getMapDetail onResponse@@@@@@@@@@@@@@@@@");
                 System.out.println("t: " + t);
             }
         });
@@ -801,7 +818,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
             @Override
             public void onFailure(Call<ArrayList<Not_Complete_Data>> call, Throwable t) {
-                System.out.println("onFailure@@@@@@@@@@@@@@@@@222222222222");
+                Log.d("오삼삼","onFailure@@@@@@@@@@@@@@@@@222222222222");
                 System.out.println("t: " + t);
             }
         });

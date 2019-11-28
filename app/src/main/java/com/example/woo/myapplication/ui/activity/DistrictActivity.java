@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.CompleteData;
 import com.example.woo.myapplication.data.DetailData;
 import com.example.woo.myapplication.data.MapDetail;
 import com.example.woo.myapplication.data.NotCompleteList;
@@ -208,6 +209,26 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         retrofit = MyGlobals.getInstance().getRetrofit();
         retrofitExService = MyGlobals.getInstance().getRetrofitExService();
 
+        retrofitExService.getCompleteData(""+mapId).enqueue(new Callback<CompleteData>() {
+            @Override
+            public void onResponse(Call<CompleteData> call, Response<CompleteData> response) {
+                Log.d("오삼삼","complete onResponse");
+                CompleteData data = response.body();
+                Log.d("오삼삼","data : "+data.getM_find_latitude()+"   "+data.getM_find_longitude());
+                if(data.getM_find_longitude()!=null && data.getM_find_latitude()!=null) {
+                    Marker notComplete = new Marker();
+                    notComplete.setPosition(new LatLng(Double.parseDouble(data.getM_find_latitude()), Double.parseDouble(data.getM_find_longitude())));
+                    notComplete.setMap(naverMap);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CompleteData> call, Throwable t) {
+                Log.d("오삼삼","complete onFailure");
+                Log.d("오삼삼",""+t);
+            }
+        });
+
         retrofitExService.getTrackingList(""+mapId,""+index).enqueue(new Callback<ArrayList<DetailData>>() {
             @Override
             public void onResponse(Call<ArrayList<DetailData>> call, Response<ArrayList<DetailData>> response) {
@@ -241,7 +262,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                     }
                     Marker notComplete = new Marker();
                     notComplete.setPosition(new LatLng(Double.parseDouble(items.get(i).getUl_latitude()), Double.parseDouble(items.get(i).getUl_longitude())));
-                    notComplete.setMap(naverMap);
+                    notComplete.setMap(naverMap); //여기있는 정보로 마크 클릭 시  사진보여주고 내용 보여주기 (민정)
                 }
             }
 
