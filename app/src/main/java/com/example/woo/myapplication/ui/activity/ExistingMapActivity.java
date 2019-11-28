@@ -50,11 +50,16 @@ import com.naver.maps.map.util.MarkerIcons;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -105,11 +110,24 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     String cur_lng = null; 
 
 
+    String[][] Run_Length;
+    //row, col 전체 512, 512 배열 처럼 전체 크기
+    int run_length_row;
+    int run_length_col;
+    //outerindex로 그곳에 db에 저장할 index_num , district_num 알아내야 하는거
+    int run_length_index_num;
+    int run_length_district_num;
+    boolean [][] Mark ;
+    ArrayList<Integer> sendOuterIndex;
+
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
 
         Intent intent = getIntent();
         mapInfo = (MapInfo) intent.getSerializableExtra("mapInfo");
@@ -120,7 +138,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
         color_finish = getResources().getColor(R.color.finish);
         color_impossible = getResources().getColor(R.color.impossible);
-
+        sendOuterIndex = new ArrayList<>();
 
         try {
             if (mSocket == null) {
@@ -173,6 +191,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         double unit = Double.parseDouble(mapInfo.getM_unit_scale());
         if(unit == 20){
             scale = 4;
+
         } else if(unit == 30 || unit == 50){
             scale = 8;
         } else if(unit == 100){
@@ -182,8 +201,119 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         } else{
             scale = 64;
         }
-
+        run_length_row = 8 * scale;
+        run_length_col = 8 * scale;
+        Mark = new boolean[run_length_row][run_length_col];
         // mapInfo로 mapDetail정보까지 가져와야 함.
+
+
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////Run-Length Algorithm/////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        String runlength = "3,5t1f3,11,31,";
+        int outer_index = 0;
+        String[] temp;
+
+        temp = runlength.split(",");
+        for (int i = 0; i < temp.length; i++) {
+            System.out.println(temp[i]);
+        }
+        int[] int_tmp = new int[temp.length];
+        int i = 0;
+        int prev_row = 0;
+        Boolean prev_data_type = null;
+        int start = 0;
+
+
+        for (i = 0; i < temp.length; i++) {
+            try {
+                int_tmp[i] = Integer.parseInt(temp[i]);
+                int row = int_tmp[i] / 4;
+                Boolean data_type = null;
+                if (int_tmp[i] % 2 == 0) {
+                    data_type = false;
+                } else {
+                    data_type = true;
+                }
+                if (prev_data_type == null) {
+                    for (int j = (outer_index % 8 * scale); j < (outer_index % 8 * scale) + scale; j++) {
+                        Mark[(outer_index / 8 * scale) + row][j] = data_type;
+                    }
+                    prev_data_type = data_type;
+                    prev_row = row;
+                } else if (data_type == prev_data_type) {
+                    for (int j = prev_row + 1; j <= row; j++) {
+                        for (int k = (outer_index % 8 * scale); k < (outer_index % 8 * scale) + scale; k++) {
+                            Mark[(outer_index / 8 * scale) + j][k] = data_type;
+                            prev_data_type = data_type;
+                            prev_row = row;
+                        }
+                    }
+                }
+            } catch (NumberFormatException e1) {
+                prev_data_type = null;
+                String tmp = temp[i].split("t")[0];
+                tmp = tmp.split("f")[0];
+                int row_info = Integer.parseInt(tmp);
+                int row = row_info / 4;
+                String detail = temp[i].substring(tmp.length(), temp[i].length());
+                int cnt = 0;
+                while (detail != null) {
+                    int t_index = detail.indexOf('t');
+                    int f_index = detail.indexOf('f');
+                    if (t_index == -1) {
+                        int f_count = Integer.parseInt(detail.substring(1));
+                        int for_cnt = cnt;
+                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + f_count; j++) {
+                            Mark[(outer_index / 8 * scale) + row][j] = false;
+                            cnt += 1;
+                        }
+                        for_cnt = cnt;
+                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + scale; j++) {
+                            Mark[(outer_index / 8 * scale) + row][j] = true;
+                            cnt += 1;
+                        }
+                        detail = null;
+                    } else if (f_index == -1) {
+                        int t_count = Integer.parseInt(detail.substring(1));
+                        int for_cnt = cnt;
+                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + t_count; j++) {
+                            Mark[(outer_index / 8 * scale) + row][j] = true;
+                            cnt += 1;
+                        }
+                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + scale; j++) {
+                            Mark[(outer_index / 8 * scale) + row][j] = false;
+                            cnt += 1;
+                        }
+                        detail = null;
+                    } else if (t_index < f_index) {
+                        String t_tmp_string = detail.split("f")[0];
+                        int t_count = Integer.parseInt(t_tmp_string.substring(1));
+                        int for_cnt = cnt;
+                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + t_count; j++) {
+                            Mark[(outer_index / 8 * scale) + row][j] = true;
+                            cnt += 1;
+                        }
+                        detail = detail.substring(t_tmp_string.length());
+                    } else if (t_index > f_index) {
+                        String f_tmp_string = detail.split("t")[0];
+                        int f_count = Integer.parseInt(f_tmp_string.substring(1));
+                        int for_cnt = cnt;
+                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + f_count; j++) {
+                            Mark[(outer_index / 8 * scale) + row][j] = true;
+                            cnt += 1;
+                        }
+                        detail = detail.substring(f_tmp_string.length());
+                    }
+                }
+                //i += 1;
+                continue;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 
@@ -388,13 +518,104 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
             if(grandChild.getFootPrint().getColor() != COLOR_FINISH){
                 grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 250));
+                //8*8 배열
+                grandChild.setVisit(true);
                 grandChild.getFootPrint().setMap(naverMap);
+                Mark[(outerIndex/8*scale)+ (innerIndex/scale)][(outerIndex%8*scale) + (innerIndex%scale)] = true;
+                if(!sendOuterIndex.contains(outerIndex))
+                    sendOuterIndex.add(outerIndex);
             }
+
+
 
             //보여주기용 데이터보내기
             if((prev_lat != cur_lat) || (prev_lng != cur_lng) )
             {
                 try {
+                    ArrayList<String> row_array = new ArrayList<>();
+                    for(int i = 0;i<sendOuterIndex.size();i++){
+                        run_length_index_num = sendOuterIndex.get(i) / 8;
+                        run_length_district_num = sendOuterIndex.get(i) % 8;
+                        System.out.println("OuterIndex" + sendOuterIndex.get(i));
+                        char row_data = 0;
+                        String each_Index = "";
+                        for (int j = run_length_index_num * scale; j < run_length_index_num * scale + scale; j++) {
+                            char one_discriminant = 0;
+                            boolean value_boolean = true;
+                            //row_data 정하기
+                            one_discriminant = (char)((char)(row_data*4) | one_discriminant);
+                            //첫번째의 캐릭터의 value bit 정하기
+                            if(Mark[j][run_length_district_num * scale] == true){
+                                one_discriminant = (char)((char)1 | one_discriminant);
+                                value_boolean = true;
+                            }
+                            else{
+                                one_discriminant = (char)((char)0 | one_discriminant);
+                                value_boolean = false;
+                            }
+                            //각각의 열에 대한 스트링
+                            String each_row = "";
+                            String detail_each_row = "";
+                            char cnt = 0;
+                            for (int k = run_length_district_num * scale; k < run_length_district_num * scale + scale; k++) {
+                                if(Mark[j][k] == value_boolean){
+                                    cnt+=1;
+                                }
+                                else{
+                                    if(value_boolean == true){
+                                        detail_each_row = detail_each_row.concat("t");
+//                                        detail_each_row = detail_each_row.concat(Integer.toString((int)cnt));
+//                                        System.out.println("cnt :" + (int)cnt);
+                                        value_boolean = false;
+//                                        cnt = 0;
+                                    }
+                                    else{
+                                        detail_each_row = detail_each_row.concat("f");
+//                                        detail_each_row = detail_each_row.concat(Integer.toString((int)cnt));
+                                        value_boolean = true;
+//                                        cnt = 0;
+                                    }
+                                    detail_each_row = detail_each_row.concat(Integer.toString((int)cnt));
+                                    System.out.println("each_detail: " +  detail_each_row);
+                                }
+                            }
+                            char discriminant_bit = 0;
+                            if(cnt == scale){
+                                discriminant_bit = 2;
+                            }
+                            else{
+                                discriminant_bit = 0;
+                            }
+                            one_discriminant = (char)(one_discriminant | discriminant_bit);
+                            each_row = each_row.concat(Integer.toString((int)one_discriminant));
+                            each_row = each_row.concat(detail_each_row);
+
+                            row_data++;
+                            row_array.add(each_row);
+                            try{
+                                if((Integer.parseInt(row_array.get(row_array.size()-1)) - Integer.parseInt(row_array.get(row_array.size()-2))) %4 == 0){
+                                    if((Integer.parseInt(row_array.get(row_array.size()-2)) - Integer.parseInt(row_array.get(row_array.size()-3))) %4 == 0 ){
+                                        row_array.remove(row_array.size()-2);
+                                    }
+                                }
+                            }catch(NumberFormatException numberformatException){
+
+                            }catch(IndexOutOfBoundsException e1){
+
+                            }
+                            catch(Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                        for (String row:
+                             row_array) {
+                            each_Index = each_Index.concat(row);
+                            each_Index = each_Index.concat(",");
+                        }
+
+                        System.out.println("Each_Index : " + each_Index);
+                    }
+                    sendOuterIndex.clear();
                     JSONObject data = new JSONObject();
                     data.put("mid",mapInfo.getM_id());
                     data.put("lat", cur_lat);
@@ -480,6 +701,18 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 for(District child: outerDistrict.getChildren()){
                     child.addToMap(naverMap, COLOR_LINE_WHITE, 5);
                 }
+                for (int i = 0; i < 64; i++) {
+                    for (int j = 0; j < scale * scale; j++) {
+                        if(Mark[(i/8*scale) + (j/scale)][(i%8*scale) + (j%scale)] == true){
+                            outerDistrict.getChildren().get(i).getChildren().get(j).setVisit(true);
+                            outerDistrict.getChildren().get(i).getChildren().get(j).getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 250));
+                            outerDistrict.getChildren().get(i).getChildren().get(j).getFootPrint().setMap(naverMap);
+                        }
+                    }
+                }
+
+
+
 
             });
         }, 200, TimeUnit.MILLISECONDS);
