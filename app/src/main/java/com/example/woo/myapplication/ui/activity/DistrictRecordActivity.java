@@ -21,6 +21,7 @@ public class DistrictRecordActivity extends Activity {
     private int mapId;
     private double latitude;
     private double longitude;
+    private int index;
 
 
     @Override
@@ -36,7 +37,9 @@ public class DistrictRecordActivity extends Activity {
         mapId = intent.getIntExtra("mapId", -1);
         latitude = intent.getDoubleExtra("latitude", -1);
         longitude = intent.getDoubleExtra("longitude", -1);
+        index = intent.getIntExtra("index",-1);
 
+        System.out.println("district_recrd_activity : "+index);
 
         prompt = findViewById(R.id.popup_location);
         prompt.setText("지점 등록");
@@ -61,6 +64,7 @@ public class DistrictRecordActivity extends Activity {
         intent.putExtra("mapId", mapId);
         intent.putExtra("latitude", latitude);
         intent.putExtra("longitude", longitude);
+        intent.putExtra("index",index);
         startActivityForResult(intent, 1);
     }
 

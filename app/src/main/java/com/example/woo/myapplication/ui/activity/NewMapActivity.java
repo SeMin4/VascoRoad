@@ -95,11 +95,15 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
     private int COLOR_LINE_WHITE;
     private int COLOR_FINISH;
     public static Socket mSocket = null;
-    public String received_districtNum;
-    public String received_index;
-    public String received_districtNum2;
-    public String received_index2;
-    public String received_content2;
+    public String received_lat;
+    public String received_lng;
+    public String received_img;
+    public String received_content; // received는 수색불가
+    NaverMap naverMapInstance;
+
+    public String complete_lat;
+    public String complete_lng; //수색완료
+
     public String m_id;
     Mperson selected;
     Retrofit retrofit = null;
@@ -120,6 +124,19 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         mapInfo.setM_id(m_id);
         selected = (Mperson)intent.getSerializableExtra("selecteditem");
 
+
+       /* //디비로부터 정보설정(트래킹)
+        retrofitExService.setMapDetailData(m_id, ,).enqueue(new Callback<OverlapExamineData>() {
+            @Override
+            public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<OverlapExamineData> call, Throwable t) {
+
+            }
+        });*/
 
 
         RegisterNewMapActivity registerNewMapActivity =
@@ -142,7 +159,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 //이벤트 등록
                 mSocket.on(Socket.EVENT_CONNECT, onConnect); //방 접속시;
                 mSocket.on("makeroom", makeroom);// 방접속시 user 아이디 보내기
-                //mSocket.on("complete", complete);
+                mSocket.on("complete", complete);
                 mSocket.on("not_complete", not_complete);
             }
         }catch(URISyntaxException e){
@@ -222,36 +239,24 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         }
     }; //제일처음 접속
 
-    /*private Emitter.Listener attendRoom = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            try{
-                System.out.println("attendRoom@@@@@@@@@@@@@@@@@@@22222222222222222222");
-                JSONObject receivedData = (JSONObject)args[0];
-                System.out.println("msg: " +receivedData.getString("msg") +"@@@@@@@@@@");
-                System.out.println("data : "+receivedData.getString("data")+"@@@@@@@@@@@");
 
-            }catch(JSONException e){
-                System.out.println("JSONException 발생");
-                e.printStackTrace();
-            }
-        }
-    };*/
-
-  /*  private Emitter.Listener complete = new Emitter.Listener() {
+    private Emitter.Listener complete = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             try {
                 JSONObject receivedData = (JSONObject) args[0];
-                received_districtNum = receivedData.getString("districtNum");
-                received_index = receivedData.getString("index");
-                System.out.println("district : " + receivedData.getString("districtNum") + "@@@@@@@@@@@@@@@");
-                System.out.println("index : " + receivedData.getString("index") + "@@@@@@@@@@@@@");
+                complete_lat = receivedData.getString("lat");
+                complete_lng = receivedData.getString("lng");
+                System.out.println("lat : + "+ complete_lat+"@@@@@@@@@@@@@@@");
+                System.out.println("lng : " + complete_lng + "@@@@@@@@@@@@@");
                 System.out.println("실행됨@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        total_districts.get(Integer.parseInt(received_districtNum)).get(Integer.parseInt(received_index)).setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 100));
+                       // total_districts.get(Integer.parseInt(received_districtNum)).get(Integer.parseInt(received_index)).setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 100));
+                        Marker foundLocation = new Marker();
+                        foundLocation.setPosition(new LatLng(Double.parseDouble(complete_lat), Double.parseDouble(complete_lng)));
+                        foundLocation.setMap(naverMapInstance);
                     }
                 });
 
@@ -261,27 +266,33 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 e.printStackTrace();
             }
         }
-    };*/
+    }; //수색완료
 
     private Emitter.Listener not_complete = new Emitter.Listener() {
         @Override
         public void call(Object... args) {
             try{
                 JSONObject receivedData = (JSONObject)args[0];
-                received_districtNum2 = receivedData.getString("districtNum");
-                received_index2 = receivedData.getString("index");
-                received_content2 = receivedData.getString("content");
+                received_lat = receivedData.getString("lat");
+                received_lng = receivedData.getString("lng");
+                received_img = receivedData.getString("photo_name");
+                received_content = receivedData.getString("desc");
+                System.out.println("lat : "+received_lat+" lng : "+received_lng+" img : "+received_img+" content: "+received_content);
+                //2개의 정보는 위치정보 2개의정보는 핀을 클릭하면 내용과 사진이나와야한다.
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        total_districts.get(Integer.parseInt(received_districtNum2)).get(Integer.parseInt(received_index2)).setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 100));
+                       // total_districts.get(Integer.parseInt(received_districtNum2)).get(Integer.parseInt(received_index2)).setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 100));
+                        Marker notComplete = new Marker();
+                        notComplete.setPosition(new LatLng(Double.parseDouble(received_lat), Double.parseDouble(received_lng)));
+                        notComplete.setMap(naverMapInstance);
                     }
                 });
             }catch(JSONException e){
                 e.printStackTrace();
             }
         }
-    };
+    };//수색불가
 
     @Override
     protected void onDestroy() {
@@ -454,6 +465,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                 mOnPopupClick(outerDistrict.getChildren().get(selectedIdx));
             }
         });
+        naverMapInstance = naverMap;
     }
 
     private int findDistrictCoord(District std, LatLng C, int rowNum){
@@ -660,6 +672,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         intent.putExtra("mapId", Integer.parseInt(mapInfo.getM_id()));
         List<LatLng> coords = district.getGrid().getCoords();
         intent.putExtra("coords", (Serializable) coords);
+        intent.putExtra("index",(district.getRowIdx())*8+district.getColIdx());
         startActivityForResult(intent, 1);
     }
 
@@ -668,36 +681,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         intent.putExtra("selecteditem",selected);
         startActivityForResult(intent,1);
     }
-
-    /*public void updateImage(String filePath){
-        File file = new File(filePath);
-        System.out.println("upload 이미지@@@@@@@@@@@@");
-        RequestBody fileReqBody = RequestBody.create(MediaType.parse("image/*"),file);
-        MultipartBody.Part part = MultipartBody.Part.createFormData("upload",file.getName(),fileReqBody);
-        RequestBody description = RequestBody.create(MediaType.parse("text/plain"),m_id);
-       ;
-
-        retrofitExService.postNotComplete(description, part).enqueue(new Callback<OverlapExamineData>() {
-            @Override
-            public void onResponse(Call<OverlapExamineData> call, Response<OverlapExamineData> response) {
-                System.out.println("onResponse 호출됨@@@@@@@@@@@@@@@");
-                OverlapExamineData data = response.body();
-                if(data.getOverlap_examine().equals("yes")){
-                    System.out.println("yes");
-                    // Toast.makeText(getApplicationContext(),"insert 성공",Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getApplicationContext(),data.getOverlap_examine(),Toast.LENGTH_SHORT).show();
-                }else{
-                    // Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<OverlapExamineData> call, Throwable t) {
-                System.out.println("onFailure 호출됨@@@@@@@@@@@@@@@");
-                Toast.makeText(getApplicationContext(),"insert 실패",Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
 
 }
 

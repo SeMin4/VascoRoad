@@ -1,9 +1,11 @@
 package com.example.woo.myapplication;
 
+import com.example.woo.myapplication.data.DetailData;
 import com.example.woo.myapplication.data.MapDetail;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.data.Mperson;
 import com.example.woo.myapplication.data.NotCompleteList;
+import com.example.woo.myapplication.data.Not_Complete_Data;
 import com.example.woo.myapplication.data.User;
 
 import java.util.ArrayList;
@@ -13,10 +15,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -81,6 +79,18 @@ public class MyGlobals {
         @GET("/mperson")
         Call<ArrayList<Mperson>> getData();
 
+        @GET("/not_complete/list?") //특정 인덱스 부분에 해당하는 수색불가정보
+        Call<ArrayList<Not_Complete_Data>> getNotCompleteList(@Query("m_id") String m_id,@Query("index")String index);
+
+        @GET("/tracking/list?")
+        Call<ArrayList<DetailData>> getTrackingList(@Query("m_id") String m_id, @Query("index") String index);
+
+        @GET("/get/not_complete/data?") //기존지도에서 정보얻어오기 지도전체에 대한 수색불가정보
+        Call<ArrayList<Not_Complete_Data>> getNotCompleteData(@Query("mid") String mid);
+
+        @GET("/get/detail/data?") //기존지도에서 트래킹 정보얻어오기
+        Call<ArrayList<DetailData>> getMapDetailData(@Query("mid") String mid);
+
         @FormUrlEncoded
         @POST("/examine")
         Call<OverlapExamineData> postData(@FieldMap HashMap<String,String> param);
@@ -137,8 +147,8 @@ public class MyGlobals {
                                                    @Part("p_place_description")RequestBody description);
 
 
-        @GET("/not_complete/list?")
-        Call<ArrayList<NotCompleteList>> getNotCompleteList(@Query("m_id") String m_id);
+
+
     }
 
 }

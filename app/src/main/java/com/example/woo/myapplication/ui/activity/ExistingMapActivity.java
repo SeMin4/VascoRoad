@@ -26,12 +26,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.woo.myapplication.MyGlobals;
-import com.example.woo.myapplication.OverlapExamineData;
 import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.DetailData;
 import com.example.woo.myapplication.data.District;
-import com.example.woo.myapplication.data.MapDetail;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.data.Mperson;
+import com.example.woo.myapplication.data.Not_Complete_Data;
 import com.example.woo.myapplication.utils.LocationDistance;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
@@ -50,7 +50,6 @@ import com.naver.maps.map.util.MarkerIcons;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -63,9 +62,6 @@ import java.util.concurrent.TimeUnit;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -102,7 +98,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     String prev_lat = null;
     String prev_lng = null;
     String cur_lat = null;
-    String cur_lng = null; 
+    String cur_lng = null;
 
 
 
@@ -120,6 +116,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
         color_finish = getResources().getColor(R.color.finish);
         color_impossible = getResources().getColor(R.color.impossible);
+        retrofitExService = MyGlobals.getInstance().getRetrofitExService();
+
 
 
         try {
@@ -391,7 +389,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 grandChild.getFootPrint().setMap(naverMap);
             }
 
-            //보여주기용 데이터보내기
+            //자기위치 데이터보내기 데이터보내기
             if((prev_lat != cur_lat) || (prev_lng != cur_lng) )
             {
                 try {
@@ -531,6 +529,46 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 mOnPopupClick(outerDistrict.getChildren().get(selectedIdx));
             }
         });
+        //디비로부터 정보받아오기(완료,불가,트래킹)
+        retrofitExService.getMapDetailData(mapInfo.getM_id()).enqueue(new Callback<ArrayList<DetailData>>() {
+            @Override
+            public void onResponse(Call<ArrayList<DetailData>> call, Response<ArrayList<DetailData>> response) {
+                System.out.println("getMapDetail onResponse@@@@@@@@@@@@@@@@@");
+                ArrayList<DetailData> data =  response.body(); //트래킹 데이터가 들어가있음
+                System.out.println("size@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+data.size());
+                //for(int i =0;i<data.size();i++)
+                //    Log.d("오세민","data : "+data.get(i).getMd_index() +" "+data.get(i).getMd_inner_scale()+" "+data.get(i).getMd_run_length());
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<DetailData>> call, Throwable t) {
+                System.out.println("onFailure@@@@@@@@@@@@@@@@@222222222222");
+                System.out.println("t: " + t);
+            }
+        });
+
+        retrofitExService.getNotCompleteData(mapInfo.getM_id()).enqueue(new Callback<ArrayList<Not_Complete_Data>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Not_Complete_Data>> call, Response<ArrayList<Not_Complete_Data>> response) {
+                System.out.println("getNotCompleteData onResponse@@@@@@@@@@@@@@@@@"); //수색불가 데이터가 들어가있음
+                ArrayList<Not_Complete_Data> data = response.body();
+                for(int i =0;i<data.size();i++){
+                    String received_lat = data.get(i).getUl_latitude();
+                    String received_lng = data.get(i).getUl_longitude();
+                    Log.d("오삼삼","recieved_lat : "+received_lat+" received_lng : "+received_lng);
+                    Marker notComplete = new Marker();
+                    notComplete.setPosition(new LatLng(Double.parseDouble(received_lat), Double.parseDouble(received_lng)));
+                    notComplete.setMap(naverMap);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Not_Complete_Data>> call, Throwable t) {
+                System.out.println("onFailure@@@@@@@@@@@@@@@@@222222222222");
+                System.out.println("t: " + t);
+            }
+        });
+
 
         naverMapInstance = naverMap;
     }
@@ -738,6 +776,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         intent.putExtra("mapId", Integer.parseInt(mapInfo.getM_id()));
         List<LatLng> coords = district.getGrid().getCoords();
         intent.putExtra("coords", (Serializable) coords);
+        intent.putExtra("index",(district.getRowIdx())*8+district.getColIdx());
         startActivityForResult(intent, 1);
     }
 

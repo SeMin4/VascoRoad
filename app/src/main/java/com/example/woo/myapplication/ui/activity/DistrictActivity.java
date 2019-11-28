@@ -14,8 +14,10 @@ import android.widget.Toast;
 
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
+import com.example.woo.myapplication.data.DetailData;
 import com.example.woo.myapplication.data.MapDetail;
 import com.example.woo.myapplication.data.NotCompleteList;
+import com.example.woo.myapplication.data.Not_Complete_Data;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
@@ -61,6 +63,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     private int colorFound;
     private int colorImpossible;
     String lat2,lng2,desc,photo_name;
+    private int index;
 
     private Socket mSocket=null;
     String lat,lng;
@@ -80,13 +83,15 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         colorImpossible = getResources().getColor(R.color.primary);
 
         if(ExistingMapActivity.mSocket != null)
-            mSocket = ExistingMapActivity.mSocket;
+            mSocket = ExistingMapActivity.mSocket; //기존 지도에서 들어옴
         else
-            mSocket = NewMapActivity.mSocket;
+            mSocket = NewMapActivity.mSocket; // 새로만든 지도에서 들어옴
         mSocket.on("complete", complete);
         mSocket.on("not_complete", not_complete);
 
            // mSocket.on("not_complete", not_complete);
+
+
 
 
 
@@ -96,7 +101,8 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         row = intent.getIntExtra("row",-1);
         col = intent.getIntExtra("col", -1);
         mapId = intent.getIntExtra("mapId", -1);
-
+        index = intent.getIntExtra("index",-1);
+        System.out.println("district : row : "+row + " col : "+col +" mapid : "+mapId + " index : "+index);
         TextView district_title = findViewById(R.id.textView_district_details);
         String str = (row+1) + "행" + (col+1) + "열 ";
         district_title.setText(str);
@@ -198,33 +204,54 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         naverMap.setMinZoom(naverMap.getCameraPosition().zoom);     // 최소 줌레벨 제한.
 
 
-        /* 서버로부터 받은 수색불가 및 발견지점을 마커로 등록(홍성기) */
+        //디비로부터 정보받아오기(완료,불가,트래킹)
         retrofit = MyGlobals.getInstance().getRetrofit();
         retrofitExService = MyGlobals.getInstance().getRetrofitExService();
 
-        retrofitExService.getNotCompleteList(mapId+"").enqueue(new Callback<ArrayList<NotCompleteList>>() {
+        retrofitExService.getTrackingList(""+mapId,""+index).enqueue(new Callback<ArrayList<DetailData>>() {
             @Override
-            public void onResponse(Call<ArrayList<NotCompleteList>> call, Response<ArrayList<NotCompleteList>> response) {
-                Log.w("Success", "retrofit success");
-                ArrayList<NotCompleteList> items = response.body();
+            public void onResponse(Call<ArrayList<DetailData>> call, Response<ArrayList<DetailData>> response) {
+                Log.d("오삼삼","onResponse");
+                ArrayList<DetailData> items = response.body();
                 for(int i =0;i<items.size();i++){
-                    NotCompleteList item = items.get(i);
-                    Log.w("item_ul_id", item.getUl_id());
-                    Log.w("item_m_id", item.getM_id());
+                    DetailData data = items.get(i);
+                    Log.d("오삼삼",data.getMd_run_length());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<DetailData>> call, Throwable t) {
+                Log.d("오삼삼","onFailure");
+                Log.d("오삼삼",""+t);
+            }
+        });
+
+        retrofitExService.getNotCompleteList(""+mapId,""+index).enqueue(new Callback<ArrayList<Not_Complete_Data>>() { //수색불가 띄우기
+            @Override
+            public void onResponse(Call<ArrayList<Not_Complete_Data>> call, Response<ArrayList<Not_Complete_Data>> response) {
+                Log.d("오삼삼", "retrofit success");
+                ArrayList<Not_Complete_Data> items = response.body();
+                for(int i =0;i<items.size();i++){
+                    Not_Complete_Data item = items.get(i);
                     Log.w("item_ul_latitude", item.getUl_latitude());
                     Log.w("item_ul_longitude", item.getUl_longitude());
                     Log.w("item_ul_desc", item.getUl_desc());
                     if(item.getUl_file()!=null){
                         Log.w("item_ul_file", item.getUl_file());
                     }
+                    Marker notComplete = new Marker();
+                    notComplete.setPosition(new LatLng(Double.parseDouble(items.get(i).getUl_latitude()), Double.parseDouble(items.get(i).getUl_longitude())));
+                    notComplete.setMap(naverMap);
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<NotCompleteList>> call, Throwable t) {
-                Log.w("Fail", "retrofit Failure");
+            public void onFailure(Call<ArrayList<Not_Complete_Data>> call, Throwable t) {
+                Log.d("오삼삼", "retrofit Failure");
             }
         });
+
+
 
         /* LongClick 이벤트 등 */
         naverMap.setOnMapLongClickListener((pointF, latLng) -> {
@@ -237,6 +264,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                 intent.putExtra("latitude", latLng.latitude);
                 intent.putExtra("longitude", latLng.longitude);
                 intent.putExtra("mapId", mapId);
+                intent.putExtra("index",index);
                 startActivityForResult(intent, 0);
                 return true;
             });

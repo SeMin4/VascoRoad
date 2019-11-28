@@ -53,7 +53,8 @@ public class UnusualRecordActivity extends Activity {
     private MyGlobals.RetrofitExService retrofitExService=null;
     private  EditText unusual_things;
     private String lat,lng,content,photo_name;
-
+    private int index;
+    private int received_index;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,9 +62,9 @@ public class UnusualRecordActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.popup_unusual_status);
         if(ExistingMapActivity.mSocket!=null)
-            mSocket = ExistingMapActivity.mSocket;
+            mSocket = ExistingMapActivity.mSocket; //기존지도에서 들어옴
         else
-            mSocket = NewMapActivity.mSocket;
+            mSocket = NewMapActivity.mSocket; //새로만든 지도에서 들어옴
         mSocket.on("not_complete", not_complete);
         unusual_things = findViewById(R.id.editText_for_unusual);
         retrofitExService = MyGlobals.getInstance().getRetrofitExService();
@@ -76,6 +77,8 @@ public class UnusualRecordActivity extends Activity {
         mapId = intent.getIntExtra("mapId", -1);
         latitude = intent.getDoubleExtra("latitude", -1);
         longitude = intent.getDoubleExtra("longitude", -1);
+        index = intent.getIntExtra("index",-1);
+        System.out.println("unusualRecord  index : "+index);
     }
 
     private void showPictureDialog(){
@@ -238,6 +241,7 @@ public class UnusualRecordActivity extends Activity {
                 data.put("lng",longitude);
                 String[] temp = currentPhotoPath.split("/");
                 data.put("photo_name", temp[temp.length-1]);
+                data.put("index",index);
             }catch (JSONException e){
                 System.out.println("수색불과 정보 보냈을 때 에러");
             }
@@ -249,6 +253,7 @@ public class UnusualRecordActivity extends Activity {
                 data.put("desc",content);
                 data.put("lat",latitude);
                 data.put("lng",longitude);
+                data.put("index",index);
             }catch (JSONException e){
                 System.out.println("수색불과 정보 보냈을 때 에러");
             }
@@ -274,6 +279,7 @@ public class UnusualRecordActivity extends Activity {
                 lng = receivedData.getString("lng");
                 content = receivedData.getString("desc");
                 photo_name = receivedData.getString("photo_name");
+                received_index =Integer.parseInt(receivedData.getString("index"));
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
