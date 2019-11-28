@@ -25,6 +25,7 @@ public class District implements Serializable {
     private LatLng southWest;
     private LatLng southEast;
     private LatLng northEast;
+    private boolean visit;
 
     public District(){
         rowIdx = 0;
@@ -32,7 +33,10 @@ public class District implements Serializable {
         children = new ArrayList<>();
         grid = new PolygonOverlay();
         footPrint = new CircleOverlay();
+        visit = false;
     }
+
+
 
     public District(LatLng nw, LatLng ne, LatLng se, LatLng sw){
         rowIdx = 0;
@@ -41,6 +45,7 @@ public class District implements Serializable {
         this.southWest = sw;
         this.southEast = se;
         this.northEast = ne;
+        visit = false;
 
         grid = new PolygonOverlay();
         grid.setCoords(Arrays.asList(
@@ -136,5 +141,13 @@ public class District implements Serializable {
 
     public void setNorthEast(LatLng northEast) {
         this.northEast = northEast;
+    }
+
+    public boolean isVisit() {
+        return visit;
+    }
+
+    public void setVisit(boolean visit) {
+        this.visit = visit;
     }
 }
