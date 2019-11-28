@@ -120,6 +120,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     int run_length_district_num;
     boolean [][] Mark ;
     ArrayList<Integer> sendOuterIndex;
+    String each_Index;
 
 
 
@@ -212,111 +213,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
 
 
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////Run-Length Algorithm/////////////////////////////////////////////////////////////////////////////////////////
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        String runlength = "3,5t1f3,11,31,";
-        int outer_index = 0;
-        String[] temp;
 
-        temp = runlength.split(",");
-        for (int i = 0; i < temp.length; i++) {
-            System.out.println(temp[i]);
-        }
-        int[] int_tmp = new int[temp.length];
-        int i = 0;
-        int prev_row = 0;
-        Boolean prev_data_type = null;
-        int start = 0;
-
-
-        for (i = 0; i < temp.length; i++) {
-            try {
-                int_tmp[i] = Integer.parseInt(temp[i]);
-                int row = int_tmp[i] / 4;
-                Boolean data_type = null;
-                if (int_tmp[i] % 2 == 0) {
-                    data_type = false;
-                } else {
-                    data_type = true;
-                }
-                if (prev_data_type == null) {
-                    for (int j = (outer_index % 8 * scale); j < (outer_index % 8 * scale) + scale; j++) {
-                        Mark[(outer_index / 8 * scale) + row][j] = data_type;
-                    }
-                    prev_data_type = data_type;
-                    prev_row = row;
-                } else if (data_type == prev_data_type) {
-                    for (int j = prev_row + 1; j <= row; j++) {
-                        for (int k = (outer_index % 8 * scale); k < (outer_index % 8 * scale) + scale; k++) {
-                            Mark[(outer_index / 8 * scale) + j][k] = data_type;
-                            prev_data_type = data_type;
-                            prev_row = row;
-                        }
-                    }
-                }
-            } catch (NumberFormatException e1) {
-                prev_data_type = null;
-                String tmp = temp[i].split("t")[0];
-                tmp = tmp.split("f")[0];
-                int row_info = Integer.parseInt(tmp);
-                int row = row_info / 4;
-                String detail = temp[i].substring(tmp.length(), temp[i].length());
-                int cnt = 0;
-                while (detail != null) {
-                    int t_index = detail.indexOf('t');
-                    int f_index = detail.indexOf('f');
-                    if (t_index == -1) {
-                        int f_count = Integer.parseInt(detail.substring(1));
-                        int for_cnt = cnt;
-                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + f_count; j++) {
-                            Mark[(outer_index / 8 * scale) + row][j] = false;
-                            cnt += 1;
-                        }
-                        for_cnt = cnt;
-                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + scale; j++) {
-                            Mark[(outer_index / 8 * scale) + row][j] = true;
-                            cnt += 1;
-                        }
-                        detail = null;
-                    } else if (f_index == -1) {
-                        int t_count = Integer.parseInt(detail.substring(1));
-                        int for_cnt = cnt;
-                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + t_count; j++) {
-                            Mark[(outer_index / 8 * scale) + row][j] = true;
-                            cnt += 1;
-                        }
-                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + scale; j++) {
-                            Mark[(outer_index / 8 * scale) + row][j] = false;
-                            cnt += 1;
-                        }
-                        detail = null;
-                    } else if (t_index < f_index) {
-                        String t_tmp_string = detail.split("f")[0];
-                        int t_count = Integer.parseInt(t_tmp_string.substring(1));
-                        int for_cnt = cnt;
-                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + t_count; j++) {
-                            Mark[(outer_index / 8 * scale) + row][j] = true;
-                            cnt += 1;
-                        }
-                        detail = detail.substring(t_tmp_string.length());
-                    } else if (t_index > f_index) {
-                        String f_tmp_string = detail.split("t")[0];
-                        int f_count = Integer.parseInt(f_tmp_string.substring(1));
-                        int for_cnt = cnt;
-                        for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + f_count; j++) {
-                            Mark[(outer_index / 8 * scale) + row][j] = true;
-                            cnt += 1;
-                        }
-                        detail = detail.substring(f_tmp_string.length());
-                    }
-                }
-                //i += 1;
-                continue;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
 
     }
@@ -541,7 +438,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                         run_length_district_num = sendOuterIndex.get(i) % 8;
                         System.out.println("OuterIndex" + sendOuterIndex.get(i));
                         char row_data = 0;
-                        String each_Index = "";
+                        each_Index = "";
                         for (int j = run_length_index_num * scale; j < run_length_index_num * scale + scale; j++) {
                             char one_discriminant = 0;
                             boolean value_boolean = true;
@@ -618,13 +515,16 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
                         System.out.println("Each_Index : " + each_Index);
                     }
-                    sendOuterIndex.clear();
+
                     JSONObject data = new JSONObject();
                     data.put("mid",mapInfo.getM_id());
                     data.put("lat", cur_lat);
                     data.put("lng", cur_lng);
+                    data.put("index",sendOuterIndex.get(0).toString());
+                    data.put("run_length",each_Index);
                     prev_lat = cur_lat;
                     prev_lng = cur_lng;
+                    sendOuterIndex.clear();
                     mSocket.emit("seeroad", data);
                 }catch (JSONException e){
                     e.printStackTrace();
@@ -632,6 +532,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
             }
 
         });
+
+
 
         mapBounds = new LatLngBounds(
                 new LatLng(Double.parseDouble(mapInfo.getM_southWest_latitude()), Double.parseDouble(mapInfo.getM_southWest_longitude())),
@@ -659,6 +561,136 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         missingPoint.setCaptionText("실종 지점");
         missingPoint.setCaptionColor(Color.RED);
         missingPoint.setMap(naverMap);
+
+        //디비로부터 정보받아오기(완료,불가,트래킹)
+
+
+
+//        retrofitExService.getMapDetailData(mapInfo.getM_id()).enqueue(new Callback<ArrayList<DetailData>>() {
+//            @Override
+//            public void onResponse(Call<ArrayList<DetailData>> call, Response<ArrayList<DetailData>> response) {
+//                System.out.println("getMapDetail onResponse@@@@@@@@@@@@@@@@@");
+//                ArrayList<DetailData> data =  response.body(); //트래킹 데이터가 들어가있음
+//                System.out.println("size@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+data.size());
+//                for (int a = 0; a < data.size(); a++) {
+//                    //for(int i =0;i<data.size();i++)
+//                    //    Log.d("오세민","data : "+data.get(i).getMd_index() +" "+data.get(i).getMd_inner_scale()+" "+data.get(i).getMd_run_length());
+//
+//                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////Run-Length Algorithm/////////////////////////////////////////////////////////////////////////////////////////
+//                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                    String runlength = data.get(a).getMd_run_length();
+//                    int outer_index = Integer.parseInt(data.get(a).getMd_index());
+//                    String[] temp;
+//
+//                    temp = runlength.split(",");
+//                    for (int i = 0; i < temp.length; i++) {
+//                        System.out.println(temp[i]);
+//                    }
+//                    int[] int_tmp = new int[temp.length];
+//                    int i = 0;
+//                    int prev_row = 0;
+//                    Boolean prev_data_type = null;
+//                    int start = 0;
+//
+//
+//                    for (i = 0; i < temp.length; i++) {
+//                        try {
+//                            int_tmp[i] = Integer.parseInt(temp[i]);
+//                            int row = int_tmp[i] / 4;
+//                            Boolean data_type = null;
+//                            if (int_tmp[i] % 2 == 0) {
+//                                data_type = false;
+//                            } else {
+//                                data_type = true;
+//                            }
+//                            if (prev_data_type == null) {
+//                                for (int j = (outer_index % 8 * scale); j < (outer_index % 8 * scale) + scale; j++) {
+//                                    Mark[(outer_index / 8 * scale) + row][j] = data_type;
+//                                }
+//                                prev_data_type = data_type;
+//                                prev_row = row;
+//                            } else if (data_type == prev_data_type) {
+//                                for (int j = prev_row + 1; j <= row; j++) {
+//                                    for (int k = (outer_index % 8 * scale); k < (outer_index % 8 * scale) + scale; k++) {
+//                                        Mark[(outer_index / 8 * scale) + j][k] = data_type;
+//                                        prev_data_type = data_type;
+//                                        prev_row = row;
+//                                    }
+//                                }
+//                            }
+//                        } catch (NumberFormatException e1) {
+//                            prev_data_type = null;
+//                            String tmp = temp[i].split("t")[0];
+//                            tmp = tmp.split("f")[0];
+//                            int row_info = Integer.parseInt(tmp);
+//                            int row = row_info / 4;
+//                            String detail = temp[i].substring(tmp.length(), temp[i].length());
+//                            int cnt = 0;
+//                            while (detail != null) {
+//                                int t_index = detail.indexOf('t');
+//                                int f_index = detail.indexOf('f');
+//                                if (t_index == -1) {
+//                                    int f_count = Integer.parseInt(detail.substring(1));
+//                                    int for_cnt = cnt;
+//                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + f_count; j++) {
+//                                        Mark[(outer_index / 8 * scale) + row][j] = false;
+//                                        cnt += 1;
+//                                    }
+//                                    for_cnt = cnt;
+//                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + scale; j++) {
+//                                        Mark[(outer_index / 8 * scale) + row][j] = true;
+//                                        cnt += 1;
+//                                    }
+//                                    detail = null;
+//                                } else if (f_index == -1) {
+//                                    int t_count = Integer.parseInt(detail.substring(1));
+//                                    int for_cnt = cnt;
+//                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + t_count; j++) {
+//                                        Mark[(outer_index / 8 * scale) + row][j] = true;
+//                                        cnt += 1;
+//                                    }
+//                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + scale; j++) {
+//                                        Mark[(outer_index / 8 * scale) + row][j] = false;
+//                                        cnt += 1;
+//                                    }
+//                                    detail = null;
+//                                } else if (t_index < f_index) {
+//                                    String t_tmp_string = detail.split("f")[0];
+//                                    int t_count = Integer.parseInt(t_tmp_string.substring(1));
+//                                    int for_cnt = cnt;
+//                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + t_count; j++) {
+//                                        Mark[(outer_index / 8 * scale) + row][j] = true;
+//                                        cnt += 1;
+//                                    }
+//                                    detail = detail.substring(t_tmp_string.length());
+//                                } else if (t_index > f_index) {
+//                                    String f_tmp_string = detail.split("t")[0];
+//                                    int f_count = Integer.parseInt(f_tmp_string.substring(1));
+//                                    int for_cnt = cnt;
+//                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + f_count; j++) {
+//                                        Mark[(outer_index / 8 * scale) + row][j] = false;
+//                                        cnt += 1;
+//                                    }
+//                                    detail = detail.substring(f_tmp_string.length());
+//                                }
+//                            }
+//                            //i += 1;
+//                            continue;
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ArrayList<DetailData>> call, Throwable t) {
+//                System.out.println("onFailure@@@@@@@@@@@@@@@@@222222222222");
+//                System.out.println("t: " + t);
+//            }
+//        });
 
 
         /*retrofit = MyGlobals.getInstance().getRetrofit();  //admin처리 & 내가왔던길 처리
@@ -690,6 +722,132 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         Handler handler = new Handler(Looper.getMainLooper());
         executor.schedule(() -> {
             // 백그라운드 스레드
+
+            ///retrofit 동기처리
+
+            Call<ArrayList<DetailData>> call = retrofitExService.getMapDetailData(mapInfo.getM_id());
+            try{
+                ArrayList<DetailData> data = call.execute().body();
+                System.out.println("size@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+data.size());
+                for (int a = 0; a < data.size(); a++) {
+                    //for(int i =0;i<data.size();i++)
+                    //    Log.d("오세민","data : "+data.get(i).getMd_index() +" "+data.get(i).getMd_inner_scale()+" "+data.get(i).getMd_run_length());
+
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////Run-Length Algorithm/////////////////////////////////////////////////////////////////////////////////////////
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    String runlength = data.get(a).getMd_run_length();
+                    int outer_index = Integer.parseInt(data.get(a).getMd_index());
+                    String[] temp;
+
+                    temp = runlength.split(",");
+                    for (int i = 0; i < temp.length; i++) {
+                        System.out.println(temp[i]);
+                    }
+                    int[] int_tmp = new int[temp.length];
+                    int i = 0;
+                    int prev_row = 0;
+                    Boolean prev_data_type = null;
+                    int start = 0;
+
+
+                    for (i = 0; i < temp.length; i++) {
+                        try {
+                            int_tmp[i] = Integer.parseInt(temp[i]);
+                            int row = int_tmp[i] / 4;
+                            Boolean data_type = null;
+                            if (int_tmp[i] % 2 == 0) {
+                                data_type = false;
+                            } else {
+                                data_type = true;
+                            }
+                            if (prev_data_type == null) {
+                                for (int j = (outer_index % 8 * scale); j < (outer_index % 8 * scale) + scale; j++) {
+                                    Mark[(outer_index / 8 * scale) + row][j] = data_type;
+                                }
+                                prev_data_type = data_type;
+                                prev_row = row;
+                            } else if (data_type == prev_data_type) {
+                                for (int j = prev_row + 1; j <= row; j++) {
+                                    for (int k = (outer_index % 8 * scale); k < (outer_index % 8 * scale) + scale; k++) {
+                                        Mark[(outer_index / 8 * scale) + j][k] = data_type;
+                                        prev_data_type = data_type;
+                                        prev_row = row;
+                                    }
+                                }
+                            }
+                        } catch (NumberFormatException e1) {
+                            prev_data_type = null;
+                            String tmp = temp[i].split("t")[0];
+                            tmp = tmp.split("f")[0];
+                            int row_info = Integer.parseInt(tmp);
+                            int row = row_info / 4;
+                            String detail = temp[i].substring(tmp.length(), temp[i].length());
+                            int cnt = 0;
+                            while (detail != null) {
+                                int t_index = detail.indexOf('t');
+                                int f_index = detail.indexOf('f');
+                                if (t_index == -1) {
+                                    int f_count = Integer.parseInt(detail.substring(1));
+                                    int for_cnt = cnt;
+                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + f_count; j++) {
+                                        Mark[(outer_index / 8 * scale) + row][j] = false;
+                                        cnt += 1;
+                                    }
+                                    for_cnt = cnt;
+                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + scale; j++) {
+
+                                        Mark[(outer_index / 8 * scale) + row][j] = true;
+                                        cnt += 1;
+                                    }
+                                    detail = null;
+                                } else if (f_index == -1) {
+                                    int t_count = Integer.parseInt(detail.substring(1));
+                                    int for_cnt = cnt;
+                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + t_count; j++) {
+                                        Mark[(outer_index / 8 * scale) + row][j] = true;
+                                        cnt += 1;
+                                    }
+                                    for_cnt = cnt;
+                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + scale; j++) {
+                                        Mark[(outer_index / 8 * scale) + row][j] = false;
+                                        cnt += 1;
+                                    }
+                                    detail = null;
+                                } else if (t_index < f_index) {
+                                    String t_tmp_string = detail.split("f")[0];
+                                    int t_count = Integer.parseInt(t_tmp_string.substring(1));
+                                    int for_cnt = cnt;
+                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + t_count; j++) {
+                                        Mark[(outer_index / 8 * scale) + row][j] = true;
+                                        cnt += 1;
+                                    }
+                                    detail = detail.substring(t_tmp_string.length());
+                                } else if (t_index > f_index) {
+                                    String f_tmp_string = detail.split("t")[0];
+                                    int f_count = Integer.parseInt(f_tmp_string.substring(1));
+                                    int for_cnt = cnt;
+                                    for (int j = (outer_index % 8 * scale) + for_cnt; j < (outer_index % 8 * scale) + for_cnt + f_count; j++) {
+                                        Mark[(outer_index / 8 * scale) + row][j] = false;
+                                        cnt += 1;
+                                    }
+                                    detail = detail.substring(f_tmp_string.length());
+                                }
+                            }
+                            //i += 1;
+                            continue;
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+
+
+
             outerDistrict = new District(
                     new LatLng(Double.parseDouble(mapInfo.getM_northWest_latitude()), Double.parseDouble(mapInfo.getM_northWest_longitude())),
                     new LatLng(Double.parseDouble(mapInfo.getM_northEast_latitude()), Double.parseDouble(mapInfo.getM_northEast_longitude())),
@@ -764,6 +922,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 mOnPopupClick(outerDistrict.getChildren().get(selectedIdx));
             }
         });
+
         //디비로부터 정보받아오기(완료,불가,트래킹)
         retrofitExService.getCompleteData(mapInfo.getM_id()).enqueue(new Callback<CompleteData>() {
             @Override
@@ -784,22 +943,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 Log.d("오삼삼",""+t);
             }
         });
-        retrofitExService.getMapDetailData(mapInfo.getM_id()).enqueue(new Callback<ArrayList<DetailData>>() {
-            @Override
-            public void onResponse(Call<ArrayList<DetailData>> call, Response<ArrayList<DetailData>> response) {
-                Log.d("오삼삼","getMapDetail onResponse@@@@@@@@@@@@@@@@@");
-                ArrayList<DetailData> data =  response.body(); //트래킹 데이터가 들어가있음
-                System.out.println("size@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+data.size());
-                //for(int i =0;i<data.size();i++)
-                //    Log.d("오세민","data : "+data.get(i).getMd_index() +" "+data.get(i).getMd_inner_scale()+" "+data.get(i).getMd_run_length());
-            }
 
-            @Override
-            public void onFailure(Call<ArrayList<DetailData>> call, Throwable t) {
-                Log.d("오삼삼","getMapDetail onResponse@@@@@@@@@@@@@@@@@");
-                System.out.println("t: " + t);
-            }
-        });
+
 
         retrofitExService.getNotCompleteData(mapInfo.getM_id()).enqueue(new Callback<ArrayList<Not_Complete_Data>>() {
             @Override
@@ -826,6 +971,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
         naverMapInstance = naverMap;
     }
+
 
     private int findDistrictCoord(District std, LatLng C, int rowNum){
         // A --- B
