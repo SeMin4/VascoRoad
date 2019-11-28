@@ -225,7 +225,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 JSONObject recived_data = (JSONObject)args[0];
                 String lat = recived_data.getString("lat");
                 String lng = recived_data.getString("lng");
-                System.out.println("lat :"+lat +" , lng:"+lng);
+                String uid = recived_data.getString("uid");
+                Log.d("오삼삼","uid : "+uid+ " lat :"+lat +" , lng:"+lng);
 
                 ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
                 Handler handler = new Handler(Looper.getMainLooper());
@@ -246,9 +247,15 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                         int innerIndex = findDistrictCoord(child.getChildren().get(0), cur, scale);
 
                         District grandChild = child.getChildren().get(innerIndex);
+
                         if(grandChild.getFootPrint().getColor() != COLOR_FINISH){
-                            grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 250));
-                            grandChild.getFootPrint().setMap(naverMapInstance);
+                            Log.d("오삼삼","inner : "+innerIndex+" outter : "+outerIndex);
+                            Log.d("오삼삼","ㅂㅈㄷㅂㅈㄷ"+MyGlobals.getInstance().getUser().getU_id());
+                            if(MyGlobals.getInstance().getUser().getU_email().equals("admin")) {
+                                Log.d("오삼삼","들어왔습니다.");
+                                grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 250));
+                                grandChild.getFootPrint().setMap(naverMapInstance);
+                            }
                         }
                     });
                 }, 0, TimeUnit.MILLISECONDS);
@@ -327,6 +334,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         @Override
         public void call(Object... args) {
             try{
+                Log.d("오삼삼","not_complete");
                 JSONObject receivedData = (JSONObject)args[0];
 
                 lat2 = receivedData.getString("lat");
@@ -518,6 +526,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
 
                     JSONObject data = new JSONObject();
                     data.put("mid",mapInfo.getM_id());
+                    data.put("uid",MyGlobals.getInstance().getUser().getU_id());
                     data.put("lat", cur_lat);
                     data.put("lng", cur_lng);
                     data.put("index",sendOuterIndex.get(0).toString());
