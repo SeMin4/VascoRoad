@@ -33,7 +33,9 @@ import com.example.woo.myapplication.data.District;
 import com.example.woo.myapplication.data.MapInfo;
 import com.example.woo.myapplication.data.Mperson;
 import com.example.woo.myapplication.data.Not_Complete_Data;
+import com.example.woo.myapplication.utils.FoundMarker;
 import com.example.woo.myapplication.utils.LocationDistance;
+import com.example.woo.myapplication.utils.NotCompleteMarker;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraAnimation;
@@ -51,17 +53,10 @@ import com.naver.maps.map.util.MarkerIcons;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -79,9 +74,7 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private FusedLocationSource locationSource;
     protected TextView zoomLevel;
-    private ArrayList<ArrayList<PolygonOverlay>> total_districts;
     private District outerDistrict;
-    private LatLng[] vertex_list = new LatLng[4];
     private LatLngBounds mapBounds;
     private MapInfo mapInfo;
     private NaverMap naverMapInstance;
@@ -96,8 +89,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
     public String lng2;
     public String desc;
     public String photo_name;
-    public int color_finish;
-    public int color_impossible;
+    public int colorFound;
+    public int colorImpossible;
     private Retrofit retrofit;
     private MyGlobals.RetrofitExService retrofitExService;
     Button mpersoninfo;
@@ -138,8 +131,8 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());
         COLOR_FINISH = ResourcesCompat.getColor(getResources(), R.color.finish, getTheme());
-        color_finish = getResources().getColor(R.color.finish);
-        color_impossible = getResources().getColor(R.color.impossible);
+        colorFound = getResources().getColor(R.color.finish);
+        colorImpossible = getResources().getColor(R.color.impossible);
         retrofitExService = MyGlobals.getInstance().getRetrofitExService();
 
 
@@ -312,12 +305,14 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 System.out.println("lat : " + receivedData.getString("lat") + "@@@@@@@@@@@@@@@");
                 System.out.println("lng : " + receivedData.getString("lng") + "@@@@@@@@@@@@@");
                 System.out.println("실행됨@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+
+                FoundMarker found = new FoundMarker(colorFound);
+                found.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Marker foundLocation = new Marker();
-                        foundLocation.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
-                        foundLocation.setMap(naverMapInstance);
+                        found.setMap(naverMapInstance);
                     }
                 });
 
@@ -341,11 +336,12 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 lng2 = receivedData.getString("lng");
                 desc = receivedData.getString("desc");
                 photo_name = receivedData.getString("photo_name");
+
+                NotCompleteMarker notComplete = new NotCompleteMarker(photo_name, desc, colorImpossible);
+                notComplete.setPosition(new LatLng(Double.parseDouble(lat2), Double.parseDouble(lng2)));
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Marker notComplete = new Marker();
-                        notComplete.setPosition(new LatLng(Double.parseDouble(lat2), Double.parseDouble(lng2)));
                         notComplete.setMap(naverMapInstance);
                     }
                 });
@@ -713,9 +709,9 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 for(int i =0;i<items.size();i++){
                     MapDetail item = items.get(i);
                     if(item.getMd_status().equals("1"))
-                        total_districts.get(Integer.parseInt(item.getMd_districtNum())).get(Integer.parseInt(item.getMd_index())).setColor(ColorUtils.setAlphaComponent(color_finish, 100));
+                        total_districts.get(Integer.parseInt(item.getMd_districtNum())).get(Integer.parseInt(item.getMd_index())).setColor(ColorUtils.setAlphaComponent(colorFound, 100));
                     else if(item.getMd_status().equals("0"))
-                        total_districts.get(Integer.parseInt(item.getMd_districtNum())).get(Integer.parseInt(item.getMd_index())).setColor(ColorUtils.setAlphaComponent(color_impossible, 100));
+                        total_districts.get(Integer.parseInt(item.getMd_districtNum())).get(Integer.parseInt(item.getMd_index())).setColor(ColorUtils.setAlphaComponent(colorImpossible, 100));
                 }
             }
 
@@ -940,9 +936,14 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                 CompleteData data = response.body();
                 Log.d("오삼삼","data : "+data.getM_find_latitude()+"   "+data.getM_find_longitude());
                 if(data.getM_find_longitude()!=null && data.getM_find_latitude()!=null) {
-                    Marker notComplete = new Marker();
-                    notComplete.setPosition(new LatLng(Double.parseDouble(data.getM_find_latitude()), Double.parseDouble(data.getM_find_longitude())));
-                    notComplete.setMap(naverMap);
+                    FoundMarker found = new FoundMarker(colorFound);
+                    found.setPosition(new LatLng(Double.parseDouble(data.getM_find_latitude()), Double.parseDouble(data.getM_find_longitude())));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            found.setMap(naverMap);
+                        }
+                    });
                 }
             }
 
@@ -964,9 +965,14 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
                     String received_lat = data.get(i).getUl_latitude();
                     String received_lng = data.get(i).getUl_longitude();
                     Log.d("오삼삼","recieved_lat : "+received_lat+" received_lng : "+received_lng);
-                    Marker notComplete = new Marker();
+                    NotCompleteMarker notComplete = new NotCompleteMarker(colorImpossible);
                     notComplete.setPosition(new LatLng(Double.parseDouble(received_lat), Double.parseDouble(received_lng)));
-                    notComplete.setMap(naverMap);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            notComplete.setMap(naverMap);
+                        }
+                    });
                 }
             }
 
@@ -1194,7 +1200,6 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
         intent.putExtra("selecteditem",selected);
         startActivityForResult(intent,1);
     }
-
 
 }
 

@@ -16,9 +16,9 @@ import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.R;
 import com.example.woo.myapplication.data.CompleteData;
 import com.example.woo.myapplication.data.DetailData;
-import com.example.woo.myapplication.data.MapDetail;
-import com.example.woo.myapplication.data.NotCompleteList;
 import com.example.woo.myapplication.data.Not_Complete_Data;
+import com.example.woo.myapplication.utils.FoundMarker;
+import com.example.woo.myapplication.utils.NotCompleteMarker;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
@@ -33,14 +33,11 @@ import com.naver.maps.map.util.MarkerIcons;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
@@ -80,8 +77,8 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
 
         /* 색상 resource 획득 */
         colorOutline = getResources().getColor(R.color.white);
-        colorFound = getResources().getColor(R.color.colorPrimary);
-        colorImpossible = getResources().getColor(R.color.primary);
+        colorFound = getResources().getColor(R.color.finish);
+        colorImpossible = getResources().getColor(R.color.impossible);
 
         if(ExistingMapActivity.mSocket != null)
             mSocket = ExistingMapActivity.mSocket; //기존 지도에서 들어옴
@@ -216,9 +213,14 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                 CompleteData data = response.body();
                 Log.d("오삼삼","data : "+data.getM_find_latitude()+"   "+data.getM_find_longitude());
                 if(data.getM_find_longitude()!=null && data.getM_find_latitude()!=null) {
-                    Marker notComplete = new Marker();
-                    notComplete.setPosition(new LatLng(Double.parseDouble(data.getM_find_latitude()), Double.parseDouble(data.getM_find_longitude())));
-                    notComplete.setMap(naverMap);
+                    FoundMarker found = new FoundMarker(colorFound);
+                    found.setPosition(new LatLng(Double.parseDouble(data.getM_find_latitude()), Double.parseDouble(data.getM_find_longitude())));
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            found.setMap(naverMap);
+                        }
+                    });
                 }
             }
 
@@ -251,18 +253,24 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onResponse(Call<ArrayList<Not_Complete_Data>> call, Response<ArrayList<Not_Complete_Data>> response) {
                 Log.d("오삼삼", "retrofit success");
+                Log.d("오삼삼", "notComplete onResponse");
                 ArrayList<Not_Complete_Data> items = response.body();
+                Log.d("오삼삼", "notComplete size: " + items.size());
                 for(int i =0;i<items.size();i++){
                     Not_Complete_Data item = items.get(i);
-                    Log.w("item_ul_latitude", item.getUl_latitude());
-                    Log.w("item_ul_longitude", item.getUl_longitude());
-                    Log.w("item_ul_desc", item.getUl_desc());
-                    if(item.getUl_file()!=null){
-                        Log.w("item_ul_file", item.getUl_file());
-                    }
-                    Marker notComplete = new Marker();
+
+                    NotCompleteMarker notComplete = new NotCompleteMarker(colorImpossible);
                     notComplete.setPosition(new LatLng(Double.parseDouble(items.get(i).getUl_latitude()), Double.parseDouble(items.get(i).getUl_longitude())));
-                    notComplete.setMap(naverMap); //여기있는 정보로 마크 클릭 시  사진보여주고 내용 보여주기 (민정)
+                    if(item.getUl_file()!=null){
+                        notComplete.setImagePath(item.getUl_file());
+                    }
+                    notComplete.setDesc(item.getUl_desc());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            notComplete.setMap(naverMap); //여기있는 정보로 마크 클릭 시  사진보여주고 내용 보여주기 (민정)
+                        }
+                    });
                 }
             }
 
