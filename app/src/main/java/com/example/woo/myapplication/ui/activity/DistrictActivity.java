@@ -265,7 +265,21 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                         notComplete.setImagePath(item.getUl_file());
                     }
                     notComplete.setDesc(item.getUl_desc());
-                    runOnUiThread(new Runnable() {
+                    notComplete.getMarker().setOnClickListener(overlay -> {
+                        int option = 1;
+                        Intent intent = new Intent(DistrictActivity.this, ImpossibleDetails.class);
+                        intent.putExtra("desc", item.getUl_desc());
+                        if (item.getUl_file() != null) {
+                            intent.putExtra("image", item.getUl_file());
+                            intent.putExtra("mapId", mapId);
+                            Log.w("item_ul_file", item.getUl_file());
+                            option = 2;
+                        }
+                        intent.putExtra("option", option);
+                        startActivity(intent);
+                        return true;
+                    });
+                        runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             notComplete.setMap(naverMap); //여기있는 정보로 마크 클릭 시  사진보여주고 내용 보여주기 (민정)
