@@ -14,7 +14,6 @@ import android.widget.Toast;
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.OverlapExamineData;
 import com.example.woo.myapplication.R;
-import com.example.woo.myapplication.data.MapInfo;
 
 import java.util.HashMap;
 
@@ -88,16 +87,13 @@ public class EnterMapPWActivity extends Activity {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //바깥레이어 클릭시 안닫히게
-        if(event.getAction()== MotionEvent.ACTION_OUTSIDE){
-            return false;
-        }
+        finish();
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        return;
+        finish();
     }
 
 }

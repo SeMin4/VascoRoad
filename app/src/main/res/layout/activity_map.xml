@@ -7,12 +7,10 @@
     tools:context=".ui.activity.NewMapActivity">
 
     <TextView
-        android:layout_marginTop="12dp"
         android:id="@+id/label_map_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:text="@string/label_map_type"
         app:layout_constraintBottom_toTopOf="@+id/map_fragment"
         app:layout_constraintEnd_toStartOf="@+id/map_type"
@@ -20,7 +18,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Spinner
-        android:layout_marginTop="12dp"
         android:id="@+id/map_type"
         android:layout_width="0dp"
         android:layout_height="@dimen/spinner_height"
@@ -29,28 +26,15 @@
         app:layout_constraintStart_toEndOf="@+id/label_map_type"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView_zoomLevel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="116dp"
-        tools:layout_editor_absoluteY="17dp"
-        app:layout_constraintStart_toEndOf="@+id/map_type"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/map_fragment"/>
-
     <Button
         android:id="@+id/button_mPerson_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="3dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginBottom="3dp"
-        android:text="@string/label_mPerson_info"
-        android:textColor="@color/white"
         android:background="@color/burgundy"
         android:onClick="mOnInfoClick"
+        android:text="@string/label_mPerson_info"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/map_fragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -40,6 +40,15 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorPrimary" />
+
             <TextView
                 android:id="@+id/textView_desc"
                 android:layout_width="match_parent"
@@ -57,6 +66,16 @@
                 android:layout_marginLeft="10dp"
                 android:textSize="20dp"
                 android:text="수색 불가에 대한 상세 이유" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorPrimary"/>
+
             <TextView
                 android:id="@+id/textView_image"
                 android:layout_width="match_parent"
@@ -68,10 +87,20 @@
 
             <ImageView
                 android:id="@+id/impossible_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/ic_launcher" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorPrimary" />
 
         </LinearLayout>
     </ScrollView>

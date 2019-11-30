@@ -49,6 +49,7 @@ import retrofit2.Retrofit;
 
 public class DistrictActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
+    private static final int RECORD_REGISTER = 0;
     private HashMap<Integer, Marker> markerHashMap = new HashMap<Integer, Marker>();
     private Marker findLocation;
     private PolygonOverlay district = new PolygonOverlay();
@@ -69,7 +70,6 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     private Retrofit retrofit;
     private MyGlobals.RetrofitExService retrofitExService;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,18 +79,6 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
         colorOutline = getResources().getColor(R.color.white);
         colorFound = getResources().getColor(R.color.finish);
         colorImpossible = getResources().getColor(R.color.impossible);
-
-        if(ExistingMapActivity.mSocket != null)
-            mSocket = ExistingMapActivity.mSocket; //기존 지도에서 들어옴
-        else
-            mSocket = NewMapActivity.mSocket; // 새로만든 지도에서 들어옴
-        mSocket.on("complete", complete);
-        mSocket.on("not_complete", not_complete);
-
-           // mSocket.on("not_complete", not_complete);
-
-
-
 
 
         /* 이전 Activity로부터 정보 획득 */
@@ -126,6 +114,18 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (ExistingMapActivity.mSocket != null)
+            mSocket = ExistingMapActivity.mSocket; //기존 지도에서 들어옴
+        else
+            mSocket = NewMapActivity.mSocket; // 새로만든 지도에서 들어옴
+        mSocket.on("complete", complete);
+        mSocket.on("not_complete", not_complete);
+
+        // mSocket.on("not_complete", not_complete);
+    }
 
     private Emitter.Listener complete = new Emitter.Listener() {
         @Override
@@ -308,7 +308,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                 intent.putExtra("longitude", latLng.longitude);
                 intent.putExtra("mapId", mapId);
                 intent.putExtra("index",index);
-                startActivityForResult(intent, 0);
+                startActivityForResult(intent, RECORD_REGISTER);
                 return true;
             });
             marker.setMap(naverMap);
@@ -318,7 +318,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if(requestCode == 0){
+        if(requestCode == RECORD_REGISTER){
             int markerId = data.getIntExtra("markerId", -1);
             Marker point = markerHashMap.get(markerId);
             point.setIcon(MarkerIcons.BLACK);

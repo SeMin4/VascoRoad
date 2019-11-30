@@ -196,15 +196,12 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
         Log.d("list", "onActivityResult");
         if(requestCode == 0){
             if(resultCode == RESULT_OK){
-                Toast.makeText(this, "비밀번호 성립", Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "비밀번호 성립", Toast.LENGTH_LONG).show();
                 int index = data.getIntExtra("mapInfoIndex", -1);
                 Intent intent = new Intent(this, ExistingMapActivity.class);
                 intent.putExtra("mapInfo", maplist.get(index));
                 intent.putExtra("selecteditem",selected);
                 startActivityForResult(intent, 1);
-            }
-            else if(resultCode == RESULT_CANCELED){
-                Toast.makeText(this, "비밀번호가 틀렸습니다.", Toast.LENGTH_LONG).show();
             }
         }
     }

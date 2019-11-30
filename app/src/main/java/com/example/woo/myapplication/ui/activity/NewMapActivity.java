@@ -84,8 +84,6 @@ import retrofit2.Retrofit;
 public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private FusedLocationSource locationSource;
-    private TextView zoomLevel;
-    private ArrayList<ArrayList<PolygonOverlay>> total_districts;
     private District outerDistrict;
     private LatLng[] vertex_list = new LatLng[4];
     private LatLngBounds mapBounds;
@@ -145,8 +143,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
         RegisterMapDetailsActivity registerMapDetailsActivity =
                 (RegisterMapDetailsActivity) RegisterMapDetailsActivity.registerMapDetailsActivity;
         registerMapDetailsActivity.finish();
-
-        zoomLevel = findViewById(R.id.textView_zoomLevel);
 
         COLOR_LINE_BLACK = ResourcesCompat.getColor(getResources(), R.color.black, getTheme());
         COLOR_LINE_WHITE = ResourcesCompat.getColor(getResources(), R.color.white, getTheme());
@@ -377,10 +373,6 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
                         .rotateBy(Double.parseDouble(mapInfo.getM_rotation()))
                 )
                 .animate(CameraAnimation.Easing));
-        naverMap.addOnCameraChangeListener((reason, animated) -> {
-            String str = String.format("%.2f", naverMap.getCameraPosition().zoom);
-            zoomLevel.setText(str);
-        });
 
         // 실종지점 등록
         Marker missingPoint = new Marker();

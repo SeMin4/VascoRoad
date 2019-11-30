@@ -35,16 +35,22 @@ public class ImpossibleDetails extends AppCompatActivity {
                 break;
             case 2: // 이미지와 설명 모두 존재
                 String image = intent.getStringExtra("image");
-                String mapId = intent.getStringExtra("mapId");
-                Log.i("image", "image: " + image);
+                String mapId = Integer.toString(intent.getIntExtra("mapId", -1));
+                String path = "http://13.125.174.158:9000/not_complete_picture/" + mapId + "/" + image;
+                Log.i("image", "image url: " + path);
                 Picasso.with(getApplicationContext())
-                        .load("http://13.125.174.158:9000/not_complete_picture/" + mapId + "/" + image)
+                        .load(path)
+                        .resize(800, 800)
                         .rotate(90f)
                         .into(imageView);
 
         }
 
 
+    }
+
+    public void mOnClick(View v){
+        finish();
     }
 
     @Override
