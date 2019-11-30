@@ -484,7 +484,7 @@ public class  RegisterMapDetailsActivity extends AppCompatActivity implements On
 
     public ArrayList<String> createSpinnerList(int unit){
         ArrayList<String> list = new ArrayList<>();
-        for(int i = 1; i <= 10; i++){
+        for(int i = 1; i <= 1; i++){
             String value = (4 * unit) +"m";
             list.add(value);
         }
