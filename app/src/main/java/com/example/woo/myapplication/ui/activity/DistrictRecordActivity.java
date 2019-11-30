@@ -53,8 +53,6 @@ public class DistrictRecordActivity extends Activity {
         intent.putExtra("markerId", markerId);
         setResult(RESULT_OK, intent);
 
-        /* 해당 위경도를 발견 지점으로 등록(홍성기) */
-
         finish();
     }
 
@@ -78,6 +76,8 @@ public class DistrictRecordActivity extends Activity {
 
                     Intent intent = new Intent();
                     intent.putExtra("result", "Find Impossible");
+                    intent.putExtra("desc", data.getStringExtra("desc"));
+                    intent.putExtra("image", data.getStringExtra("image"));
                     intent.putExtra("markerId", markerId);
                     setResult(RESULT_OK, intent);
 

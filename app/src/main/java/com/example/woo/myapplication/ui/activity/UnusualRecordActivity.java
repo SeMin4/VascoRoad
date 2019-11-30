@@ -228,6 +228,8 @@ public class UnusualRecordActivity extends Activity {
     public void mOnSave(View v){
         Intent intent = new Intent();
         intent.putExtra("result", "Saved");
+        intent.putExtra("desc", content);
+        intent.putExtra("image", currentPhotoPath);
         setResult(RESULT_OK, intent);
         String content = unusual_things.getText().toString();
 
@@ -259,12 +261,6 @@ public class UnusualRecordActivity extends Activity {
             }
             mSocket.emit("not_complete", data);
         }
-
-
-
-        /* 수색 불가 지점에 대한 정보를 서버로 전송(홍성기) */
-        // currentPhotoPath: 이미지 저장 경로
-        // content: 수색불가한 이유
 
 
         finish();

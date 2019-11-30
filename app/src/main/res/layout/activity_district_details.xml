@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="등록할 위치를 길게 누르고, 초록색 마커를 클릭하세요." />
+            android:text="등록할 위치를 길게 누르세요." />
     </LinearLayout>
 
     <com.example.woo.myapplication.ui.view.SquareFrameLayout

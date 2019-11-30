@@ -24,7 +24,9 @@ import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.InfoWindow;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.PolygonOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
@@ -51,6 +53,7 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private static final int RECORD_REGISTER = 0;
     private HashMap<Integer, Marker> markerHashMap = new HashMap<Integer, Marker>();
+    private HashMap<Integer, InfoWindow> windowHashMap = new HashMap<Integer, InfoWindow>();
     private Marker findLocation;
     private PolygonOverlay district = new PolygonOverlay();
     private FusedLocationSource locationSource;
@@ -140,12 +143,9 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Marker foundMarker = new Marker();
-                        foundMarker.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
-                        foundMarker.setIcon(MarkerIcons.BLACK);
-                        foundMarker.setIconTintColor(Color.MAGENTA);
-                        foundMarker.setCaptionText("발견 지점");
-                        foundMarker.setMap(naverMapInstance);
+                        FoundMarker found = new FoundMarker(colorFound);
+                        found.setPosition(new LatLng(Double.parseDouble(lat), Double.parseDouble(lng)));
+                        found.setMap(naverMapInstance);
                     }
                 });
             } catch (JSONException e) {
@@ -169,8 +169,25 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Marker notComplete = new Marker();
+                        NotCompleteMarker notComplete = new NotCompleteMarker(colorImpossible);
                         notComplete.setPosition(new LatLng(Double.parseDouble(lat2), Double.parseDouble(lng2)));
+                        notComplete.getMarker().setOnClickListener(new Overlay.OnClickListener() {
+                            @Override
+                            public boolean onClick(@NonNull Overlay overlay) {
+                                int option = 1;
+                                Intent intent = new Intent(DistrictActivity.this, ImpossibleDetails.class);
+                                intent.putExtra("desc", desc);
+                                if (photo_name != null) {
+                                    intent.putExtra("image", photo_name);
+                                    intent.putExtra("mapId", mapId);
+                                    Log.w("item_ul_file", photo_name);
+                                    option = 2;
+                                }
+                                intent.putExtra("option", option);
+                                startActivity(intent);
+                                return true;
+                            }
+                        });
                         notComplete.setMap(naverMapInstance);
                     }
                 });
@@ -298,12 +315,23 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
 
         /* LongClick 이벤트 등 */
         naverMap.setOnMapLongClickListener((pointF, latLng) -> {
-            Marker marker = new Marker();
-            markerHashMap.put(marker.hashCode(), marker);
-            marker.setPosition(latLng);
-            marker.setOnClickListener(overlay -> {
+            InfoWindow infoWindow = new InfoWindow();
+            infoWindow.setAlpha(0.9f);
+            infoWindow.setAdapter(new InfoWindow.DefaultTextAdapter(getApplicationContext()) {
+                @NonNull
+                @Override
+                public CharSequence getText(@NonNull InfoWindow infoWindow) {
+                    return "이곳을 등록하려면 말풍선을 클릭하세요";
+                }
+            });
+
+            infoWindow.setPosition(latLng);
+            infoWindow.open(naverMap);
+            windowHashMap.put(infoWindow.hashCode(), infoWindow);
+            infoWindow.setOnClickListener(overlay -> {
+                infoWindow.close();
                 Intent intent = new Intent(DistrictActivity.this, DistrictRecordActivity.class);
-                intent.putExtra("markerId", marker.hashCode());
+                intent.putExtra("markerId", infoWindow.hashCode());
                 intent.putExtra("latitude", latLng.latitude);
                 intent.putExtra("longitude", latLng.longitude);
                 intent.putExtra("mapId", mapId);
@@ -311,8 +339,9 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                 startActivityForResult(intent, RECORD_REGISTER);
                 return true;
             });
-            marker.setMap(naverMap);
+
         });
+
         naverMapInstance = naverMap;
     }
 
@@ -320,20 +349,15 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == RECORD_REGISTER){
             int markerId = data.getIntExtra("markerId", -1);
-            Marker point = markerHashMap.get(markerId);
-            point.setIcon(MarkerIcons.BLACK);
-            point.setWidth(50);
-            point.setHeight(70);
+            Log.d("마커", "after code: " + markerId);
 
             switch(resultCode){
                 case RESULT_OK:
                     String opt = data.getStringExtra("result");
                     if(opt.toLowerCase().contains("finish")){
                         if(findLocation == null){
-                            point.setCaptionText("발견 지점");
-                            point.setCaptionColor(colorFound);
-                            point.setIconTintColor(colorFound);
-                            findLocation = point;
+                            findLocation = new Marker();
+                            findLocation.setPosition(windowHashMap.get(markerId).getPosition());
                             JSONObject s_data = new JSONObject();
                             try{
                                 s_data.put("mid",mapId);
@@ -348,16 +372,10 @@ public class DistrictActivity extends AppCompatActivity implements OnMapReadyCal
                             Toast.makeText(DistrictActivity.this, "이미 등록된 발견지점이 있습니다.", Toast.LENGTH_LONG).show();
                         }
                     }
-                    else if(opt.toLowerCase().contains("impossible")){
-                        point.setCaptionText("수색 불가");
-                        point.setCaptionColor(colorImpossible);
-                        point.setIconTintColor(colorImpossible);
-                    }
                     break;
                 case RESULT_CANCELED:
-                    point.setMap(null);
+                    break;
             }
-
         }
 
     }
