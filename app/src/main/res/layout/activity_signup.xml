@@ -23,106 +23,112 @@
 
     </TextView>
 
-    <LinearLayout
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="13dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/sign_up_email"
-            tools:ignore="LabelFor"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:inputType="textNoSuggestions"
-            android:importantForAutofill="no"
-            android:cursorVisible="true"
-            android:hint="@string/login_id"
-            android:background="@drawable/form">
-        </EditText>
-        <Button
-            android:id="@+id/sign_up_email_check_btn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:background="@color/colorGray"
-            android:text="@string/double_check"
-            >
-        </Button>
+            android:orientation="vertical" >
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="13dp"
+                android:orientation="horizontal">
 
-    <EditText
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="10dp"
-        android:id="@+id/sign_up_password"
-        tools:ignore="LabelFor"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="textNoSuggestions|textPassword"
-        android:importantForAutofill="no"
-        android:cursorVisible="true"
-        android:hint="@string/login_password"
-        android:background="@drawable/form">
-    </EditText>
+                <EditText
+                    android:id="@+id/sign_up_email"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/form"
+                    android:cursorVisible="true"
+                    android:hint="@string/login_id"
+                    android:importantForAutofill="no"
+                    android:inputType="textNoSuggestions"
+                    tools:ignore="LabelFor"></EditText>
 
-    <EditText
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="10dp"
-        android:id="@+id/sign_up_check_password"
-        tools:ignore="LabelFor"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="textNoSuggestions|textPassword"
-        android:importantForAutofill="no"
-        android:cursorVisible="true"
-        android:hint="@string/login_password"
-        android:background="@drawable/form">
-    </EditText>
+                <Button
+                    android:id="@+id/sign_up_email_check_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorGray"
+                    android:text="@string/double_check"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"></Button>
 
-    <EditText
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="10dp"
-        android:id="@+id/sign_up_name"
-        tools:ignore="LabelFor"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="textNoSuggestions"
-        android:importantForAutofill="no"
-        android:cursorVisible="true"
-        android:hint="@string/user_name"
-        android:background="@drawable/form">
-    </EditText>
+            </LinearLayout>
 
-    <EditText
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginVertical="10dp"
-        android:id="@+id/sign_up_department"
-        tools:ignore="LabelFor"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="textNoSuggestions"
-        android:importantForAutofill="no"
-        android:cursorVisible="true"
-        android:hint="@string/user_department"
-        android:background="@drawable/form">
-    </EditText>
+            <EditText
+                android:id="@+id/sign_up_password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/form"
+                android:cursorVisible="true"
+                android:hint="@string/login_password"
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions|textPassword"
+                tools:ignore="LabelFor"></EditText>
 
-    <Button
-        android:layout_marginHorizontal="40dp"
-        android:layout_marginVertical="10dp"
-        android:id="@+id/sign_up_btn"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:textSize="20dp"
-        android:background="@drawable/button_background2"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/sign_up"
-        >
+            <EditText
+                android:id="@+id/sign_up_check_password"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/form"
+                android:cursorVisible="true"
+                android:hint="@string/login_password"
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions|textPassword"
+                tools:ignore="LabelFor"></EditText>
 
-    </Button>
+            <EditText
+                android:id="@+id/sign_up_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/form"
+                android:cursorVisible="true"
+                android:hint="@string/user_name"
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions"
+                tools:ignore="LabelFor"></EditText>
+
+            <EditText
+                android:id="@+id/sign_up_department"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/form"
+                android:cursorVisible="true"
+                android:hint="@string/user_department"
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions"
+                tools:ignore="LabelFor"></EditText>
+
+            <Button
+                android:id="@+id/sign_up_btn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/button_background2"
+                android:text="@string/sign_up"
+                android:textColor="#ffffff"
+                android:textSize="20dp"
+                android:textStyle="bold">
+
+            </Button>
+
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>
