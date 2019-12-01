@@ -31,6 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class listVieww_popup extends Activity implements View.OnClickListener{
+    private final String SERVER_HOST_PATH = "http://13.125.174.158:9000/mperson_picture";
     ListView listView;
     public static Activity _listview_popup_activity;
     static ListAdapter adapter;
@@ -136,7 +137,7 @@ public class listVieww_popup extends Activity implements View.OnClickListener{
             float rotation = 0;
 
             Picasso.with(getApplicationContext())
-                    .load("http://13.125.174.158:9000/mperson_picture/"+selected.getP_photo())
+                    .load(SERVER_HOST_PATH + "/" + selected.getP_photo())
                     .fit()
                     .rotate(0f)
                     .into(profile);

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class MissingInfoActivity extends Activity {
+    private final String SERVER_HOST_PATH = "http://13.125.174.158:9000/mperson_picture";
     Mperson selected;
 
 
@@ -61,9 +63,10 @@ public class MissingInfoActivity extends Activity {
         }
         else{
             float rotation = 0;
-
+            String path = SERVER_HOST_PATH + "/" + selected.getP_photo();
+            Log.d("MissingInfo", "image path: " + path);
             Picasso.with(getApplicationContext())
-                    .load("http://13.125.95.139:9000/mperson_picture/"+selected.getP_photo())
+                    .load(path)
                     .fit()
                     .rotate(0f)
                     .into(profile);

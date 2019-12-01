@@ -13,6 +13,7 @@ import com.example.woo.myapplication.R;
 import com.squareup.picasso.Picasso;
 
 public class ImpossibleDetails extends AppCompatActivity {
+    private final String SERVER_HOST_PATH = "http://13.125.174.158:9000/not_complete_picture";
     protected ImageView imageView;
     protected TextView desc;
 
@@ -36,7 +37,7 @@ public class ImpossibleDetails extends AppCompatActivity {
             case 2: // 이미지와 설명 모두 존재
                 String image = intent.getStringExtra("image");
                 String mapId = Integer.toString(intent.getIntExtra("mapId", -1));
-                String path = "http://13.125.174.158:9000/not_complete_picture/" + mapId + "/" + image;
+                String path = SERVER_HOST_PATH + "/" + mapId + "/" + image;
                 Log.i("image", "image url: " + path);
                 Picasso.with(getApplicationContext())
                         .load(path)
