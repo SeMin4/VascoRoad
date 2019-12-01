@@ -7,80 +7,93 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.activity.LoginActivity">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text= "@string/login_activity_title"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:textSize="35dp"
-        android:gravity="center"
-        android:layout_marginTop="140dp"
-        android:paddingVertical="10dp"
-        android:background="@drawable/button_background"
-        ></TextView>
-    <EditText
-        android:id="@+id/login_email"
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginVertical="13dp"
-        tools:ignore="LabelFor"
-        android:drawableLeft="@drawable/ic_username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textNoSuggestions"
-        android:importantForAutofill="no"
-        android:cursorVisible="true"
-        android:hint="@string/login_id"
-        android:singleLine="true"
-        android:background="@drawable/custom_edit_text_bg"></EditText>
 
-    <EditText
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/login_password"
-        tools:ignore="LabelFor"
-        android:drawableLeft="@drawable/ic_password"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textNoSuggestions|textPassword"
-        android:importantForAutofill="no"
-        android:cursorVisible="true"
-        android:hint="@string/login_password"
-        android:singleLine="true"
-        android:background="@drawable/form"></EditText>
-    <CheckBox
-        android:layout_gravity="right"
-        android:layout_marginRight="50dp"
-        android:id="@+id/auto_login"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:textSize="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/auto_login">
-    </CheckBox>
-    <Button
-        android:id="@+id/login_page_sign_in"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginVertical="7dp"
-        android:textColor="#ffffff"
-        android:textSize="20dp"
-        android:background="@drawable/button_background3"
-        android:text="@string/sign_in"></Button>
+        android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/login_page_sign_up"
-        android:layout_marginHorizontal="25dp"
-        android:layout_marginVertical="13dp"
-        android:textColor="#ffffff"
-        android:textSize="20dp"
-        android:background="@drawable/button_background3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/sign_up"></Button>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="140dp"
+                android:background="@drawable/button_background"
+                android:gravity="center"
+                android:paddingVertical="10dp"
+                android:text="@string/login_activity_title"
+                android:textColor="#ffffff"
+                android:textSize="35dp"
+                android:textStyle="bold"></TextView>
+
+            <EditText
+                android:id="@+id/login_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginVertical="13dp"
+                android:background="@drawable/custom_edit_text_bg"
+                android:cursorVisible="true"
+                android:drawableLeft="@drawable/ic_username"
+                android:hint="@string/login_id"
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions"
+                android:singleLine="true"
+                tools:ignore="LabelFor"></EditText>
+
+            <EditText
+                android:id="@+id/login_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/form"
+                android:cursorVisible="true"
+                android:drawableLeft="@drawable/ic_password"
+                android:hint="@string/login_password"
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions|textPassword"
+                android:singleLine="true"
+                tools:ignore="LabelFor"></EditText>
+
+            <CheckBox
+                android:id="@+id/auto_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="50dp"
+                android:text="@string/auto_login"
+                android:textColor="#ffffff"
+                android:textSize="15dp"
+                android:textStyle="bold"></CheckBox>
+
+            <Button
+                android:id="@+id/login_page_sign_in"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginVertical="7dp"
+                android:background="@drawable/button_background3"
+                android:text="@string/sign_in"
+                android:textColor="#ffffff"
+                android:textSize="20dp"></Button>
+
+            <Button
+                android:id="@+id/login_page_sign_up"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginVertical="13dp"
+                android:background="@drawable/button_background3"
+                android:text="@string/sign_up"
+                android:textColor="#ffffff"
+                android:textSize="20dp"></Button>
+        </LinearLayout>
+    </ScrollView>
 
 
 </LinearLayout>
