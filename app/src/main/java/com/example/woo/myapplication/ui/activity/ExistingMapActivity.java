@@ -73,7 +73,6 @@ import retrofit2.Retrofit;
 public class ExistingMapActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 100;
     private FusedLocationSource locationSource;
-    protected TextView zoomLevel;
     private District outerDistrict;
     private LatLngBounds mapBounds;
     private MapInfo mapInfo;
@@ -408,18 +407,17 @@ public class ExistingMapActivity extends AppCompatActivity implements OnMapReady
             cur_lng = ""+cur.longitude;
             /* 속한 OuterDistrict 계산 */
             int outerIndex = findDistrictCoord(outerDistrict.getChildren().get(0), cur, 8);
+            Log.d("에러", "outerIndex: " + outerIndex);
+            if(outerIndex < 0 || outerIndex >= 64){
+                Toast.makeText(ExistingMapActivity.this, "현위치가 지도 구역을 벗어났습니다.", Toast.LENGTH_LONG).show();
+                return;
+            }
 
             /* 속한 InnerDistrict 계산 */
             District child = outerDistrict.getChildren().get(outerIndex);
-            if(!child.getGrid().getBounds().contains(cur)){
-                Toast.makeText(ExistingMapActivity.this, "현위치가 그리드를 벗어났습니다.", Toast.LENGTH_LONG).show();
-                return;
-            }
             int innerIndex = findDistrictCoord(child.getChildren().get(0), cur, scale);
 
             District grandChild = child.getChildren().get(innerIndex);
-            // grandChild.setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 150));
-            // grandChild.setMap(naverMap);
 
             if(grandChild.getFootPrint().getColor() != COLOR_FINISH){
                 grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 250));

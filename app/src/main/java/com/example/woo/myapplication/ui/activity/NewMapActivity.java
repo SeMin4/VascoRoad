@@ -346,18 +346,16 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
             /* 속한 OuterDistrict 계산 */
             int outerIndex = findDistrictCoord(outerDistrict.getChildren().get(0), cur, 8);
+            if(outerIndex < 0 || outerIndex >= 8){
+                Toast.makeText(NewMapActivity.this, "현위치가 지도 구역을 벗어났습니다.", Toast.LENGTH_LONG).show();
+                return;
+            }
 
             /* 속한 InnerDistrict 계산 */
             District child = outerDistrict.getChildren().get(outerIndex);
-            if(!child.getGrid().getBounds().contains(cur)){
-                Toast.makeText(NewMapActivity.this, "현위치가 그리드를 벗어났습니다.", Toast.LENGTH_LONG).show();
-                return;
-            }
             int innerIndex = findDistrictCoord(child.getChildren().get(0), cur, scale);
 
             District grandChild = child.getChildren().get(innerIndex);
-            // grandChild.setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 150));
-            // grandChild.setMap(naverMap);
 
             if(grandChild.getFootPrint().getColor() != COLOR_FINISH){
                 grandChild.getFootPrint().setColor(ColorUtils.setAlphaComponent(COLOR_FINISH, 250));
