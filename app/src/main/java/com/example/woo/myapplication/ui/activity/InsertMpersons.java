@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.example.woo.myapplication.MyGlobals;
 import com.example.woo.myapplication.OverlapExamineData;
 import com.example.woo.myapplication.R;
+import com.naver.maps.geometry.LatLng;
 
 import java.io.File;
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class InsertMpersons extends AppCompatActivity {
     private final int PICK_IMAGE = 0;
     private final int PICK_LOCATION = 1;
     private String currentPhotoPath;
+    private LatLng missingLatLng;
     private Button insert;
     protected EditText description;
     public static Activity _InsertMpersons;
@@ -102,6 +104,7 @@ public class InsertMpersons extends AppCompatActivity {
             if(resultCode == RESULT_OK){
                 double lat = data.getDoubleExtra("latitude", -1);
                 double lng = data.getDoubleExtra("longitude", -1);
+                missingLatLng = new LatLng(lat, lng);
                 String address = "선택된 주소: " + findAddress(lat, lng);
                 missingLocation.setVisibility(View.VISIBLE);
                 missingLocation.setText(address);
@@ -185,9 +188,9 @@ public class InsertMpersons extends AppCompatActivity {
                 a3 = String.format("%02d",Integer.parseInt(a3.substring(0,a3.length()-1)));
                 age = a1.substring(0,a1.length()-1)+a2+a3;
                 String date = Mperson_select_date.getText().toString();
-                String place = "대구";
-                String lat = "123";
-                String lon = "110";
+                String place = missingLocation.getText().toString().substring(8);
+                String lat = Double.toString(missingLatLng.latitude);
+                String lon = Double.toString(missingLatLng.longitude);
                 String desc = description.getText().toString();
 
                 updateMperson(currentPhotoPath,name,age,date,place,lat,lon,desc);

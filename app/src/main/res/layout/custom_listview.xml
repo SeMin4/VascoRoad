@@ -15,72 +15,69 @@
             <!--android:layout_marginBottom="20dp -->
 
 
+    <LinearLayout
+        android:id="@+id/mperson_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:paddingRight="20dp"
+        android:orientation="vertical">
+
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            >
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginHorizontal="20dp"
-                android:orientation="horizontal">
+            android:layout_marginHorizontal="20dp"
+            android:orientation="horizontal"
+            android:textSize="18sp"
+            android:textStyle="bold">
             <!--실종자 이름, 성별, 나이-->
             <TextView
                 android:id="@+id/TextView_Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="이규진"
-                >
-            </TextView>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=" ("
-                    >
-                </TextView>
-                <TextView
-                    android:id="@+id/TextView_Age"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="14"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="세)"/>
-            </LinearLayout>
+                android:text="이규진"></TextView>
 
-            <!--실종위치-->
             <TextView
-                android:id="@+id/TextView_Place"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="20dp"
-                android:text="경북대학교 공대9호관 세미나실"
-                android:textSize="12sp"
-                >
+                android:text=" ("></TextView>
 
-            </TextView>
-
-            <!--실종 시간-->
             <TextView
-                android:id="@+id/TextView_Time"
-                android:layout_width="wrap_content"
+                android:id="@+id/TextView_Age"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:textSize="12sp"
-                android:text="2019년 9월 17일 13시경"
-                >
+                android:text="14" />
 
-            </TextView>
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="세)" />
         </LinearLayout>
+
+        <!--실종위치-->
+        <TextView
+            android:id="@+id/TextView_Place"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="5dp"
+            android:text="경북대학교 공대9호관 세미나실"
+            android:textSize="12sp">
+
+        </TextView>
+
+        <!--실종 시간-->
+        <TextView
+            android:id="@+id/TextView_Time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="2019년 9월 17일 13시경"
+            android:textSize="12sp">
+
+        </TextView>
+
+    </LinearLayout>
     </LinearLayout>
