@@ -346,7 +346,7 @@ public class NewMapActivity extends AppCompatActivity implements OnMapReadyCallb
 
             /* 속한 OuterDistrict 계산 */
             int outerIndex = findDistrictCoord(outerDistrict.getChildren().get(0), cur, 8);
-            if(outerIndex < 0 || outerIndex >= 8){
+            if(outerIndex < 0 || outerIndex >= 64){
                 Toast.makeText(NewMapActivity.this, "현위치가 지도 구역을 벗어났습니다.", Toast.LENGTH_LONG).show();
                 return;
             }
